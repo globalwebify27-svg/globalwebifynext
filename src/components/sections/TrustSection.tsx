@@ -1,0 +1,140 @@
+"use client";
+
+import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Award, Play, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Section } from '../layout/Responsive/Section';
+import Image from 'next/image';
+
+const certificates = [
+  "/Certificate1.avif",
+  "/Certificate2.avif",
+  "/Certificate3.avif",
+  "/Certificate4.avif",
+  "/Certificate5.avif",
+  "/Certificate6.avif",
+  "/Certificate7.avif",
+];
+
+export default function TrustSection() {
+  const [certIndex, setCertIndex] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCertIndex((prev) => (prev + 1) % certificates.length);
+    }, 4000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const nextCert = () => setCertIndex((prev) => (prev + 1) % certificates.length);
+  const prevCert = () => setCertIndex((prev) => (prev - 1 + certificates.length) % certificates.length);
+
+  return (
+    <Section id="trust" variant="transparent" className="bg-white overflow-hidden">
+      <div className="max-w-[1400px] mx-auto px-4 md:px-8">
+        
+        {/* Header Section - Centered at the Top */}
+        <div className="text-center mb-16">
+          <div className="inline-flex items-center gap-2 bg-green-50 text-[#1a8b4c] px-4 py-2 rounded-full text-[12px] font-black uppercase tracking-widest mb-4">
+            <Award size={18} /> Accredited & Certified
+          </div>
+          <h2 className="text-[28px] md:text-[36px] font-black text-gray-950 leading-tight lg:whitespace-nowrap">
+            Our Excellence <span className="text-[#1a8b4c]">Officially Certified</span>
+          </h2>
+          <p className="text-gray-500 mt-4 font-medium mx-auto lg:whitespace-nowrap">
+            We take pride in our industry-recognized certifications and proven digital framework that validate our commitment to quality and performance.
+          </p>
+        </div>
+
+        <div className="flex flex-col lg:flex-row gap-12 lg:gap-16 items-start">
+          
+          {/* LEFT: Certificate Slideshow */}
+          <div className="w-full lg:w-3/5">
+            <div className="relative group">
+              <div className="aspect-[4/3] bg-gray-50 rounded-[32px] border-4 border-gray-100 overflow-hidden shadow-2xl relative">
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={certIndex}
+                    initial={{ opacity: 0, scale: 0.95, x: 20 }}
+                    animate={{ opacity: 1, scale: 1, x: 0 }}
+                    exit={{ opacity: 0, scale: 1.05, x: -20 }}
+                    transition={{ duration: 0.5 }}
+                    className="absolute inset-0 p-4 flex items-center justify-center bg-white"
+                  >
+                    <div className="relative w-full h-full">
+                      <Image
+                        src={certificates[certIndex]}
+                        alt={`Global Webify Certification ${certIndex + 1}`}
+                        fill
+                        className="object-contain"
+                        loading="lazy"
+                        sizes="(max-width: 768px) 100vw, 50vw"
+                      />
+                    </div>
+                  </motion.div>
+                </AnimatePresence>
+
+                {/* Navigation Buttons */}
+                <button 
+                  onClick={prevCert}
+                  className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/90 backdrop-blur shadow-lg rounded-full flex items-center justify-center text-gray-900 hover:bg-[#1a8b4c] hover:text-white transition-all z-10 opacity-0 group-hover:opacity-100"
+                >
+                  <ChevronLeft size={24} />
+                </button>
+                <button 
+                  onClick={nextCert}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/90 backdrop-blur shadow-lg rounded-full flex items-center justify-center text-gray-900 hover:bg-[#1a8b4c] hover:text-white transition-all z-10 opacity-0 group-hover:opacity-100"
+                >
+                  <ChevronRight size={24} />
+                </button>
+              </div>
+
+              {/* Progress Dots */}
+              <div className="flex justify-center gap-2 mt-6">
+                {certificates.map((_, i) => (
+                  <button
+                    key={i}
+                    onClick={() => setCertIndex(i)}
+                    className={`h-1.5 rounded-full transition-all duration-300 ${i === certIndex ? 'w-8 bg-[#1a8b4c]' : 'w-2 bg-gray-200'}`}
+                  />
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* RIGHT: Portrait Video Player */}
+          <div className="w-full lg:w-2/5 flex justify-center">
+            <div className="relative w-full max-w-[320px]">
+              <div className="absolute -top-6 -left-6 w-20 h-20 bg-green-100 rounded-full blur-2xl opacity-60 z-0" />
+              <div className="absolute -bottom-6 -right-6 w-32 h-32 bg-yellow-100 rounded-full blur-3xl opacity-60 z-0" />
+              
+              <div className="relative z-10 rounded-[40px] overflow-hidden shadow-2xl border-8 border-white bg-black aspect-[9/16] group">
+                <video 
+                  className="w-full h-full object-cover"
+                  controls
+                  autoPlay
+                  muted
+                  loop
+                  playsInline
+                  preload="metadata"
+                  poster="/bg-pattern-landing.avif"
+                >
+                  <source src="/videoplayback.mp4" type="video/mp4" />
+                  Your browser does not support the video tag.
+                </video>
+                
+                {/* Play Overlay */}
+                <div className="absolute inset-0 bg-black/20 flex items-center justify-center pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity">
+                  <div className="w-16 h-16 bg-[#1a8b4c]/80 rounded-full flex items-center justify-center text-white shadow-xl backdrop-blur-sm">
+                    <Play size={28} fill="currentColor" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </Section>
+  );
+}

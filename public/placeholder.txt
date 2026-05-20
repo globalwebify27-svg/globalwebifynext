@@ -1,0 +1,2 @@
+This folder is for your static assets like logos and images.
+Place your logo here and name it 'logo.png'.

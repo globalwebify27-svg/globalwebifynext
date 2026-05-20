@@ -1,0 +1,52 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model BlogPost {
+  id             Int      @id @default(autoincrement())
+  slug           String   @unique
+  title          String
+  summary        String   @db.VarChar(500)
+  content        String   @db.Text
+  image          String?
+  isActive       Boolean  @default(true)
+  seoTitle       String?  @db.VarChar(255)
+  seoDescription String?  @db.VarChar(500)
+  seoKeywords    String?  @db.VarChar(255)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model ServicePage {
+  id             Int      @id @default(autoincrement())
+  slug           String   @unique
+  title          String
+  contentTitle   String?  @db.VarChar(255)
+  seoTitle       String?  @db.VarChar(255)
+  seoDescription String?  @db.VarChar(500)
+  seoKeywords    String?  @db.VarChar(255)
+  content        String   @db.Text
+  image          String?
+  category       String   // e.g. 'website', 'marketing', 'branding', 'hosting'
+  isActive       Boolean  @default(true)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model ContactSubmission {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String
+  phone     String?
+  service   String?
+  message   String   @db.Text
+  createdAt DateTime @default(now())
+}
