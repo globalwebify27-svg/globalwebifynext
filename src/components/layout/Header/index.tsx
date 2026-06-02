@@ -123,6 +123,7 @@ export default function Header() {
     const handleScroll = () => {
       setScrolled(window.scrollY > 20);
     };
+    handleScroll();
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
@@ -196,20 +197,20 @@ export default function Header() {
              <div className="p-6 flex flex-col gap-1 overflow-y-auto">
                 {NAV_LINKS.map((link) => (
                   <div key={link.id} className="border-b border-gray-50">
-                    <button 
-                      onClick={() => link.hasDropdown ? toggleMobileMenu(link.id) : closeMenu()} 
-                      className="w-full text-left py-4 flex justify-between items-center group"
-                    >
-                      <div className="flex items-center gap-3">
-                        <div className="w-1.5 h-1.5 rounded-full bg-[#1a8b4c]" />
-                        <span className={cn(
-                          "text-[14px] font-semibold tracking-normal transition-colors",
-                          mobileMenuOpen === link.id ? "text-[#1a8b4c]" : "text-[#1a1a1a]"
-                        )}>
-                          {link.name}
-                        </span>
-                      </div>
-                      {link.hasDropdown && (
+                    {link.hasDropdown ? (
+                      <button 
+                        onClick={() => toggleMobileMenu(link.id)} 
+                        className="w-full text-left py-4 flex justify-between items-center group"
+                      >
+                        <div className="flex items-center gap-3">
+                          <div className="w-1.5 h-1.5 rounded-full bg-[#1a8b4c]" />
+                          <span className={cn(
+                            "text-[14px] font-semibold tracking-normal transition-colors",
+                            mobileMenuOpen === link.id ? "text-[#1a8b4c]" : "text-[#1a1a1a]"
+                          )}>
+                            {link.name}
+                          </span>
+                        </div>
                         <motion.div
                           animate={{ rotate: mobileMenuOpen === link.id ? 180 : 0 }}
                           transition={{ duration: 0.2 }}
@@ -218,8 +219,21 @@ export default function Header() {
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
                           </svg>
                         </motion.div>
-                      )}
-                    </button>
+                      </button>
+                    ) : (
+                      <Link 
+                        href={getPrefixedHref('/' + link.id, link.id, currentCity)}
+                        onClick={closeMenu}
+                        className="w-full text-left py-4 flex justify-between items-center group"
+                      >
+                        <div className="flex items-center gap-3">
+                          <div className="w-1.5 h-1.5 rounded-full bg-[#1a8b4c]" />
+                          <span className="text-[14px] font-semibold tracking-normal text-[#1a1a1a] hover:text-[#1a8b4c] transition-colors">
+                            {link.name}
+                          </span>
+                        </div>
+                      </Link>
+                    )}
                     
                     {/* Mobile Dropdown Content */}
                     <AnimatePresence>

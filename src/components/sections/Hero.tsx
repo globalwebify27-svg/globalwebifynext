@@ -320,22 +320,10 @@ export default function Hero({
   homepageHeroDesc?: string;
 }) {
   const [mounted, setMounted] = useState(false);
-  const [paddingTop, setPaddingTop] = useState(80);
   const [isAuditOpen, setIsAuditOpen] = useState(false);
 
   useEffect(() => {
     setMounted(true);
-    const updateHeaderHeight = () => {
-      const header = document.querySelector("header");
-      if (header) {
-        const height = header.offsetHeight;
-        setPaddingTop(window.innerWidth < 768 ? height + 25 : height + 30);
-      }
-    };
-    
-    updateHeaderHeight();
-    window.addEventListener("resize", updateHeaderHeight);
-    return () => window.removeEventListener("resize", updateHeaderHeight);
   }, []);
 
   return (
@@ -349,7 +337,7 @@ export default function Hero({
           priority
           sizes="100vw"
           quality={90}
-          className="object-cover object-top opacity-[0.6] saturate-[1.2]"
+          className="object-cover object-top opacity-[0.6] saturate-[0.8] contrast-[0.9]"
         />
       </div>
 
@@ -357,8 +345,7 @@ export default function Hero({
         id="hero" 
         variant="transparent"
         spacing="hero" 
-        className="z-10"
-        style={{ paddingTop }}
+        className="z-10 pt-[95px] md:pt-[105px] lg:pt-[152px]"
       >
         <div className="flex flex-col min-[900px]:flex-row items-center justify-between gap-6 md:gap-8 lg:gap-10 xl:gap-12">
 
