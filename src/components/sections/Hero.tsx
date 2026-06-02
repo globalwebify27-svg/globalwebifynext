@@ -78,8 +78,8 @@ const TypingHeadline = ({ phrases = [] }: { phrases?: string[] }) => {
   }, [currentText, isDeleting, loopNum, mounted, typingSpeed, activePhrases]);
 
   return (
-    <div className="min-h-[76px] md:min-h-[115px] flex items-start w-full overflow-visible">
-      <h1 className="text-[28px] sm:text-4xl md:text-[44px] font-extrabold md:font-black text-gray-950 leading-tight tracking-tight text-left font-jost">
+    <div className="min-h-[120px] md:min-h-[115px] flex items-start justify-center min-[900px]:justify-start w-full overflow-visible">
+      <h1 className="text-[32px] sm:text-4xl md:text-[44px] font-extrabold md:font-black text-gray-950 leading-tight tracking-tight text-center min-[900px]:text-left font-sans font-lexend">
         {currentText}
         <motion.span
           animate={{ opacity: [1, 0] }}
@@ -351,7 +351,7 @@ export default function Hero({
         <div className="flex flex-col min-[900px]:flex-row items-center justify-between gap-6 md:gap-8 lg:gap-10 xl:gap-12">
 
           {/* ---- LEFT COLUMN ---- */}
-          <div className="flex-1 w-full flex flex-col items-start gap-3 md:gap-5 z-10 max-w-xl text-left">
+          <div className="flex-1 w-full flex flex-col items-center min-[900px]:items-start gap-3 md:gap-5 z-10 max-w-xl text-center min-[900px]:text-left">
             <div className="hidden md:inline-flex items-center gap-2.5 bg-[#E8F5EE] border-2 border-[#BBE3CB] text-[#1a8b4c] text-[10px] md:text-[11px] font-black px-4 py-2 rounded-full uppercase tracking-widest shadow-sm">
               <span className="relative flex h-2.5 w-2.5">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#1a8b4c] opacity-75" />
@@ -361,9 +361,9 @@ export default function Hero({
             </div>
 
             {city ? (
-              <div className="min-h-[76px] md:min-h-[115px] flex items-start w-full overflow-visible">
+              <div className="min-h-[120px] md:min-h-[115px] flex items-start justify-center min-[900px]:justify-start w-full overflow-visible">
                 <h1 
-                  className="text-[25px] sm:text-3xl md:text-[38px] lg:text-[42px] font-extrabold md:font-black text-gray-950 leading-tight tracking-tight text-left font-jost"
+                  className="text-[32px] sm:text-3xl md:text-[38px] lg:text-[42px] font-extrabold md:font-black text-gray-950 leading-tight tracking-tight text-center min-[900px]:text-left font-lexend"
                   dangerouslySetInnerHTML={{ __html: cityHeroSettings?.title || `Your Website Isn’t Bringing Leads—and It’s Costing You Business in <span class="text-[#1a8b4c]">${city}</span>` }}
                 />
               </div>
@@ -371,15 +371,15 @@ export default function Hero({
               <TypingHeadline phrases={heroTexts} />
             )}
 
-            <div className="text-gray-900 text-[14px] md:text-[16px] font-medium max-w-lg leading-relaxed text-left mt-2">
+            <div className="text-gray-700 text-[15.5px] md:text-[17.5px] font-medium max-w-lg leading-relaxed text-center min-[900px]:text-left mt-3 font-jost mx-auto min-[900px]:mx-0">
               {city ? (
                 <div 
-                  className="text-sm md:text-[15px] font-semibold text-gray-700 block city-hero-desc"
+                  className="block city-hero-desc"
                   dangerouslySetInnerHTML={{ __html: cityHeroSettings?.description || `We combine result-oriented Digital Marketing, modern Web Design, and branding strategies to help <span class="text-[#1a8b4c] font-bold">${city}</span> businesses stand out online and grow faster without wasted ad spend.` }}
                 />
               ) : (
                 <div 
-                  className="text-sm md:text-[15px] font-semibold text-gray-700 block homepage-hero-desc"
+                  className="block homepage-hero-desc"
                   dangerouslySetInnerHTML={{ __html: homepageHeroDesc || "We build AI-integrated websites that generate leads and scale your growth automatically." }}
                 />
               )}
@@ -413,13 +413,13 @@ export default function Hero({
             </div>
 
             {/* Phone */}
-            <div className="bg-white border-2 border-gray-200 shadow-sm p-3.5 md:p-4 rounded-2xl flex items-center gap-3 md:gap-4 w-full max-w-[520px] mt-1">
+            <div className="bg-white border-2 border-gray-200 shadow-sm p-3.5 md:p-4 rounded-2xl flex items-center justify-center min-[900px]:justify-start gap-3 md:gap-4 w-full max-w-[520px] mt-1">
               <div className="w-10 h-10 md:w-12 md:h-12 shrink-0 rounded-full bg-green-50 flex items-center justify-center">
                 <Phone className="text-[#1a8b4c] w-4 h-4 md:w-5 md:h-5" />
               </div>
-              <div>
-                <p className="text-[8px] md:text-[9px] text-gray-500 font-bold uppercase tracking-widest mb-1 text-left">Toll Free Number</p>
-                <a href="tel:18008905489" className="text-base md:text-lg font-bold text-gray-950 tracking-tight text-left block hover:text-[#1a8b4c] transition-colors">1800-890-5489</a>
+              <div className="text-center min-[900px]:text-left">
+                <p className="text-[8px] md:text-[9px] text-gray-500 font-bold uppercase tracking-widest mb-1">Toll Free Number</p>
+                <a href="tel:18008905489" className="text-base md:text-lg font-bold text-gray-950 tracking-tight block hover:text-[#1a8b4c] transition-colors">1800-890-5489</a>
               </div>
             </div>
           </div>
