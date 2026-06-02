@@ -5,38 +5,13 @@ import { db } from '@/lib/db';
 import { FAQSection } from '@/components/sections/FAQSection';
 import { getHomepageFaqs, getHeroTexts, getAboutSeo, getCityHeroSettings, getHomepageHeroDesc } from '@/app/admin/(dashboard)/homepage/actions';
 
-const ServicesGrid = dynamic(() => import('@/components/sections/ServicesGrid'), {
-  ssr: true,
-  loading: () => <div className="min-h-[400px] animate-pulse bg-gray-50 rounded-3xl m-8" />
-});
-
-const Portfolio = dynamic(() => import('@/components/sections/Portfolio'), {
-  ssr: true,
-  loading: () => <div className="min-h-[600px] animate-pulse bg-green-50/30 rounded-3xl m-8" />
-});
-
-const TechStack = dynamic(() => import('@/components/sections/TechStack'), {
-  ssr: true,
-  loading: () => <div className="min-h-[300px] animate-pulse bg-gray-50 rounded-3xl m-8" />
-});
-
-const LatestBlog = dynamic(() => import('@/components/sections/LatestBlog'), {
-  ssr: true,
-  loading: () => <div className="min-h-[400px] animate-pulse bg-gray-50 rounded-3xl m-8" />
-});
-
-const ResultsSection = dynamic(() => import('@/components/sections/ResultsSection'), {
-  ssr: true,
-  loading: () => <div className="min-h-[600px] animate-pulse bg-gray-50 rounded-3xl m-8" />
-});
-
-const AboutSEO = dynamic(() => import('@/components/sections/AboutSEO'), {
-  ssr: true
-});
-
-const TrustSection = dynamic(() => import('@/components/sections/TrustSection'), {
-  ssr: true
-});
+import ServicesGrid from '@/components/sections/ServicesGrid';
+import Portfolio from '@/components/sections/Portfolio';
+import TechStack from '@/components/sections/TechStack';
+import LatestBlog from '@/components/sections/LatestBlog';
+import ResultsSection from '@/components/sections/ResultsSection';
+import AboutSEO from '@/components/sections/AboutSEO';
+import TrustSection from '@/components/sections/TrustSection';
 
 function replaceLocation(text: string, loc: string = ""): string {
   if (!text) return '';

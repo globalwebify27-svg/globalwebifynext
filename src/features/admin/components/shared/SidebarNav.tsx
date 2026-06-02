@@ -22,6 +22,17 @@ export default function SidebarNav({ initialActiveServiceCategory }: SidebarNavP
   const isContacts = pathname.startsWith('/admin/contacts');
   const isHomepage = pathname.startsWith('/admin/homepage');
 
+  const [openHomepage, setOpenHomepage] = React.useState(isHomepage);
+  const [openServices, setOpenServices] = React.useState(isServices);
+
+  React.useEffect(() => {
+    setOpenHomepage(isHomepage);
+  }, [isHomepage]);
+
+  React.useEffect(() => {
+    setOpenServices(isServices);
+  }, [isServices]);
+
   const linkClass = (isActive: boolean) => 
     `flex items-center gap-2.5 px-4 py-2.5 rounded-xl transition-all duration-200 text-[11px] md:text-xs font-semibold tracking-wide border group/navlink ${
       isActive 
@@ -42,7 +53,7 @@ export default function SidebarNav({ initialActiveServiceCategory }: SidebarNavP
       </Link>
 
       {/* Collapsible Homepage Settings Dropdown */}
-      <details className="group/details" defaultOpen={isHomepage}>
+      <details className="group/details" open={openHomepage} onToggle={(e: any) => setOpenHomepage(e.currentTarget.open)}>
         <summary className={`flex items-center justify-between gap-2.5 px-4 py-2.5 rounded-xl transition-all duration-200 text-[11px] md:text-xs font-semibold tracking-wide cursor-pointer list-none [&::-webkit-details-marker]:hidden border group/summary ${
           isHomepage 
             ? 'bg-[#1a8b4c] text-white border-[#15703d] shadow-lg shadow-[#1a8b4c]/10' 
@@ -104,7 +115,7 @@ export default function SidebarNav({ initialActiveServiceCategory }: SidebarNavP
       </details>
 
       {/* Collapsible Manage Services Dropdown */}
-      <details className="group/details" defaultOpen={isServices}>
+      <details className="group/details" open={openServices} onToggle={(e: any) => setOpenServices(e.currentTarget.open)}>
         <summary className={`flex items-center justify-between gap-2.5 px-4 py-2.5 rounded-xl transition-all duration-200 text-[11px] md:text-xs font-semibold tracking-wide cursor-pointer list-none [&::-webkit-details-marker]:hidden border group/summary ${
           isServices 
             ? 'bg-[#1a8b4c] text-white border-[#15703d] shadow-lg shadow-[#1a8b4c]/10' 
