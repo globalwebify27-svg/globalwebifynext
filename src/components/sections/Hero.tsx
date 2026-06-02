@@ -299,6 +299,8 @@ export default function Hero({
           alt="Background Pattern"
           fill
           priority
+          sizes="100vw"
+          quality={90}
           className="object-cover object-top opacity-[0.6] saturate-[1.2]"
         />
       </div>
@@ -358,15 +360,17 @@ export default function Hero({
             </div>
 
             {/* Badge grid */}
-            <div className="grid grid-cols-2 gap-3 w-full max-w-[540px] mt-1">
+            <div className="grid grid-cols-2 gap-2 md:gap-3 w-full max-w-[540px] mt-1">
               {badges.map((badge, i) => (
-                <div key={i} className="bg-white p-3.5 md:p-4 rounded-2xl flex items-center gap-3 md:gap-4 border-2 border-gray-200 transition-all hover:border-[#1a8b4c] hover:shadow-lg hover:-translate-y-1 shadow-sm group">
-                  <div className="w-10 h-10 md:w-12 md:h-12 shrink-0 rounded-full flex items-center justify-center border-2 border-gray-100 bg-gray-50 group-hover:bg-green-50 group-hover:border-green-100 transition-colors">
-                    {badge.icon}
+                <div key={i} className="bg-white p-2.5 md:p-4 rounded-xl md:rounded-2xl flex items-center gap-2 md:gap-4 border-2 border-gray-200 transition-all hover:border-[#1a8b4c] hover:shadow-lg hover:-translate-y-1 shadow-sm group">
+                  <div className="w-8 h-8 md:w-12 md:h-12 shrink-0 rounded-full flex items-center justify-center border md:border-2 border-gray-100 bg-gray-50 group-hover:bg-green-50 group-hover:border-green-100 transition-colors">
+                    <div className="scale-75 md:scale-100 flex items-center justify-center">
+                      {badge.icon}
+                    </div>
                   </div>
                   <div className="min-w-0">
-                    <p className="text-[12px] md:text-[12.5px] font-black text-gray-950 truncate">{badge.title}</p>
-                    <p className="text-[9px] md:text-[10px] font-bold text-gray-500 truncate">{badge.sub}</p>
+                    <p className="text-[10px] md:text-[12.5px] font-bold text-gray-900 leading-tight">{badge.title}</p>
+                    <p className="text-[8px] md:text-[10px] font-medium text-gray-500 leading-tight">{badge.sub}</p>
                   </div>
                 </div>
               ))}
