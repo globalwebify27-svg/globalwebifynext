@@ -5,8 +5,9 @@ import { db } from '@/lib/db';
 import { replaceLocation } from '@/lib/replaceLocation';
 import { ServicePageView } from '@/features/services/components/ServicePageView';
 import { CityLandingView } from '@/features/services/components/CityLandingView';
-import { CITIES_MAP } from '@/features/services/constants/cities';
 import { parseFaqs } from '@/features/services/utils/faq-parser';
+import { getCitySeo } from '@/app/admin/(dashboard)/homepage/actions';
+import { CITIES_MAP } from '@/features/services/constants/cities';
 
 export const revalidate = 3600; // Cache page and revalidate at most every hour or on-demand
 
@@ -38,10 +39,20 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   // City landing page metadata
   const cityInfo = rawSlug ? CITIES_MAP[rawSlug.toLowerCase()] : null;
   if (cityInfo) {
-    return {
-      title: `Best Web Development & Digital Marketing Services in ${cityInfo.name} | GlobalWebify`,
-      description: `Explore GlobalWebify's professional web development, SEO, digital marketing, and branding services in ${cityInfo.name}. Custom solutions tailored to your local market.`,
-    };
+    try {
+      const citySeo = await getCitySeo(rawSlug.toLowerCase());
+      return {
+        title: citySeo.title,
+        description: citySeo.description,
+        keywords: citySeo.keywords,
+      };
+    } catch (error) {
+      console.error("Failed to load city SEO metadata:", error);
+      return {
+        title: `Best Web Development & Digital Marketing Services in ${cityInfo.name} | GlobalWebify`,
+        description: `Explore GlobalWebify's professional web development, SEO, digital marketing, and branding services in ${cityInfo.name}. Custom solutions tailored to your local market.`,
+      };
+    }
   }
 
   // Service page metadata

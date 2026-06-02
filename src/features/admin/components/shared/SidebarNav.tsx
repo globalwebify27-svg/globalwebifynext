@@ -102,6 +102,16 @@ export default function SidebarNav({ initialActiveServiceCategory }: SidebarNavP
             About SEO Settings
           </Link>
           <Link 
+            href="/admin/homepage/seo" 
+            className={`text-xs font-semibold tracking-wide block px-3.5 py-2.5 rounded-xl transition-all duration-300 border ${
+              pathname === '/admin/homepage/seo'
+                ? 'text-[#22c55e] bg-[#1a8b4c]/10 border-[#1a8b4c]/30 shadow-md font-bold'
+                : 'text-gray-400 bg-transparent hover:bg-[#132a1d]/40 border-transparent hover:border-[#132a1d] hover:text-white'
+            }`}
+          >
+            Homepage SEO
+          </Link>
+          <Link 
             href="/admin/homepage/faqs" 
             className={`text-xs font-semibold tracking-wide block px-3.5 py-2.5 rounded-xl transition-all duration-300 border ${
               pathname === '/admin/homepage/faqs'
