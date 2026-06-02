@@ -335,9 +335,9 @@ export default function Hero({
           alt="Background Pattern"
           fill
           priority
-          sizes="100vw"
-          quality={90}
-          className="object-cover object-top opacity-[0.6] saturate-[0.8] contrast-[0.9]"
+          sizes="(max-width: 768px) 1200px, 100vw"
+          quality={95}
+          className="object-cover object-top opacity-[0.25] md:opacity-[0.35] saturate-[1.05] contrast-[0.9]"
         />
       </div>
 
