@@ -11,6 +11,8 @@ import {
   ExternalLink, Palette, RefreshCw, Wrench, Target, MessageCircle
 } from 'lucide-react';
 import { SOCIAL_LINKS } from '@/constants/navigation';
+import { usePathname } from 'next/navigation';
+import { CITIES_MAP } from '@/features/services/constants/cities';
 
 const serviceCol1 = [
   { name: "Custom Web Development", href: "/web-development", icon: Code, color: "text-teal-500 bg-teal-50" },
@@ -42,8 +44,14 @@ const contactDetails = [
 ];
 
 export default function Footer() {
+  const pathname = usePathname();
+  const citySlugs = Object.keys(CITIES_MAP);
+  const segments = pathname.split('/').filter(Boolean);
+  const isCityHome = segments.length === 1 && citySlugs.includes(segments[0].toLowerCase());
+  const isHomepage = pathname === '/' || isCityHome;
+
   return (
-    <footer className="bg-[#f8fbfa] pt-12 pb-[75px] md:pt-20 md:pb-12 font-sans border-t border-gray-100">
+    <footer className={`bg-[#f8fbfa] pt-12 ${isHomepage ? 'pb-[75px]' : 'pb-12'} md:pt-20 md:pb-12 font-sans border-t border-gray-100`}>
       <div className="max-w-[1400px] mx-auto px-6 md:px-12">
         
         {/* Main Footer Content */}

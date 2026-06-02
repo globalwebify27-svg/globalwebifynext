@@ -6,6 +6,7 @@ import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Phone, MessageCircle, Briefcase, X, ArrowRight } from 'lucide-react';
+import { CITIES_MAP } from '@/features/services/constants/cities';
 
 const projects = [
   {
@@ -42,6 +43,12 @@ const projects = [
 
 export default function MobileStickyNav() {
   const pathname = usePathname();
+  const citySlugs = Object.keys(CITIES_MAP);
+  const segments = pathname.split('/').filter(Boolean);
+  const isCityHome = segments.length === 1 && citySlugs.includes(segments[0].toLowerCase());
+  const isHomepage = pathname === '/' || isCityHome;
+
+  if (!isHomepage) return null;
   const [animateCall, setAnimateCall] = useState(false);
   const [animateWhatsApp, setAnimateWhatsApp] = useState(false);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -146,14 +153,14 @@ export default function MobileStickyNav() {
         ].map((item, i) => (
           <motion.div
             key={item.label}
-            className={`flex-1 flex border-white/20 ${i !== 2 ? 'border-r-[1.5px]' : ''}`}
+            className={`flex-1 flex border-white/20 relative overflow-hidden ${i !== 2 ? 'border-r-[1.5px]' : ''}`}
             whileTap={{ backgroundColor: "rgba(255,255,255,0.1)" }}
           >
             {item.type === "a" ? (
               <a 
                 href={item.href}
                 target={item.target}
-                className="flex-1 flex flex-col items-center justify-center gap-1.5 text-white transition-colors relative z-10"
+                className="flex-1 flex flex-col items-center justify-center gap-1.5 text-white transition-colors relative z-10 overflow-hidden"
               >
                 <motion.div
                   animate={item.animateState ? "tingle" : "idle"}
@@ -162,11 +169,20 @@ export default function MobileStickyNav() {
                   {item.icon}
                 </motion.div>
                 <span className="text-[10px] font-black uppercase tracking-[0.15em]">{item.label}</span>
+
+                {item.animateState && (
+                  <motion.div
+                    initial={{ left: "-100%" }}
+                    animate={{ left: "200%" }}
+                    transition={{ duration: 0.6, ease: "easeInOut" }}
+                    className="absolute inset-y-0 w-[60%] bg-gradient-to-r from-transparent via-white/35 to-transparent skew-x-[-25deg] pointer-events-none z-0"
+                  />
+                )}
               </a>
             ) : (
               <button 
                 onClick={() => setIsDrawerOpen(true)}
-                className="flex-1 flex flex-col items-center justify-center gap-1.5 text-white transition-colors relative z-10 w-full"
+                className="flex-1 flex flex-col items-center justify-center gap-1.5 text-white transition-colors relative z-10 w-full overflow-hidden"
               >
                 <motion.div
                   animate={item.animateState ? "tingle" : "idle"}
