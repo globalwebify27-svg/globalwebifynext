@@ -1,6 +1,6 @@
 export default function Loading() {
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-white">
+    <div className="min-h-[60vh] md:min-h-[75vh] w-full flex items-center justify-center bg-white relative py-12">
       <div className="relative flex items-center justify-center">
         <div className="absolute w-24 h-24 border-4 border-gray-100 rounded-full"></div>
         <div className="absolute w-24 h-24 border-4 border-t-[#1a8b4c] rounded-full animate-spin"></div>
