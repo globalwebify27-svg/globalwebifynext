@@ -78,7 +78,7 @@ const TypingHeadline = ({ phrases = [] }: { phrases?: string[] }) => {
 
   return (
     <div className="min-h-[120px] md:min-h-[160px] flex items-start w-full overflow-visible">
-      <h1 className="text-[28px] sm:text-4xl md:text-[44px] font-bold text-gray-950 leading-relaxed tracking-normal text-left font-lexend">
+      <h1 className="text-[28px] sm:text-4xl md:text-[44px] font-bold text-gray-950 leading-relaxed tracking-normal text-left font-jost">
         {currentText}
         <motion.span
           animate={{ opacity: [1, 0] }}
@@ -112,79 +112,127 @@ const AuditCardDesktop = () => {
       style={{ perspective: 1200 }}
       onMouseMove={handleMouse}
       onMouseLeave={() => { x.set(0.5); y.set(0.5); }}
-      className="w-full max-w-[540px] mx-auto cursor-default z-20 relative"
+      className="w-full max-w-[620px] mx-auto cursor-default z-20 relative font-jost"
     >
       <motion.div
         style={{ rotateX, rotateY, transformStyle: "preserve-3d" }}
-        whileHover={{ scale: 1.025, y: -8, boxShadow: "0px 28px 56px -12px rgba(26,139,76,0.22)" }}
+        whileHover={{ scale: 1.02, y: -6, boxShadow: "0px 28px 56px -12px rgba(26,139,76,0.18)" }}
         transition={{ type: "spring", stiffness: 300, damping: 20 }}
-        className="bg-[#1F2937] p-2.5 rounded-3xl shadow-2xl flex border border-[#111827] w-full"
+        className="relative w-full"
       >
-        <div className="w-12 shrink-0 flex flex-col gap-3 py-6 items-center bg-[#111827] rounded-l-[18px] border-r border-gray-800">
-          <div className="w-6 h-6 rounded-md bg-[#22c55e]" />
-          <div className="w-6 h-6 rounded-md bg-[#374151]" />
-          <div className="w-6 h-6 rounded-md bg-[#374151]" />
-          <div className="w-6 h-6 rounded-md bg-[#374151]" />
-          <div className="w-6 h-6 rounded-md bg-[#22c55e] mt-4" />
-        </div>
-        <div className="flex-1 bg-[#F8FAFC] rounded-r-[18px] overflow-hidden flex flex-col min-w-0 text-left">
-          <div className="bg-white border-b border-gray-200 px-4 py-3 flex items-center gap-3">
-            <div className="flex gap-2 shrink-0">
-              <div className="w-3 h-3 rounded-full bg-[#ef4444]" />
-              <div className="w-3 h-3 rounded-full bg-[#f59e0b]" />
-              <div className="w-3 h-3 rounded-full bg-[#10b981]" />
+        {/* Outer dark bezel */}
+        <div className="bg-[#1a2332] rounded-t-[20px] shadow-2xl border border-[#2a3a4e] border-b-0 overflow-hidden">
+          
+          {/* Browser chrome - full width at top */}
+          <div className="bg-[#f1f5f9] mx-[10px] mt-[10px] rounded-t-[12px] border-b border-slate-200 px-5 py-3 flex items-center gap-4">
+            <div className="flex gap-[7px] shrink-0">
+              <div className="w-[12px] h-[12px] rounded-full bg-[#ef4444]" />
+              <div className="w-[12px] h-[12px] rounded-full bg-[#f59e0b]" />
+              <div className="w-[12px] h-[12px] rounded-full bg-[#22c55e]" />
             </div>
-            <div className="bg-[#F8FAFC] border border-gray-200 text-gray-500 text-[10px] px-4 py-1.5 rounded-lg flex-1 text-center font-mono truncate">
+            <div className="bg-white border border-slate-200 text-slate-400 text-[11px] px-4 py-[5px] rounded-lg flex-1 text-left font-mono truncate">
               https://audit.globalwebify.com/report
             </div>
           </div>
-          <div className="p-5 flex-1">
-            <div className="flex justify-between items-center mb-5 bg-white p-4 rounded-xl border border-gray-100 shadow-sm">
-              <div className="text-left">
-                <p className="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-1">Website Audit Report</p>
-                <h3 className="text-lg font-black text-gray-900 font-heading">globalwebify.com</h3>
-              </div>
-              <span className="bg-[#DCFCE7] text-[#166534] text-[11px] font-bold px-3 py-2 rounded-lg border border-[#BBF7D0] whitespace-nowrap">Grade A+</span>
+
+          {/* Below chrome: sidebar + content side by side */}
+          <div className="flex px-[10px] pb-[6px]">
+            {/* Left dark sidebar with icons */}
+            <div className="w-[46px] shrink-0 flex flex-col items-center pt-5 gap-[10px]">
+              <div className="w-[26px] h-[26px] rounded-[7px] bg-[#22C55E] shadow-[0_0_12px_rgba(34,197,94,0.4)]" />
+              <div className="w-[30px] h-[1px] bg-slate-700 my-[2px]" />
+              <div className="w-[26px] h-[26px] rounded-[7px] bg-[#334155] opacity-60" />
+              <div className="w-[26px] h-[26px] rounded-[7px] bg-[#334155] opacity-60" />
+              <div className="w-[26px] h-[26px] rounded-[7px] bg-[#22C55E] shadow-[0_0_12px_rgba(34,197,94,0.3)]" />
+              <div className="w-[26px] h-[26px] rounded-[7px] bg-[#334155] opacity-60" />
             </div>
-            <div className="grid grid-cols-4 gap-3 mb-5">
-              {[
-                { label: "PERFORMANCE", val: "98" },
-                { label: "ACCESSIBILITY", val: "100" },
-                { label: "BEST PRACTICES", val: "95" },
-                { label: "SEO", val: "100" },
-              ].map((stat, i) => (
-                <div key={i} className="bg-white border border-gray-200 rounded-xl p-2.5 text-center shadow-sm flex flex-col items-center">
-                  <div className="text-2xl font-black text-gray-900 mb-1 font-heading">{stat.val}</div>
-                  <div className="text-[7px] uppercase font-bold text-gray-400 mb-2 tracking-wider w-full truncate">{stat.label}</div>
-                  <div className="h-1.5 w-full bg-gray-100 rounded-full overflow-hidden">
-                    <div className="h-full bg-[#10b981]" style={{ width: `${stat.val}%` }} />
+
+            {/* Main white content area */}
+            <div className="flex-1 bg-white rounded-b-[12px] overflow-hidden flex flex-col min-w-0 text-left">
+              <div className="p-5 md:p-6 flex-1 flex flex-col gap-5">
+                {/* Website Audit Report header + Grade A+ */}
+                <div className="flex justify-between items-start">
+                  <div className="text-left">
+                    <p className="text-[10px] font-extrabold text-slate-400 uppercase tracking-[0.15em] mb-1">Website Audit Report</p>
+                    <h3 className="text-[22px] font-black text-slate-900 leading-tight font-heading">globalwebify.com</h3>
                   </div>
+                  <span className="bg-white text-slate-800 text-[15px] font-black px-5 py-2 rounded-xl border-2 border-slate-200 whitespace-nowrap shadow-sm">Grade A+</span>
                 </div>
-              ))}
-            </div>
-            <div className="bg-white border border-gray-100 rounded-xl p-4 shadow-sm">
-              <p className="text-[10px] font-bold text-gray-700 mb-3 text-left uppercase">Critical Optimization Opportunities</p>
-              <div className="flex flex-col gap-2.5">
-                {[
-                  { icon: "🔴", title: "Minimize Main-Thread Work", sub: "Reduce JS parse time by 1.2s", badge: "HIGH IMPACT", badgeColor: "bg-red-100 text-red-700" },
-                  { icon: "🟡", title: "Serve Images in Next-Gen Formats", sub: "Potential savings: 145 KiB", badge: "MED IMPACT", badgeColor: "bg-yellow-100 text-yellow-700" },
-                  { icon: "🟢", title: "Ensure Text Remains Visible", sub: "All fonts loaded correctly", badge: "PASSED", badgeColor: "bg-green-100 text-green-700" },
-                ].map((item, i) => (
-                  <div key={i} className="flex items-center justify-between gap-3 text-left">
-                    <div className="flex items-start gap-2 min-w-0">
-                      <span className="text-[11px] mt-0.5 shrink-0">{item.icon}</span>
-                      <div className="min-w-0">
-                        <p className="text-[10px] font-bold text-gray-900 truncate">{item.title}</p>
-                        <p className="text-[9px] text-gray-500 truncate">{item.sub}</p>
+
+                {/* 4 Score cards */}
+                <div className="grid grid-cols-4 gap-3">
+                  {[
+                    { label: "PERFORMANCE", val: "98" },
+                    { label: "ACCESSIBILITY", val: "100" },
+                    { label: "BEST PRACTICES", val: "95" },
+                    { label: "SEO", val: "100" },
+                  ].map((stat, i) => (
+                    <div key={i} className="bg-[#f8fafc] border border-slate-200 rounded-xl p-3.5 text-center shadow-sm flex flex-col items-center gap-2.5">
+                      <div className="w-full bg-slate-100 h-[5px] rounded-full overflow-hidden">
+                        <div className="h-full bg-[#22C55E] rounded-full" style={{ width: `${stat.val}%` }} />
+                      </div>
+                      <div className="flex flex-col items-center">
+                        <div className="text-[28px] font-extrabold text-slate-900 leading-none mb-1 font-heading">{stat.val}</div>
+                        <div className="text-[7px] uppercase font-bold text-slate-400 tracking-[0.12em] w-full truncate">{stat.label}</div>
                       </div>
                     </div>
-                    <span className={`shrink-0 text-[8px] font-bold px-2 py-0.5 rounded ${item.badgeColor}`}>{item.badge}</span>
+                  ))}
+                </div>
+
+                {/* Critical Optimization Opportunities */}
+                <div className="bg-[#f8fafc] border border-slate-200 rounded-xl p-5 shadow-sm">
+                  <p className="text-[14px] font-bold text-slate-900 mb-4 text-left">Critical Optimization Opportunities</p>
+                  <div className="flex flex-col gap-0">
+                    {[
+                      { 
+                        coreColor: "bg-red-300",
+                        ringColor: "border-red-200",
+                        title: "Minimize Main-Thread Work", 
+                        sub: "Reduce JS parse time by 1.2s", 
+                        badge: "HIGH IMPACT", 
+                        badgeColor: "bg-red-50 text-red-500 border-red-200" 
+                      },
+                      { 
+                        coreColor: "bg-amber-300",
+                        ringColor: "border-amber-200",
+                        title: "Serve Images in Next-Gen Formats", 
+                        sub: "Potential savings: 145 KiB", 
+                        badge: "MED IMPACT", 
+                        badgeColor: "bg-amber-50 text-amber-600 border-amber-200" 
+                      },
+                      { 
+                        coreColor: "bg-emerald-300",
+                        ringColor: "border-emerald-200",
+                        title: "Ensure Text Remains Visible", 
+                        sub: "All fonts loaded correctly", 
+                        badge: "PASSED", 
+                        badgeColor: "bg-emerald-50 text-emerald-600 border-emerald-200" 
+                      },
+                    ].map((item, i) => (
+                      <div key={i} className={`flex items-center justify-between gap-4 text-left py-3.5 ${i < 2 ? 'border-b border-slate-100' : ''}`}>
+                        <div className="flex items-center gap-3 min-w-0">
+                          <div className="relative w-4 h-4 flex items-center justify-center shrink-0">
+                            <span className={`w-4 h-4 rounded-full border-2 ${item.ringColor} bg-white absolute`} />
+                            <span className={`w-2 h-2 rounded-full ${item.coreColor} relative z-10`} />
+                          </div>
+                          <div className="min-w-0">
+                            <p className="text-[13px] font-bold text-slate-800 leading-tight">{item.title}</p>
+                            <p className="text-[11px] text-slate-400 mt-0.5">{item.sub}</p>
+                          </div>
+                        </div>
+                        <span className={`shrink-0 text-[9px] font-bold px-3 py-1.5 rounded-md border ${item.badgeColor} uppercase tracking-wide`}>{item.badge}</span>
+                      </div>
+                    ))}
                   </div>
-                ))}
+                </div>
               </div>
             </div>
           </div>
         </div>
+
+        {/* Bottom base/stand edge */}
+        <div className="bg-[#1f2d3f] h-[8px] rounded-b-[20px] border border-t-0 border-[#2a3a4e]" />
+        <div className="bg-[#2d3d52] h-[5px] rounded-b-[10px] mx-5 opacity-60" />
       </motion.div>
     </motion.div>
   );
@@ -281,7 +329,7 @@ export default function Hero({
       const header = document.querySelector("header");
       if (header) {
         const height = header.offsetHeight;
-        setPaddingTop(window.innerWidth < 768 ? height + 10 : height + 30);
+        setPaddingTop(window.innerWidth < 768 ? height + 25 : height + 30);
       }
     };
     
@@ -291,9 +339,9 @@ export default function Hero({
   }, []);
 
   return (
-    <main className="w-full relative overflow-x-hidden bg-white font-sans text-left">
+    <main className="w-full relative overflow-hidden bg-white font-jost text-left">
       {/* Optimized Background Pattern */}
-      <div className="absolute inset-0 z-0 pointer-events-none w-full h-full">
+      <div className="absolute inset-0 z-0 pointer-events-none w-full h-full translate-y-[55px] md:translate-y-0">
         <Image
           src="/bg-pattern-landing.avif"
           alt="Background Pattern"
@@ -316,7 +364,7 @@ export default function Hero({
 
           {/* ---- LEFT COLUMN ---- */}
           <div className="flex-1 w-full flex flex-col items-start gap-3 md:gap-5 z-10 max-w-xl text-left">
-            <div className="inline-flex items-center gap-2.5 bg-[#E8F5EE] border-2 border-[#BBE3CB] text-[#1a8b4c] text-[10px] md:text-[11px] font-black px-4 py-2 rounded-full uppercase tracking-widest shadow-sm">
+            <div className="hidden md:inline-flex items-center gap-2.5 bg-[#E8F5EE] border-2 border-[#BBE3CB] text-[#1a8b4c] text-[10px] md:text-[11px] font-black px-4 py-2 rounded-full uppercase tracking-widest shadow-sm">
               <span className="relative flex h-2.5 w-2.5">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#1a8b4c] opacity-75" />
                 <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#1a8b4c]" />
@@ -327,7 +375,7 @@ export default function Hero({
             {city ? (
               <div className="min-h-[120px] md:min-h-[160px] flex items-start w-full overflow-visible">
                 <h1 
-                  className="text-[25px] sm:text-3xl md:text-[38px] lg:text-[42px] font-bold text-gray-950 leading-relaxed tracking-normal text-left font-lexend"
+                  className="text-[25px] sm:text-3xl md:text-[38px] lg:text-[42px] font-bold text-gray-950 leading-relaxed tracking-normal text-left font-jost"
                   dangerouslySetInnerHTML={{ __html: cityHeroSettings?.title || `Your Website Isn’t Bringing Leads—and It’s Costing You Business in <span class="text-[#1a8b4c]">${city}</span>` }}
                 />
               </div>
@@ -351,10 +399,10 @@ export default function Hero({
 
             {/* CTAs */}
             <div className="flex flex-row gap-4 w-full mt-1">
-              <a href="tel:+917563901100" className="flex-1 bg-[#1a8b4c] hover:bg-[#14733e] text-white text-[14px] font-bold px-5 py-3.5 md:py-4 rounded-xl transition-all shadow-xl shadow-green-700/20 hover:-translate-y-0.5 cursor-pointer whitespace-nowrap text-center inline-block">
+              <a href="tel:+917563901100" className="flex-1 bg-[#1a8b4c] hover:bg-[#14733e] text-white text-[13px] md:text-[14px] font-bold px-4 md:px-5 py-2.5 md:py-3.5 rounded-xl transition-all shadow-xl shadow-green-700/20 hover:-translate-y-0.5 cursor-pointer whitespace-nowrap text-center inline-block">
                 Free Consultation →
               </a>
-              <button onClick={() => setIsAuditOpen(true)} className="flex-1 bg-white border-2 border-[#1a8b4c] text-[#1a8b4c] hover:bg-green-50 text-[14px] font-bold px-5 py-3.5 md:py-4 rounded-xl transition-all shadow-md hover:-translate-y-0.5 cursor-pointer whitespace-nowrap">
+              <button onClick={() => setIsAuditOpen(true)} className="flex-1 bg-white border-2 border-[#1a8b4c] hover:border-[#BBE3CB] text-[#1a8b4c] hover:bg-green-50 text-[13px] md:text-[14px] font-bold px-4 md:px-5 py-2.5 md:py-3.5 rounded-xl transition-all shadow-md hover:-translate-y-0.5 cursor-pointer whitespace-nowrap">
                 Get Free Audit
               </button>
             </div>
@@ -362,8 +410,8 @@ export default function Hero({
             {/* Badge grid */}
             <div className="grid grid-cols-2 gap-2 md:gap-3 w-full max-w-[540px] mt-1">
               {badges.map((badge, i) => (
-                <div key={i} className="bg-white p-2.5 md:p-4 rounded-xl md:rounded-2xl flex items-center gap-2 md:gap-4 border-2 border-gray-200 transition-all hover:border-[#1a8b4c] hover:shadow-lg hover:-translate-y-1 shadow-sm group">
-                  <div className="w-8 h-8 md:w-12 md:h-12 shrink-0 rounded-full flex items-center justify-center border md:border-2 border-gray-100 bg-gray-50 group-hover:bg-green-50 group-hover:border-green-100 transition-colors">
+                <div key={i} className="bg-white p-2.5 md:p-4 rounded-xl md:rounded-2xl flex items-center gap-2 md:gap-4 border-2 border-gray-200 shadow-sm transition-all hover:border-[#BBE3CB] hover:shadow-md hover:-translate-y-1 group">
+                  <div className="w-8 h-8 md:w-12 md:h-12 shrink-0 rounded-full flex items-center justify-center border md:border-2 border-gray-100 bg-gray-50 group-hover:bg-green-50 group-hover:border-[#BBE3CB] transition-colors">
                     <div className="scale-75 md:scale-100 flex items-center justify-center">
                       {badge.icon}
                     </div>

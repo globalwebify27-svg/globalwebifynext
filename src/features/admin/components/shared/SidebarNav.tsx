@@ -33,6 +33,7 @@ export default function SidebarNav({ initialActiveServiceCategory }: SidebarNavP
     setOpenServices(isServices);
   }, [isServices]);
 
+  const linkClass = (isActive: boolean) =>
     `flex items-center gap-2.5 px-4 py-2.5 rounded-xl transition-all duration-300 text-[11px] md:text-xs font-semibold tracking-wide border group/navlink ${
       isActive 
         ? 'bg-gradient-to-r from-[#1a8b4c] to-[#0e5e3b] text-white border-[#15703d] shadow-xl shadow-[#1a8b4c]/20' 

@@ -21,8 +21,8 @@ const config: Config = {
         },
       },
       fontFamily: {
-        sans: ["var(--font-poppins)", "sans-serif"],
-        heading: ["var(--font-poppins)", "sans-serif"],
+        sans: ["var(--font-jost)", "sans-serif"],
+        heading: ["var(--font-lexend)", "sans-serif"],
         lexend: ["var(--font-lexend)", "sans-serif"],
         jost: ["var(--font-jost)", "sans-serif"],
       },

@@ -21,7 +21,7 @@ export const TopBar = ({ isOpen, setIsOpen }: TopBarProps) => {
         <div className="flex items-center gap-2 md:gap-4 shrink-0 h-full relative">
           <Link href="/" className="flex items-center shrink-0 h-full relative z-50">
             <div className={cn(
-              "relative transition-all duration-300 px-1",
+              "relative transition-all duration-300 px-1 -ml-2.5 md:ml-0",
               isOpen ? "h-[65px] w-[100px] md:h-[80px] md:w-[120px]" : "h-[55px] md:h-[75px] w-[90px] md:w-[110px]"
             )}>
               <Image
@@ -49,7 +49,7 @@ export const TopBar = ({ isOpen, setIsOpen }: TopBarProps) => {
         </div>
 
         {/* MIDDLE: Social Icons (Mobile) */}
-        <div className={cn("md:hidden absolute left-1/2 -translate-x-1/2 flex items-center gap-2 transition-opacity duration-200", isOpen ? "opacity-0 pointer-events-none" : "opacity-100")}>
+        <div className={cn("md:hidden absolute left-1/2 -translate-x-1/2 flex items-center gap-2 transition-opacity duration-200 ml-2.5", isOpen ? "opacity-0 pointer-events-none" : "opacity-100")}>
           {SOCIAL_LINKS.map((social, i) => (
             <a
               key={i}
@@ -117,9 +117,9 @@ export const TopBar = ({ isOpen, setIsOpen }: TopBarProps) => {
           {/* Hamburger Menu */}
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className="lg:hidden flex items-center justify-center w-6 h-6 md:w-8 md:h-8 rounded-[4px] bg-[#1a8b4c] text-white hover:bg-[#15803d] transition-all shadow-md active:scale-95"
+            className="lg:hidden flex items-center justify-center w-8 h-8 rounded-full bg-[#1a8b4c] text-white hover:bg-[#15803d] transition-all shadow-md active:scale-95"
           >
-            {isOpen ? <X className="w-4 h-4 md:w-6 md:h-6" /> : <Menu className="w-4 h-4 md:w-6 md:h-6" />}
+            {isOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
         </div>
       </div>

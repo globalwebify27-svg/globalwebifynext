@@ -1,7 +1,8 @@
 'use client';
 
 import React, { useCallback, useEffect } from 'react';
-import { useEditor, EditorContent, BubbleMenu } from '@tiptap/react';
+import { useEditor, EditorContent } from '@tiptap/react';
+import { BubbleMenu } from '@tiptap/react/menus';
 import StarterKit from '@tiptap/starter-kit';
 import Underline from '@tiptap/extension-underline';
 import TextAlign from '@tiptap/extension-text-align';
@@ -483,7 +484,7 @@ export default function ContentEditor({ content, setContent, placeholder, isBlog
 
       {/* ===== BUBBLE MENU ===== */}
       {editor && (
-        <BubbleMenu editor={editor} tippyOptions={{ duration: 150 }}>
+        <BubbleMenu editor={editor}>
           <div className="tiptap-bubble shadow-2xl border border-gray-700/50 backdrop-blur-md bg-[#1e1e2e]/90">
             <button type="button" onClick={() => editor.chain().focus().toggleBold().run()} className={editor.isActive('bold') ? 'active' : ''}>B</button>
             <button type="button" onClick={() => editor.chain().focus().toggleItalic().run()} className={editor.isActive('italic') ? 'active' : ''}>I</button>
