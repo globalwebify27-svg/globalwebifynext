@@ -43,11 +43,11 @@ const contactDetails = [
 
 export default function Footer() {
   return (
-    <footer className="bg-[#f8fbfa] pt-24 pb-[90px] md:pb-12 font-sans border-t border-gray-100">
+    <footer className="bg-[#f8fbfa] pt-12 pb-[75px] md:pt-20 md:pb-12 font-sans border-t border-gray-100">
       <div className="max-w-[1400px] mx-auto px-6 md:px-12">
         
         {/* Main Footer Content */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 mb-20">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16 mb-12 lg:mb-20">
           
           {/* Brand Column */}
           <div className="lg:col-span-3 space-y-8 text-center lg:text-left">
@@ -174,7 +174,7 @@ export default function Footer() {
         </div>
 
         {/* Bottom Stats Row */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-6 mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-6 mb-8 lg:mb-12">
           {/* Projects Card */}
           <div className="lg:col-span-2 bg-[#f0fdf4] border border-green-100 rounded-2xl p-4 text-center flex flex-col items-center justify-center group hover:border-[#1a8b4c]/40 transition-all shadow-sm">
             <h3 className="text-[30px] font-extrabold text-[#1a8b4c] leading-none mb-1.5">500+</h3>
@@ -249,11 +249,24 @@ export default function Footer() {
              © {new Date().getFullYear()} Global Webify. All rights reserved.
            </p>
            <div className="flex flex-wrap justify-center items-center gap-x-6 gap-y-2 sm:gap-x-8 text-center">
-             {["Privacy Policy", "Terms of Service", "Cookie Policy", "Sitemap"].map((link) => (
-               <Link key={link} href="#" className="text-[13px] font-bold text-gray-400 hover:text-[#1a8b4c] transition-colors">
-                 {link}
-               </Link>
-             ))}
+             {["Privacy Policy", "Terms of Service", "Cookie Policy", "Sitemap"].map((link) => {
+               if (link === "Sitemap") {
+                 return (
+                   <Link 
+                     key={link} 
+                     href="/sitemap" 
+                     className="text-[13px] font-bold text-gray-400 hover:text-[#1a8b4c] transition-colors"
+                   >
+                     {link}
+                   </Link>
+                 );
+               }
+               return (
+                 <Link key={link} href="#" className="text-[13px] font-bold text-gray-400 hover:text-[#1a8b4c] transition-colors">
+                   {link}
+                 </Link>
+               );
+             })}
            </div>
         </div>
       </div>

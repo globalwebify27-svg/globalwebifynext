@@ -536,15 +536,7 @@ export default function PortfolioClient() {
       <div className="relative z-10 container-custom">
         {/* Header Block */}
         <div className="text-center mb-8 sm:mb-10 max-w-3xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.3 }}
-            className="inline-flex items-center gap-2 bg-green-100/50 border border-green-200 px-4 py-1.5 rounded-full mb-4"
-          >
-            <span className="w-2.5 h-2.5 rounded-full bg-[#1a8b4c] animate-pulse" />
-            <span className="text-[#1a8b4c] text-[12px] font-bold uppercase tracking-widest">Our Work Showcase</span>
-          </motion.div>
+
 
           <motion.h1 
             initial={{ opacity: 0, y: -8 }}

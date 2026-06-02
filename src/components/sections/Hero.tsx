@@ -346,7 +346,7 @@ export default function Hero({
         id="hero" 
         variant="transparent"
         spacing="hero" 
-        className="z-10 pt-[95px] md:pt-[105px] lg:pt-[152px]"
+        className="z-10 pt-[82px] md:pt-[95px] lg:pt-[132px]"
       >
         <div className="flex flex-col min-[900px]:flex-row items-center justify-between gap-6 md:gap-8 lg:gap-10 xl:gap-12">
 

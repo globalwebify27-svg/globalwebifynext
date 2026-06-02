@@ -21,7 +21,7 @@ export default function BreadcrumbClientWrapper({ dynamicPages = [] }: { dynamic
   }
 
   return (
-    <div className={`relative z-30 container-custom pt-[75px] md:pt-[90px] lg:pt-[135px] pb-1 px-4 sm:px-6 ${bgColorClass}`}>
+    <div className={`relative z-30 container-custom pt-[65px] md:pt-[80px] lg:pt-[110px] pb-1 px-4 sm:px-6 ${bgColorClass}`}>
       <Breadcrumbs pathname={pathname} dynamicPages={dynamicPages} />
     </div>
   );
