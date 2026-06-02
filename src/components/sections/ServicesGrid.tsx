@@ -88,72 +88,71 @@ function ServiceCard({ service, index, cityKey, onOpenQuote }: { service: Servic
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 24 }}
+      initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "150px" }}
-      transition={{ duration: 0.5, delay: index * 0.08, ease: [0.21, 0.47, 0.32, 0.98] }}
+      transition={{ duration: 0.4, delay: index * 0.05 }}
       className="group relative flex flex-col w-full h-full"
     >
       <Link
         href={linkHref}
-        className="relative flex-1 flex flex-col w-full bg-white rounded-2xl border border-gray-200/80 transition-all duration-300 ease-out overflow-hidden hover:-translate-y-1.5 hover:shadow-[0_16px_40px_-12px_rgba(0,0,0,0.08)] hover:border-gray-300/90"
+        className="relative flex-1 flex flex-col w-full bg-white rounded-3xl border border-gray-100 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_20px_50px_-20px_rgba(26,139,76,0.12)] hover:border-green-200/60 overflow-hidden"
       >
-        {/* Top accent line */}
-        <div className="h-[3px] w-full rounded-t-2xl" style={{ background: `linear-gradient(90deg, ${service.color}, ${service.color}88)` }} />
+        {/* Subtle accent color top bar */}
+        <div className="h-[4px] w-full" style={{ backgroundColor: service.color }} />
 
-        <div className="relative flex-1 p-5 sm:p-6 md:p-7 flex flex-col items-start text-left">
-
-          {/* Icon */}
+        <div className="relative flex-1 p-6 md:p-8 flex flex-col items-start text-left">
+          {/* Icon Container */}
           <div
-            className="w-11 h-11 md:w-12 md:h-12 rounded-xl flex items-center justify-center mb-4 md:mb-5 border transition-all duration-300 group-hover:scale-105"
+            className="w-12 h-12 rounded-2xl flex items-center justify-center mb-5 border transition-all duration-300 group-hover:scale-105"
             style={{
               backgroundColor: `${service.color}0D`,
-              borderColor: `${service.color}20`,
+              borderColor: `${service.color}25`,
               color: service.color,
             }}
           >
-            {React.cloneElement(service.icon, { size: 22, strokeWidth: 1.8 })}
+            {React.cloneElement(service.icon, { size: 24, strokeWidth: 2 })}
           </div>
 
           {/* Title */}
-          <h3 className="text-[17px] md:text-[19px] font-bold font-lexend mb-2 leading-snug tracking-[-0.01em] group-hover:text-gray-950 transition-colors" style={{ color: "#064e3b" }}>
+          <h3 className="text-[18px] md:text-[20px] font-bold font-lexend mb-2 leading-snug tracking-tight text-[#0f5132]">
             {service.title}
           </h3>
 
-          {/* Description with safe wrapping and line-clamp truncation */}
-          <p className="text-gray-500 font-jost text-[13.5px] leading-relaxed mb-4 line-clamp-2 md:line-clamp-3 overflow-hidden text-ellipsis break-all">
+          {/* Description */}
+          <p className="text-gray-500 font-jost text-[14px] leading-relaxed mb-5 line-clamp-3 overflow-hidden text-ellipsis">
             {service.desc}
           </p>
 
-          {/* Footer Actions */}
-          <div className="w-full mt-auto pt-4 border-t border-gray-100/80">
-            <div className="flex items-center justify-between">
-              <span
-                className="flex items-center gap-1.5 text-[12.5px] md:text-[13px] font-semibold font-jost tracking-wide group-hover:gap-2.5 transition-all duration-300"
-                style={{ color: service.color }}
-              >
-                Explore Services
-                <ArrowRight className="w-3.5 h-3.5" strokeWidth={2.2} />
-              </span>
-              <div
-                role="button"
-                tabIndex={0}
-                onClick={(e) => {
+          {/* Actions */}
+          <div className="w-full mt-auto pt-4 border-t border-gray-100/80 flex items-center justify-between">
+            <span
+              className="flex items-center gap-1.5 text-[13px] font-semibold font-jost tracking-wide group-hover:gap-2.5 transition-all duration-300"
+              style={{ color: service.color }}
+            >
+              Explore Services
+              <ArrowRight className="w-3.5 h-3.5" strokeWidth={2.5} />
+            </span>
+            
+            <div
+              role="button"
+              tabIndex={0}
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                onOpenQuote(service.title);
+              }}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
                   e.preventDefault();
                   e.stopPropagation();
                   onOpenQuote(service.title);
-                }}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    onOpenQuote(service.title);
-                  }
-                }}
-                className="h-8 md:h-9 px-3.5 md:px-4 rounded-lg bg-[#1a8b4c] hover:bg-[#15703d] text-white text-[11px] md:text-[12px] font-semibold font-jost flex items-center justify-center gap-1.5 transition-all duration-200 hover:shadow-md active:scale-[0.97] cursor-pointer z-30"
-              >
-                Get Quote
-              </div>
+                }
+              }}
+              className="h-9 px-4 rounded-xl text-white text-[12px] font-semibold font-jost flex items-center justify-center gap-1.5 transition-all duration-200 hover:brightness-95 active:scale-[0.97] cursor-pointer"
+              style={{ backgroundColor: service.color }}
+            >
+              Get Quote
             </div>
           </div>
         </div>
