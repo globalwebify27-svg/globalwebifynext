@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Phone, MessageCircle, Briefcase, X, ArrowRight } from 'lucide-react';
@@ -233,11 +234,12 @@ export default function MobileStickyNav() {
                       {/* Project Image */}
                       <div className="relative aspect-[16/10] w-full bg-slate-100">
                         <a href={project.link} target="_blank" rel="noopener noreferrer">
-                          <img
+                          <Image
                             src={project.image}
                             alt={project.title}
+                            width={300}
+                            height={188}
                             className="w-full h-auto block"
-                            loading="lazy"
                           />
                         </a>
                       </div>

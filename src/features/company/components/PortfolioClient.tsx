@@ -3,6 +3,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ExternalLink, Globe } from 'lucide-react';
+import Image from 'next/image';
 
 const projects = [
   {
@@ -472,13 +473,14 @@ const ProjectCard = ({ project }: { project: typeof projects[0] }) => {
             transitionTimingFunction: isHovered ? 'linear' : 'ease-out'
           }}
         >
-          <img 
+          <Image 
             ref={imageRef}
             src={project.image} 
             alt={project.title}
+            width={600}
+            height={1000}
             className="w-full h-auto block"
-            loading="lazy"
-            decoding="async"
+            priority={project.id <= 6}
             onLoad={updateHeights}
           />
         </div>
