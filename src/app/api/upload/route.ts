@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import path from 'path';
 import fs from 'fs';
+import sharp from 'sharp';
 
 export async function POST(request: NextRequest) {
   try {
@@ -26,13 +27,19 @@ export async function POST(request: NextRequest) {
       fs.mkdirSync(uploadDir, { recursive: true });
     }
 
-    // Sanitize and create a unique file name
-    const sanitizedFilename = file.name.replace(/[^a-zA-Z0-9.]/g, '_');
-    const uniqueFilename = `${Date.now()}-${sanitizedFilename}`;
+    // Sanitize and create a unique file name, forcing .webp extension
+    const baseName = file.name.substring(0, file.name.lastIndexOf('.')).replace(/[^a-zA-Z0-9]/g, '_').toLowerCase();
+    const uniqueFilename = `${Date.now()}-${baseName || 'image'}.webp`;
     const filePath = path.join(uploadDir, uniqueFilename);
 
-    // Write file to the public directory
-    fs.writeFileSync(filePath, buffer);
+    // Process image with Sharp: Resize max width to 1600px, compress to WebP at 80% quality
+    await sharp(buffer)
+      .resize({
+        width: 1600,
+        withoutEnlargement: true, // Don't scale up smaller images
+      })
+      .webp({ quality: 80, effort: 4 })
+      .toFile(filePath);
 
     // Return the URL path to access it
     return NextResponse.json({

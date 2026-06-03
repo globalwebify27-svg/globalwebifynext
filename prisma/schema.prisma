@@ -63,3 +63,11 @@ model LoginAttempt {
 
   @@map("loginattempt")
 }
+
+model SiteSetting {
+  id    Int    @id @default(autoincrement())
+  key   String @unique
+  value String @db.LongText
+  
+  @@map("sitesetting")
+}

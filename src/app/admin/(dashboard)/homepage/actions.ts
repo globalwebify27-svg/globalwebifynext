@@ -1,23 +1,19 @@
 'use server';
 
-import fs from 'fs';
-import path from 'path';
 import { requireAdmin } from '@/lib/auth';
-
-const filePath = path.join(process.cwd(), 'src', 'data', 'homepageFaqs.json');
-const heroTextsPath = path.join(process.cwd(), 'src', 'data', 'homepageHeroTexts.json');
+import { db } from '@/lib/db';
+import { CITIES } from './cities';
 
 const defaultHeroTexts = [
   "वेबसाइट जो ब्रांड भी बनाए, बिज़नेस भी बढ़ाए।",
   "Websites that build brands, and grow businesses."
 ];
 
+// 1. FAQs
 export async function getHomepageFaqs() {
   try {
-    if (fs.existsSync(filePath)) {
-      const data = fs.readFileSync(filePath, 'utf8');
-      return JSON.parse(data);
-    }
+    const setting = await db.siteSetting.findUnique({ where: { key: 'homepageFaqs' } });
+    if (setting) return JSON.parse(setting.value);
     return [];
   } catch (error) {
     console.error("Failed to read homepage FAQs", error);
@@ -28,7 +24,12 @@ export async function getHomepageFaqs() {
 export async function saveHomepageFaqs(faqs: { question: string, answer: string }[]) {
   try {
     await requireAdmin();
-    fs.writeFileSync(filePath, JSON.stringify(faqs, null, 2), 'utf8');
+    const value = JSON.stringify(faqs);
+    await db.siteSetting.upsert({
+      where: { key: 'homepageFaqs' },
+      update: { value },
+      create: { key: 'homepageFaqs', value }
+    });
     return { success: true };
   } catch (error: any) {
     console.error("Failed to save homepage FAQs", error);
@@ -36,12 +37,11 @@ export async function saveHomepageFaqs(faqs: { question: string, answer: string 
   }
 }
 
+// 2. Hero Texts
 export async function getHeroTexts() {
   try {
-    if (fs.existsSync(heroTextsPath)) {
-      const data = fs.readFileSync(heroTextsPath, 'utf8');
-      return JSON.parse(data);
-    }
+    const setting = await db.siteSetting.findUnique({ where: { key: 'homepageHeroTexts' } });
+    if (setting) return JSON.parse(setting.value);
     return defaultHeroTexts;
   } catch (error) {
     console.error("Failed to read homepage hero texts", error);
@@ -52,7 +52,12 @@ export async function getHeroTexts() {
 export async function saveHeroTexts(texts: string[]) {
   try {
     await requireAdmin();
-    fs.writeFileSync(heroTextsPath, JSON.stringify(texts, null, 2), 'utf8');
+    const value = JSON.stringify(texts);
+    await db.siteSetting.upsert({
+      where: { key: 'homepageHeroTexts' },
+      update: { value },
+      create: { key: 'homepageHeroTexts', value }
+    });
     return { success: true };
   } catch (error: any) {
     console.error("Failed to save homepage hero texts", error);
@@ -60,11 +65,7 @@ export async function saveHeroTexts(texts: string[]) {
   }
 }
 
-const aboutSeoPath = path.join(process.cwd(), 'src', 'data', 'homepageAboutSeo.json');
-const cityHeroSettingsPath = path.join(process.cwd(), 'src', 'data', 'cityHeroSettings.json');
-
-import { CITIES } from './cities';
-
+// 3. About SEO
 const defaultAboutSeo = {
   title: "Web Design & Web Development <span class=\"text-[#1a8b4c]\">Services in India</span>",
   subtitle: "Professional Web Design Solutions for Global Brands",
@@ -73,17 +74,14 @@ const defaultAboutSeo = {
 
 export async function getAboutSeo(cityKey: string = 'default') {
   try {
-    if (fs.existsSync(aboutSeoPath)) {
-      const data = fs.readFileSync(aboutSeoPath, 'utf8');
-      let parsed = JSON.parse(data);
-      
+    const setting = await db.siteSetting.findUnique({ where: { key: 'homepageAboutSeo' } });
+    if (setting) {
+      let parsed = JSON.parse(setting.value);
       // Migrate from paragraphs: string[] to content: string
       if (parsed && Array.isArray(parsed.paragraphs) && !parsed.content) {
         parsed.content = parsed.paragraphs.map((p: string) => `<p>${p}</p>`).join('');
         delete parsed.paragraphs;
       }
-      
-      // If old format (flat object) and doesn't have 'default' key, wrap it
       if (parsed && parsed.title && !parsed.default) {
         parsed = {
           default: {
@@ -92,9 +90,7 @@ export async function getAboutSeo(cityKey: string = 'default') {
             content: parsed.content || ''
           }
         };
-        fs.writeFileSync(aboutSeoPath, JSON.stringify(parsed, null, 2), 'utf8');
       }
-      
       return parsed[cityKey] || null;
     }
     return cityKey === 'default' ? defaultAboutSeo : null;
@@ -107,12 +103,10 @@ export async function getAboutSeo(cityKey: string = 'default') {
 export async function saveAboutSeo(cityKey: string, aboutData: { title: string; subtitle: string; content: string }) {
   try {
     await requireAdmin();
+    const setting = await db.siteSetting.findUnique({ where: { key: 'homepageAboutSeo' } });
     let allData: any = {};
-    if (fs.existsSync(aboutSeoPath)) {
-      const data = fs.readFileSync(aboutSeoPath, 'utf8');
-      allData = JSON.parse(data);
-      
-      // Migrate root format if present
+    if (setting) {
+      allData = JSON.parse(setting.value);
       if (allData && allData.title && !allData.default) {
         allData = {
           default: {
@@ -125,7 +119,12 @@ export async function saveAboutSeo(cityKey: string, aboutData: { title: string; 
     }
     
     allData[cityKey] = aboutData;
-    fs.writeFileSync(aboutSeoPath, JSON.stringify(allData, null, 2), 'utf8');
+    const value = JSON.stringify(allData);
+    await db.siteSetting.upsert({
+      where: { key: 'homepageAboutSeo' },
+      update: { value },
+      create: { key: 'homepageAboutSeo', value }
+    });
     return { success: true };
   } catch (error: any) {
     console.error("Failed to save homepage AboutSEO settings", error);
@@ -133,6 +132,7 @@ export async function saveAboutSeo(cityKey: string, aboutData: { title: string; 
   }
 }
 
+// 4. City Hero Settings
 export async function getCityHeroSettings(cityKey: string) {
   try {
     const city = CITIES.find(c => c.key === cityKey);
@@ -143,9 +143,9 @@ export async function getCityHeroSettings(cityKey: string) {
       description: `We combine result-oriented Digital Marketing, modern Web Design, and branding strategies to help <span class="text-[#1a8b4c] font-bold">${cityName}</span> businesses stand out online and grow faster without wasted ad spend.`
     };
 
-    if (fs.existsSync(cityHeroSettingsPath)) {
-      const data = fs.readFileSync(cityHeroSettingsPath, 'utf8');
-      const parsed = JSON.parse(data);
+    const setting = await db.siteSetting.findUnique({ where: { key: 'cityHeroSettings' } });
+    if (setting) {
+      const parsed = JSON.parse(setting.value);
       return parsed[cityKey] || defaultSettings;
     }
     return defaultSettings;
@@ -159,12 +159,18 @@ export async function saveCityHeroSettings(cityKey: string, data: { title: strin
   try {
     await requireAdmin();
     let allData: any = {};
-    if (fs.existsSync(cityHeroSettingsPath)) {
-      const fileContent = fs.readFileSync(cityHeroSettingsPath, 'utf8');
-      allData = JSON.parse(fileContent);
+    const setting = await db.siteSetting.findUnique({ where: { key: 'cityHeroSettings' } });
+    if (setting) {
+      allData = JSON.parse(setting.value);
     }
     allData[cityKey] = data;
-    fs.writeFileSync(cityHeroSettingsPath, JSON.stringify(allData, null, 2), 'utf8');
+    const value = JSON.stringify(allData);
+    
+    await db.siteSetting.upsert({
+      where: { key: 'cityHeroSettings' },
+      update: { value },
+      create: { key: 'cityHeroSettings', value }
+    });
     return { success: true };
   } catch (error: any) {
     console.error("Failed to save city hero settings", error);
@@ -172,14 +178,14 @@ export async function saveCityHeroSettings(cityKey: string, data: { title: strin
   }
 }
 
-const homepageHeroDescPath = path.join(process.cwd(), 'src', 'data', 'homepageHeroDesc.json');
+// 5. Homepage Hero Desc
 const defaultHeroDesc = "We build AI-integrated websites that generate leads and scale your growth automatically.";
 
 export async function getHomepageHeroDesc() {
   try {
-    if (fs.existsSync(homepageHeroDescPath)) {
-      const data = fs.readFileSync(homepageHeroDescPath, 'utf8');
-      const parsed = JSON.parse(data);
+    const setting = await db.siteSetting.findUnique({ where: { key: 'homepageHeroDesc' } });
+    if (setting) {
+      const parsed = JSON.parse(setting.value);
       return parsed.description || defaultHeroDesc;
     }
     return defaultHeroDesc;
@@ -193,7 +199,12 @@ export async function saveHomepageHeroDesc(description: string) {
   try {
     await requireAdmin();
     const data = { description };
-    fs.writeFileSync(homepageHeroDescPath, JSON.stringify(data, null, 2), 'utf8');
+    const value = JSON.stringify(data);
+    await db.siteSetting.upsert({
+      where: { key: 'homepageHeroDesc' },
+      update: { value },
+      create: { key: 'homepageHeroDesc', value }
+    });
     return { success: true };
   } catch (error: any) {
     console.error("Failed to save homepage hero description", error);
@@ -201,9 +212,7 @@ export async function saveHomepageHeroDesc(description: string) {
   }
 }
 
-const homepageSeoPath = path.join(process.cwd(), 'src', 'data', 'homepageSeo.json');
-const citySeoPath = path.join(process.cwd(), 'src', 'data', 'citySeoSettings.json');
-
+// 6. SEO Settings
 export async function getHomepageSeo() {
   try {
     const defaultSeo = {
@@ -211,9 +220,9 @@ export async function getHomepageSeo() {
       description: "Leading Web Development, SEO, and Digital Marketing Agency in India. We build AI-powered solutions for your business growth.",
       keywords: "Web Development, SEO, Digital Marketing, AI Solutions, GlobalWebify"
     };
-    if (fs.existsSync(homepageSeoPath)) {
-      const data = fs.readFileSync(homepageSeoPath, 'utf8');
-      return JSON.parse(data);
+    const setting = await db.siteSetting.findUnique({ where: { key: 'homepageSeo' } });
+    if (setting) {
+      return JSON.parse(setting.value);
     }
     return defaultSeo;
   } catch (error) {
@@ -225,7 +234,12 @@ export async function getHomepageSeo() {
 export async function saveHomepageSeo(data: { title: string; description: string; keywords: string }) {
   try {
     await requireAdmin();
-    fs.writeFileSync(homepageSeoPath, JSON.stringify(data, null, 2), 'utf8');
+    const value = JSON.stringify(data);
+    await db.siteSetting.upsert({
+      where: { key: 'homepageSeo' },
+      update: { value },
+      create: { key: 'homepageSeo', value }
+    });
     return { success: true };
   } catch (error: any) {
     console.error("Failed to save homepage SEO", error);
@@ -242,9 +256,9 @@ export async function getCitySeo(cityKey: string) {
       description: `Explore GlobalWebify's professional web development, SEO, digital marketing, and branding services in ${cityName}. Custom solutions tailored to your local market.`,
       keywords: `Web Development, SEO, Digital Marketing, AI Solutions, GlobalWebify, ${cityName}`
     };
-    if (fs.existsSync(citySeoPath)) {
-      const data = fs.readFileSync(citySeoPath, 'utf8');
-      const parsed = JSON.parse(data);
+    const setting = await db.siteSetting.findUnique({ where: { key: 'citySeoSettings' } });
+    if (setting) {
+      const parsed = JSON.parse(setting.value);
       return parsed[cityKey] || defaultSeo;
     }
     return defaultSeo;
@@ -258,17 +272,20 @@ export async function saveCitySeo(cityKey: string, data: { title: string; descri
   try {
     await requireAdmin();
     let allData: any = {};
-    if (fs.existsSync(citySeoPath)) {
-      const fileContent = fs.readFileSync(citySeoPath, 'utf8');
-      allData = JSON.parse(fileContent);
+    const setting = await db.siteSetting.findUnique({ where: { key: 'citySeoSettings' } });
+    if (setting) {
+      allData = JSON.parse(setting.value);
     }
     allData[cityKey] = data;
-    fs.writeFileSync(citySeoPath, JSON.stringify(allData, null, 2), 'utf8');
+    const value = JSON.stringify(allData);
+    await db.siteSetting.upsert({
+      where: { key: 'citySeoSettings' },
+      update: { value },
+      create: { key: 'citySeoSettings', value }
+    });
     return { success: true };
   } catch (error: any) {
     console.error("Failed to save city SEO", error);
     return { success: false, error: error.message };
   }
 }
-
-
