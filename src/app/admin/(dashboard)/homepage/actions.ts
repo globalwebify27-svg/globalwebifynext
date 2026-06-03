@@ -3,6 +3,7 @@
 import { requireAdmin } from '@/lib/auth';
 import { db } from '@/lib/db';
 import { CITIES } from './cities';
+import { revalidatePath } from 'next/cache';
 
 const defaultHeroTexts = [
   "वेबसाइट जो ब्रांड भी बनाए, बिज़नेस भी बढ़ाए।",
@@ -30,6 +31,7 @@ export async function saveHomepageFaqs(faqs: { question: string, answer: string 
       update: { value },
       create: { key: 'homepageFaqs', value }
     });
+    revalidatePath('/');
     return { success: true };
   } catch (error: any) {
     console.error("Failed to save homepage FAQs", error);
@@ -58,6 +60,7 @@ export async function saveHeroTexts(texts: string[]) {
       update: { value },
       create: { key: 'homepageHeroTexts', value }
     });
+    revalidatePath('/');
     return { success: true };
   } catch (error: any) {
     console.error("Failed to save homepage hero texts", error);
@@ -125,6 +128,7 @@ export async function saveAboutSeo(cityKey: string, aboutData: { title: string; 
       update: { value },
       create: { key: 'homepageAboutSeo', value }
     });
+    revalidatePath('/');
     return { success: true };
   } catch (error: any) {
     console.error("Failed to save homepage AboutSEO settings", error);
@@ -171,6 +175,7 @@ export async function saveCityHeroSettings(cityKey: string, data: { title: strin
       update: { value },
       create: { key: 'cityHeroSettings', value }
     });
+    revalidatePath(`/${cityKey}`);
     return { success: true };
   } catch (error: any) {
     console.error("Failed to save city hero settings", error);
@@ -205,6 +210,7 @@ export async function saveHomepageHeroDesc(description: string) {
       update: { value },
       create: { key: 'homepageHeroDesc', value }
     });
+    revalidatePath('/');
     return { success: true };
   } catch (error: any) {
     console.error("Failed to save homepage hero description", error);
@@ -240,6 +246,7 @@ export async function saveHomepageSeo(data: { title: string; description: string
       update: { value },
       create: { key: 'homepageSeo', value }
     });
+    revalidatePath('/');
     return { success: true };
   } catch (error: any) {
     console.error("Failed to save homepage SEO", error);
@@ -283,9 +290,48 @@ export async function saveCitySeo(cityKey: string, data: { title: string; descri
       update: { value },
       create: { key: 'citySeoSettings', value }
     });
+    revalidatePath(`/${cityKey}`);
     return { success: true };
   } catch (error: any) {
     console.error("Failed to save city SEO", error);
+    return { success: false, error: error.message };
+  }
+}
+
+// 7. Homepage About Card (Growth Agency)
+const defaultAboutCard = {
+  title: "Data-Driven <br /> Growth Agency",
+  content: "We offer AI-powered digital marketing services to help businesses appear in Google AI, ChatGPT, and Perplexity recommendations.\n\nOur strategies are focused on sustainable, ethical, and conversion-oriented growth for brands worldwide.",
+  buttonText: "Read More"
+};
+
+export async function getHomepageAboutCard() {
+  try {
+    const setting = await db.siteSetting.findUnique({ where: { key: 'homepageAboutCard' } });
+    if (setting) {
+      const parsed = JSON.parse(setting.value);
+      return { ...defaultAboutCard, ...parsed };
+    }
+    return defaultAboutCard;
+  } catch (error) {
+    console.error("Failed to read homepage About Card settings", error);
+    return defaultAboutCard;
+  }
+}
+
+export async function saveHomepageAboutCard(data: { title: string; content: string; buttonText: string }) {
+  try {
+    await requireAdmin();
+    const value = JSON.stringify(data);
+    await db.siteSetting.upsert({
+      where: { key: 'homepageAboutCard' },
+      update: { value },
+      create: { key: 'homepageAboutCard', value }
+    });
+    revalidatePath('/');
+    return { success: true };
+  } catch (error: any) {
+    console.error("Failed to save homepage About Card settings", error);
     return { success: false, error: error.message };
   }
 }

@@ -3,7 +3,7 @@ import dynamic from 'next/dynamic';
 import Hero from '@/components/sections/Hero';
 import { db } from '@/lib/db';
 import { FAQSection } from '@/components/sections/FAQSection';
-import { getHomepageFaqs, getHeroTexts, getAboutSeo, getCityHeroSettings, getHomepageHeroDesc } from '@/app/admin/(dashboard)/homepage/actions';
+import { getHomepageFaqs, getHeroTexts, getAboutSeo, getCityHeroSettings, getHomepageHeroDesc, getHomepageAboutCard } from '@/app/admin/(dashboard)/homepage/actions';
 
 import ServicesGrid from '@/components/sections/ServicesGrid';
 import Portfolio from '@/components/sections/Portfolio';
@@ -78,7 +78,14 @@ export default async function HomeView({ city, cityKey }: { city?: string; cityK
     console.error("Could not fetch AboutSEO data:", e);
   }
 
-  // Fetch dynamic descriptions for ServicesGrid from database
+  let aboutCard: any = null;
+  try {
+    aboutCard = await getHomepageAboutCard();
+  } catch (e) {
+    console.error("Could not fetch about card:", e);
+  }
+
+  // Load and process location for descriptions for ServicesGrid from database
   let serviceDescriptions: Record<string, string> = {};
   try {
     const services = await db.servicePage.findMany({
@@ -129,7 +136,7 @@ export default async function HomeView({ city, cityKey }: { city?: string; cityK
 
         <LatestBlog dbPosts={processedPosts} />
 
-        <ResultsSection />
+        <ResultsSection cardData={aboutCard} />
 
         {!cityKey && <AboutSEO data={aboutSeoData} />}
         <TrustSection />

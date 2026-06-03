@@ -27,7 +27,7 @@ const testimonials = [
   }
 ];
 
-export default function ResultsSection() {
+export default function ResultsSection({ cardData }: { cardData?: any }) {
   const [index, setIndex] = React.useState(0);
   const [isExpanded, setIsExpanded] = React.useState(false);
 
@@ -62,15 +62,15 @@ export default function ResultsSection() {
             className="lg:col-span-6 bg-gradient-to-br from-gray-950 to-[#022c22] shadow-2xl rounded-[40px] p-8 md:p-12 flex flex-col justify-between relative overflow-hidden group min-h-[450px]"
           >
             <div className="relative z-10">
-              <h3 className="text-[36px] md:text-[44px] font-black text-[#1cb05b] leading-[1.1] mb-8">
-                Data-Driven <br /> Growth Agency
-              </h3>
+              <h3 
+                className="text-[28px] md:text-[36px] font-black text-[#1cb05b] leading-[1.1] mb-6"
+                dangerouslySetInnerHTML={{ __html: cardData?.title || 'Data-Driven <br /> Growth Agency' }}
+              />
               <div className="max-w-md">
-                <p className={`text-white/75 font-normal text-[15px] md:text-[16px] leading-relaxed ${isExpanded ? '' : 'line-clamp-6'}`}>
-                  We offer AI-powered digital marketing services to help businesses appear in Google AI, ChatGPT, and Perplexity recommendations.
-                  <br /><br />
-                  Our strategies are focused on sustainable, ethical, and conversion-oriented growth for brands worldwide.
-                </p>
+                <p 
+                  className={`text-white/75 font-normal text-[15px] md:text-[16px] leading-relaxed ${isExpanded ? '' : 'line-clamp-6'}`}
+                  dangerouslySetInnerHTML={{ __html: (cardData?.content || 'We offer AI-powered digital marketing services to help businesses appear in Google AI, ChatGPT, and Perplexity recommendations.\n\nOur strategies are focused on sustainable, ethical, and conversion-oriented growth for brands worldwide.').replace(/\n/g, '<br />') }}
+                />
               </div>
             </div>
 
@@ -79,7 +79,7 @@ export default function ResultsSection() {
                 onClick={() => setIsExpanded(!isExpanded)}
                 className="bg-white/10 border-2 border-white/20 text-white px-8 py-3 rounded-full font-black text-[15px] hover:bg-[#1cb05b] hover:border-[#1cb05b] hover:text-white transition-all uppercase tracking-wider shadow-sm hover:shadow-lg"
               >
-                {isExpanded ? 'Read Less' : 'Read More'}
+                {isExpanded ? 'Read Less' : (cardData?.buttonText || 'Read More')}
               </button>
             </div>
 
