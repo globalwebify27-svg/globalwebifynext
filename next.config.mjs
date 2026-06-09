@@ -38,6 +38,20 @@ const nextConfig = {
       },
     ],
   },
+  async redirects() {
+    return [
+      {
+        source: '/careers',
+        destination: '/career',
+        permanent: true,
+      },
+      {
+        source: '/careers/:path*',
+        destination: '/career/:path*',
+        permanent: true,
+      },
+    ];
+  },
 };
 
 export default nextConfig;

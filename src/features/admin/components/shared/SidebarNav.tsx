@@ -4,7 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 import { usePathname, useSearchParams } from 'next/navigation';
 import { 
-  LayoutDashboard, Layers, Newspaper, MessageSquare, Home
+  LayoutDashboard, Layers, Newspaper, MessageSquare, Home, Briefcase
 } from 'lucide-react';
 import SidebarCategories from './SidebarCategories';
 
@@ -19,6 +19,7 @@ export default function SidebarNav({ initialActiveServiceCategory }: SidebarNavP
   const isOverview = pathname === '/admin';
   const isServices = pathname.startsWith('/admin/services');
   const isBlogs = pathname.startsWith('/admin/blogs');
+  const isCareers = pathname.startsWith('/admin/careers');
   const isContacts = pathname.startsWith('/admin/contacts');
   const isHomepage = pathname.startsWith('/admin/homepage') && !pathname.startsWith('/admin/subdomains/homepage');
   const isSubdomainHomepage = pathname.startsWith('/admin/subdomains/homepage');
@@ -254,6 +255,45 @@ export default function SidebarNav({ initialActiveServiceCategory }: SidebarNavP
         
         {/* Submenu List Categories */}
         <SidebarCategories initialActiveServiceCategory={initialActiveServiceCategory} prefix="/admin/subdomains/services" />
+      </details>
+
+      {/* Collapsible Careers Settings Dropdown */}
+      <details className="group/details" open={isCareers}>
+        <summary className={`flex items-center justify-between gap-2.5 px-4 py-2.5 rounded-xl transition-all duration-300 text-[11px] md:text-xs font-semibold tracking-wide cursor-pointer list-none [&::-webkit-details-marker]:hidden border group/summary ${
+          isCareers 
+            ? 'bg-gradient-to-r from-[#1a8b4c] to-[#0e5e3b] text-white border-[#15703d] shadow-xl shadow-[#1a8b4c]/20' 
+            : 'text-gray-400 hover:text-white hover:bg-[#132a1d]/60 border-transparent hover:border-[#132a1d] hover:shadow-lg backdrop-blur-sm'
+        }`}>
+          <div className="flex items-center gap-2.5">
+            <Briefcase className={`stroke-[2.2] flex-shrink-0 transition-colors w-[22px] h-[22px] ${isCareers ? 'text-white' : 'text-gray-500 group-hover/summary:text-white'}`} />
+            <span>Manage Careers</span>
+          </div>
+          <span className="text-[10px] group-open/details:rotate-90 transition-transform font-bold text-gray-500 group-hover/summary:text-white">▶</span>
+        </summary>
+        
+        {/* Careers Submenu */}
+        <div className="mt-2.5 mx-2.5 p-2 rounded-2xl bg-[#06100b] border border-[#132a1d] flex flex-col gap-2 text-gray-400 shadow-inner">
+          <Link 
+            href="/admin/careers" 
+            className={`text-xs font-semibold tracking-wide block px-3.5 py-2.5 rounded-xl transition-all duration-300 border ${
+              pathname === '/admin/careers' || (pathname.startsWith('/admin/careers/') && pathname !== '/admin/careers/applications')
+                ? 'text-[#22c55e] bg-[#1a8b4c]/10 border-[#1a8b4c]/30 shadow-md font-bold'
+                : 'text-gray-400 bg-transparent hover:bg-[#132a1d]/40 border-transparent hover:border-[#132a1d] hover:text-white'
+            }`}
+          >
+            Job Openings
+          </Link>
+          <Link 
+            href="/admin/careers/applications" 
+            className={`text-xs font-semibold tracking-wide block px-3.5 py-2.5 rounded-xl transition-all duration-300 border ${
+              pathname === '/admin/careers/applications'
+                ? 'text-[#22c55e] bg-[#1a8b4c]/10 border-[#1a8b4c]/30 shadow-md font-bold'
+                : 'text-gray-400 bg-transparent hover:bg-[#132a1d]/40 border-transparent hover:border-[#132a1d] hover:text-white'
+            }`}
+          >
+            Job Applications
+          </Link>
+        </div>
       </details>
 
       {/* Blogs Button */}

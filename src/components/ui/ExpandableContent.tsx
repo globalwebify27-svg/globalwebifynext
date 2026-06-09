@@ -25,6 +25,17 @@ export function ExpandableContent({
     return null;
   }
 
+  // Aggressively clean up existing data from the database
+  const cleanHtml = htmlContent
+    // 1. Remove all empty paragraphs (spaces, nbsps, brs)
+    .replace(/<p[^>]*>(?:\s|&nbsp;|<br>|<br\s*\/>)*<\/p>/gi, '')
+    // 2. Remove empty divs
+    .replace(/<div[^>]*>(?:\s|&nbsp;|<br>|<br\s*\/>)*<\/div>/gi, '')
+    // 3. Merge adjacent UL tags (removes the closing of the first and opening of the second)
+    .replace(/<\/ul>\s*<ul[^>]*>/gi, '')
+    // 4. Merge adjacent OL tags
+    .replace(/<\/ol>\s*<ol[^>]*>/gi, '');
+
   return (
     <div className="w-full max-w-4xl mx-auto">
       {/* Outer wrapper applying height restriction */}
@@ -35,26 +46,181 @@ export function ExpandableContent({
         {/* Inner container with no restriction, used for measurement */}
         <div
           ref={contentRef}
-          className="
-            !font-jost !text-[15px] md:!text-[16px] text-gray-600 !leading-[1.6] text-left
-            [&_*]:!font-jost
-            [&_p]:!mb-3 [&_p]:!leading-[1.6] [&_p]:!text-[15px] md:[&_p]:!text-[16px] [&_p]:!text-left
-            [&_span]:text-gray-600 [&_span]:!text-[15px] md:[&_span]:!text-[16px] [&_span]:!leading-[1.6]
-            [&_strong]:!font-bold [&_strong]:text-gray-900
-            [&_b]:!font-bold [&_b]:text-gray-900
-            [&_li]:text-gray-600 [&_li]:mb-1.5 [&_li]:leading-[1.7] [&_li]:list-item
-            [&_h1]:text-2xl md:[&_h1]:text-3xl [&_h1]:font-black [&_h1]:!text-gray-900 [&_h1_*]:!text-gray-900 [&_h1]:mb-4 [&_h1]:mt-8 [&_h1]:leading-tight
-            [&_h2]:text-xl md:[&_h2]:text-2xl [&_h2]:font-bold [&_h2]:!text-[#1a8b4c] [&_h2_*]:!text-[#1a8b4c] [&_h2]:underline [&_h2]:underline-offset-4 [&_h2]:decoration-[#1a8b4c]/60 [&_h2]:mb-3 [&_h2]:mt-6 [&_h2]:leading-snug
-            [&_h3]:text-lg md:[&_h3]:text-xl [&_h3]:font-bold [&_h3]:!text-gray-950 [&_h3_*]:!text-gray-950 [&_h3]:mb-2 [&_h3]:mt-5
-            [&_h4]:text-base md:[&_h4]:text-lg [&_h4]:font-bold [&_h4]:!text-gray-900 [&_h4_*]:!text-gray-900 [&_h4]:mb-2 [&_h4]:mt-4
-            [&_ul]:list-disc [&_ul]:pl-6 [&_ul]:mb-4 [&_ul]:space-y-1.5 [&_ul]:text-left
-            [&_ol]:list-decimal [&_ol]:pl-6 [&_ol]:mb-4 [&_ol]:space-y-1.5 [&_ol]:text-left
-            [&_li]:text-gray-700 [&_li]:font-[500] [&_li]:mb-1.5 [&_li]:leading-[1.7] [&_li]:list-item
-            [&_a]:!text-[#1a8b4c] [&_a_*]:!text-[#1a8b4c] [&_a]:!font-bold [&_a]:!no-underline hover:[&_a]:!text-[#15703d] hover:[&_a_*]:!text-[#15703d] hover:[&_a]:!underline
-            [&_blockquote]:border-l-4 [&_blockquote]:border-gray-200 [&_blockquote]:pl-4 [&_blockquote]:italic [&_blockquote]:text-gray-500 [&_blockquote]:my-4
-          "
-          dangerouslySetInnerHTML={{ __html: htmlContent }}
+          className="expandable-content-wrapper font-jost text-[15px] md:text-[16px] text-gray-600 leading-[1.6] text-left"
+          dangerouslySetInnerHTML={{ __html: cleanHtml }}
         />
+
+          {/* Guaranteed CSS Injection */}
+          <style dangerouslySetInnerHTML={{__html: `
+            .expandable-content-wrapper * {
+              font-family: var(--font-jost), sans-serif !important;
+            }
+            .expandable-content-wrapper p {
+              margin-bottom: 12px !important;
+              color: #757575 !important;
+              line-height: 1.6 !important;
+              font-size: 15px !important;
+              text-align: left !important;
+            }
+            @media (min-width: 768px) {
+              .expandable-content-wrapper p { font-size: 16px !important; }
+            }
+            .expandable-content-wrapper span {
+              color: #757575 !important;
+              line-height: 1.6 !important;
+            }
+            .expandable-content-wrapper strong,
+            .expandable-content-wrapper b {
+              font-weight: 700 !important;
+              color: #212121 !important;
+            }
+            .expandable-content-wrapper h1 {
+              font-size: 24px !important;
+              font-weight: 900 !important;
+              color: #212121 !important;
+              margin-bottom: 16px !important;
+              margin-top: 32px !important;
+              line-height: 1.25 !important;
+            }
+            .expandable-content-wrapper h1 * { color: #212121 !important; }
+            @media (min-width: 768px) { .expandable-content-wrapper h1 { font-size: 30px !important; } }
+            
+            .expandable-content-wrapper h2 {
+              font-size: 20px !important;
+              font-weight: 700 !important;
+              color: #1a8b4c !important;
+              text-decoration: underline !important;
+              text-underline-offset: 4px !important;
+              text-decoration-color: rgba(26, 139, 76, 0.6) !important;
+              margin-bottom: 12px !important;
+              margin-top: 24px !important;
+              line-height: 1.375 !important;
+            }
+            .expandable-content-wrapper h2 * { color: #1a8b4c !important; }
+            @media (min-width: 768px) { .expandable-content-wrapper h2 { font-size: 24px !important; } }
+
+            .expandable-content-wrapper h3 {
+              font-size: 16px !important;
+              font-weight: 600 !important;
+              color: #1a8b4c !important;
+              margin-bottom: 10px !important;
+              margin-top: 24px !important;
+              text-transform: uppercase !important;
+              letter-spacing: 0.05em !important;
+              border-left: 4px solid #1a8b4c !important;
+              padding-left: 12px !important;
+            }
+            .expandable-content-wrapper h3 * { color: #1a8b4c !important; }
+            @media (min-width: 768px) { .expandable-content-wrapper h3 { font-size: 17px !important; } }
+
+            .expandable-content-wrapper h4 {
+              font-size: 15px !important;
+              font-weight: 700 !important;
+              color: #212121 !important;
+              margin-bottom: 8px !important;
+              margin-top: 16px !important;
+            }
+            .expandable-content-wrapper h4 * { color: #212121 !important; }
+            @media (min-width: 768px) { .expandable-content-wrapper h4 { font-size: 16px !important; } }
+
+            .expandable-content-wrapper ul,
+            .expandable-content-wrapper ol {
+              margin-top: 1rem !important;
+              margin-bottom: 1rem !important;
+              padding-left: 1.5rem !important;
+              list-style-position: outside !important;
+            }
+            .expandable-content-wrapper ul {
+              list-style-type: disc !important;
+            }
+            .expandable-content-wrapper ol {
+              list-style-type: decimal !important;
+            }
+            .expandable-content-wrapper ul li::marker,
+            .expandable-content-wrapper ol li::marker {
+              color: #1a8b4c !important;
+              font-weight: 700 !important;
+            }
+
+            .expandable-content-wrapper li {
+              margin-bottom: 0.375rem !important;
+              padding-left: 0 !important;
+              color: #000000 !important;
+              font-weight: 600 !important;
+              line-height: 1.7 !important;
+            }
+            .expandable-content-wrapper li p {
+              margin: 0 !important;
+              padding: 0 !important;
+              display: inline !important;
+            }
+            
+            /* Beautiful Table Formatting for ChatGPT/Word Pastes */
+            .expandable-content-wrapper table {
+              width: 100% !important;
+              border-collapse: collapse !important;
+              margin-top: 2rem !important;
+              margin-bottom: 2rem !important;
+              border-radius: 8px !important;
+              overflow: hidden !important;
+              box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03) !important;
+              border: 1px solid #e5e7eb !important;
+            }
+            .expandable-content-wrapper th, 
+            .expandable-content-wrapper td {
+              border: 1px solid #e5e7eb !important;
+              padding: 14px 18px !important;
+              text-align: left !important;
+            }
+            .expandable-content-wrapper th {
+              background-color: #f9fafb !important;
+              font-weight: 800 !important;
+              color: #111827 !important;
+              text-transform: uppercase !important;
+              font-size: 0.85rem !important;
+              letter-spacing: 0.05em !important;
+              border-bottom: 2px solid #e5e7eb !important;
+            }
+            .expandable-content-wrapper td {
+              color: #545454 !important;
+              font-size: 0.95rem !important;
+              line-height: 1.5 !important;
+            }
+            .expandable-content-wrapper tr:nth-child(even) td {
+              background-color: #fafafa !important;
+            }
+            .expandable-content-wrapper tr:hover td {
+              background-color: #f3f4f6 !important;
+            }
+            
+            /* Responsive wrapper for tables so they scroll on mobile instead of breaking layout */
+            .expandable-content-wrapper .table-responsive {
+              overflow-x: auto !important;
+              -webkit-overflow-scrolling: touch !important;
+              margin-bottom: 2rem !important;
+            }
+
+            .expandable-content-wrapper a {
+              color: #1a8b4c !important;
+              font-weight: 700 !important;
+              text-decoration: none !important;
+            }
+            .expandable-content-wrapper a * { color: #1a8b4c !important; }
+            .expandable-content-wrapper a:hover {
+              color: #15703d !important;
+              text-decoration: underline !important;
+            }
+            .expandable-content-wrapper a:hover * { color: #15703d !important; }
+
+            .expandable-content-wrapper blockquote {
+              border-left: 4px solid #e5e7eb !important;
+              padding-left: 16px !important;
+              font-style: italic !important;
+              color: #6b7280 !important;
+              margin-top: 16px !important;
+              margin-bottom: 16px !important;
+            }
+          `}} />
 
         {/* Fade overlay when collapsed */}
         {needsButton && !isExpanded && (

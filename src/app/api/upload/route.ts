@@ -48,10 +48,31 @@ export async function POST(request: NextRequest) {
     }
 
     // Default: Upload to Cloudinary using a stream
+    // Save a local backup copy in public/uploads first
+    try {
+      const backupFilename = `${Date.now()}-${file.name.replace(/\s+/g, '-')}`;
+      const uploadDir = path.join(process.cwd(), 'public', 'uploads');
+      try {
+        await mkdir(uploadDir, { recursive: true });
+      } catch (e) {}
+      await writeFile(path.join(uploadDir, backupFilename), buffer);
+      console.log(`Local backup saved successfully at: /uploads/${backupFilename}`);
+    } catch (localErr) {
+      console.error('Failed to write local backup copy:', localErr);
+    }
+
     const result: any = await new Promise((resolve, reject) => {
+      // Extract original filename and extension
+      const originalName = file.name.replace(/\s+/g, '-');
+      const ext = originalName.split('.').pop() || '';
+      const baseName = originalName.replace(`.${ext}`, '');
+      
       const uploadStream = cloudinary.uploader.upload_stream(
         { 
-          folder: 'global-weblify/uploads', // Places images in this specific folder
+          folder: 'global-weblify/uploads',
+          resource_type: 'auto', // Important for non-image files like PDF/Word
+          public_id: `${baseName}-${Date.now()}`,
+          format: ext // Ensure the URL ends with the correct extension
         },
         (error, result) => {
           if (error) reject(error);

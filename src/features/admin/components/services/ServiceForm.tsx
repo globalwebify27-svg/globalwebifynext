@@ -449,7 +449,7 @@ export default function ServiceForm({ service }: { service?: Service }) {
           {/* Content Headline */}
           <div className="flex flex-col gap-1.5 mt-2">
             <label className="text-[10px] font-black text-gray-500 uppercase tracking-wider">
-              Content Section Headline (H1 Title)
+              Content Section Headline (H2 Title)
             </label>
             <input
               type="text"

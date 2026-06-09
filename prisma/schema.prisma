@@ -89,3 +89,41 @@ model SubdomainContent {
 
   @@map("subdomaincontent")
 }
+
+model Job {
+  id           Int      @id @default(autoincrement())
+  title        String
+  slug         String   @unique
+  description  String   @db.Text
+  requirements String?  @db.Text
+  location     String   @default("Ranchi")
+  type         String   @default("Full-time")
+  experience   String?
+  salary       String?
+  category     String   @default("Development")
+  lastDate     DateTime?
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([isActive])
+  @@map("job")
+}
+
+model JobApplication {
+  id          Int      @id @default(autoincrement())
+  jobTitle    String
+  name        String
+  email       String
+  phone       String
+  experience  String
+  resumeUrl   String
+  coverLetter String?  @db.Text
+  linkedin    String?
+  portfolio   String?
+  lockedUntil DateTime?
+  createdAt   DateTime @default(now())
+
+  @@map("jobapplication")
+}
+

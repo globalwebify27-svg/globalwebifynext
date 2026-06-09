@@ -578,11 +578,15 @@ export default function BlogPostForm({ post }: { post?: BlogPost }) {
                 /* Direct overrides for Tailwind prose to ensure H3 headings are dark and NOT underlined in preview */
                 .admin-preview-content.prose h3 {
                   font-family: var(--font-poppins), sans-serif !important;
-                  font-size: 20px !important;
+                  font-size: 16px !important;
                   font-weight: 600 !important;
-                  color: #1f2937 !important;
-                  margin-top: 28px !important;
-                  margin-bottom: 12px !important;
+                  color: #1a8b4c !important;
+                  text-transform: uppercase !important;
+                  letter-spacing: 0.05em !important;
+                  margin-top: 24px !important;
+                  margin-bottom: 10px !important;
+                  border-left: 4px solid #1a8b4c !important;
+                  padding-left: 12px !important;
                   line-height: 1.375 !important;
                   border-bottom: none !important;
                   padding-bottom: 0 !important;
@@ -644,17 +648,26 @@ export default function BlogPostForm({ post }: { post?: BlogPost }) {
                   }
                 }
 
-                .admin-preview-content ul {
-                  font-family: var(--font-jost), sans-serif;
-                  list-style-type: disc;
-                  padding-left: 24px !important;
-                  margin-bottom: 16px !important;
-                }
+                .admin-preview-content ul,
                 .admin-preview-content ol {
                   font-family: var(--font-jost), sans-serif;
-                  list-style-type: decimal;
                   padding-left: 24px !important;
-                  margin-bottom: 16px !important;
+                  margin-top: 4px !important;
+                  margin-bottom: 8px !important;
+                }
+                .admin-preview-content ul {
+                  list-style-type: disc;
+                }
+                .admin-preview-content ol {
+                  list-style-type: decimal;
+                }
+                .admin-preview-content ul li::marker {
+                  color: #2CA65A;
+                  font-size: 1.1em;
+                }
+                .admin-preview-content ol li::marker {
+                  color: #2CA65A;
+                  font-weight: 700;
                 }
                 .admin-preview-content li {
                   font-family: var(--font-jost), sans-serif;
@@ -662,7 +675,12 @@ export default function BlogPostForm({ post }: { post?: BlogPost }) {
                   font-weight: 400;
                   line-height: 1.5;
                   color: #4b5563;
-                  margin-bottom: 8px !important;
+                  margin-bottom: 4px !important;
+                }
+                .admin-preview-content li p {
+                  margin: 0 !important;
+                  padding: 0 !important;
+                  display: inline !important;
                 }
                 @media (min-width: 481px) {
                   .admin-preview-content li {

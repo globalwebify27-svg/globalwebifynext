@@ -13,6 +13,10 @@ import { TextStyle } from '@tiptap/extension-text-style';
 import { Color } from '@tiptap/extension-color';
 import Highlight from '@tiptap/extension-highlight';
 import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight';
+import Table from '@tiptap/extension-table';
+import TableRow from '@tiptap/extension-table-row';
+import TableHeader from '@tiptap/extension-table-header';
+import TableCell from '@tiptap/extension-table-cell';
 import { common, createLowlight } from 'lowlight';
 
 const lowlight = createLowlight(common);
@@ -46,8 +50,16 @@ export default function ContentEditor({ content, setContent, placeholder, isBlog
         placeholder: placeholder || 'Start writing your content here...',
       }),
       CodeBlockLowlight.configure({ lowlight }),
+      Table.configure({ resizable: false, HTMLAttributes: { class: 'editor-table' } }),
+      TableRow,
+      TableHeader,
+      TableCell,
     ],
-    content: content || '',
+    content: (content || '')
+      .replace(/<p[^>]*>(?:\s|&nbsp;|<br>|<br\s*\/>)*<\/p>/gi, '')
+      .replace(/<div[^>]*>(?:\s|&nbsp;|<br>|<br\s*\/>)*<\/div>/gi, '')
+      .replace(/<\/ul>\s*<ul[^>]*>/gi, '')
+      .replace(/<\/ol>\s*<ol[^>]*>/gi, ''),
     onUpdate: ({ editor }) => {
       setContent(editor.getHTML());
     },
@@ -61,6 +73,23 @@ export default function ContentEditor({ content, setContent, placeholder, isBlog
         try {
           const parser = new DOMParser();
           const doc = parser.parseFromString(html, 'text/html');
+
+          // Sticky Notes / Notepad fix: split brs
+          const brs = Array.from(doc.querySelectorAll('br'));
+          brs.forEach(br => {
+            const parent = br.closest('p, div');
+            if (parent && parent.parentNode) {
+              const newEl = doc.createElement(parent.nodeName);
+              let next = br.nextSibling;
+              while (next) {
+                const sibling = next;
+                next = sibling.nextSibling;
+                newEl.appendChild(sibling);
+              }
+              parent.parentNode.insertBefore(newEl, parent.nextSibling);
+              br.remove();
+            }
+          });
 
           // 1. Convert Word heading classes (MsoHeading1, etc.) to standard HTML headings
           const msWordHeadings = doc.querySelectorAll('p[class*="MsoHeading"], p[class*="heading"], p[class*="Heading"]');
@@ -224,28 +253,40 @@ export default function ContentEditor({ content, setContent, placeholder, isBlog
             }
           });
 
-          // 3. Convert Word list paragraphs with bullets or numbers to real HTML list items
-          paragraphs.forEach(p => {
-            const className = p.className || '';
-            const style = p.getAttribute('style') || '';
-            const hasListClass = className.includes('ListParagraph') || className.includes('MsoListParagraph');
-            const hasMsoListStyle = style.includes('mso-list:');
+          // 3. Convert ANY block that looks like a list (from anywhere) into a real HTML list item
+          const blocks = doc.querySelectorAll('p, div, li');
+          blocks.forEach(p => {
+            // Skip if it's already inside a list to prevent double wrapping
+            if (p.nodeName !== 'LI' && p.closest('ul, ol, li')) return;
+            // Skip if it contains other block elements (it's a container, not a leaf text block)
+            if (p.nodeName === 'DIV' && p.querySelector('p, div, ul, ol')) return;
 
-            if (hasListClass || hasMsoListStyle) {
-              const bulletMatch = p.innerHTML.match(/^\s*(?:[•·o§■\-*]|&middot;)\s*([\s\S]+)$/i) || p.innerHTML.match(/^\s*<span[^>]*>(?:[•·o§■\-*]|&middot;)<\/span>\s*([\s\S]+)$/i);
-              const numberMatch = p.innerHTML.match(/^\s*(\d+|[a-z]|[A-Z])[\.)]\s*([\s\S]+)$/) || p.innerHTML.match(/^\s*<span[^>]*>(\d+|[a-z]|[A-Z])[\.)]<\/span>\s*([\s\S]+)$/);
+            const html = p.innerHTML;
+            
+            // For standard bullet characters, space after bullet is optional (e.g. "•Point")
+            const bulletMatch1 = html.match(/^\s*(?:[•·o§■*]|&middot;)\s*([\s\S]+)$/i);
+            // For dashes, space is REQUIRED to prevent negative numbers/hyphens (e.g. "-100")
+            const bulletMatch2 = html.match(/^\s*-\s+([\s\S]+)$/i);
+            // For spans containing bullets
+            const bulletMatch3 = html.match(/^\s*<span[^>]*>(?:[•·o§■*\-]|&middot;)[.]?<\/span>\s*([\s\S]+)$/i);
+            
+            const bulletMatch = bulletMatch1 || bulletMatch2 || bulletMatch3;
+                                
+            const numberMatch1 = html.match(/^\s*(\d+|[a-z]|[A-Z])[\.)]\s+([\s\S]+)$/);
+            const numberMatch2 = html.match(/^\s*<span[^>]*>(\d+|[a-z]|[A-Z])[\.)]<\/span>\s*([\s\S]+)$/);
+            const numberMatch = numberMatch1 || numberMatch2;
 
-              if (bulletMatch) {
-                const li = doc.createElement('li');
-                li.setAttribute('data-list-type', 'bullet');
-                li.innerHTML = bulletMatch[1];
-                p.replaceWith(li);
-              } else if (numberMatch) {
-                const li = doc.createElement('li');
-                li.setAttribute('data-list-type', 'ordered');
-                li.innerHTML = numberMatch[2];
-                p.replaceWith(li);
-              }
+            if (bulletMatch) {
+              const li = doc.createElement('li');
+              li.setAttribute('data-list-type', 'bullet');
+              // Strip leading dashes/bullets from text Content
+              li.innerHTML = bulletMatch[1];
+              p.replaceWith(li);
+            } else if (numberMatch) {
+              const li = doc.createElement('li');
+              li.setAttribute('data-list-type', 'ordered');
+              li.innerHTML = numberMatch[2];
+              p.replaceWith(li);
             }
           });
 
@@ -270,6 +311,87 @@ export default function ContentEditor({ content, setContent, placeholder, isBlog
             }
           });
 
+          // 4. Heuristic: Auto-detect "Implicit Lists" from PDFs where bullet points are completely lost.
+          // If we see 3+ consecutive short lines without ending punctuation, we assume it's a bullet list.
+          let consecutiveShorts: HTMLElement[] = [];
+          
+          const processConsecutiveShorts = () => {
+            if (consecutiveShorts.length >= 3) {
+              const ul = doc.createElement('ul');
+              consecutiveShorts[0].parentNode?.insertBefore(ul, consecutiveShorts[0]);
+              consecutiveShorts.forEach(p => {
+                const li = doc.createElement('li');
+                // Strip leading dashes/bullets to prevent double bullets
+                const strippedHtml = p.innerHTML.replace(/^\s*<span[^>]*>\s*(?:[•·o§■*]|-|\d+[\.)]|[a-zA-Z][\.)])\s*<\/span>\s*/i, '')
+                                                .replace(/^\s*(?:[•·o§■*]|-|\d+[\.)]|[a-zA-Z][\.)])\s*/, '');
+                li.innerHTML = strippedHtml;
+                ul.appendChild(li);
+                p.remove();
+              });
+              
+              // Strip all inline styles from spans inside the UL so they inherit our editor CSS
+              ul.querySelectorAll('span').forEach(span => {
+                span.removeAttribute('style');
+                if (!span.attributes.length) {
+                  span.replaceWith(...Array.from(span.childNodes));
+                }
+              });
+            }
+            consecutiveShorts = [];
+          };
+
+          const allBlocks = Array.from(doc.querySelectorAll('p, div'));
+          allBlocks.forEach(p => {
+            if (p.nodeName === 'DIV' && p.querySelector('p, div, ul, ol')) {
+              processConsecutiveShorts();
+              return;
+            }
+            if (p.closest('ul, ol, li')) {
+              processConsecutiveShorts();
+              return;
+            }
+
+            const text = p.textContent?.trim() || '';
+            
+            // Ignore completely empty lines, do not break the streak!
+            if (text.length === 0) {
+              return;
+            }
+
+            const isShort = text.length > 0 && text.length < 120;
+            const hasNoEndingPunctuation = !/[.:!?;,]$/.test(text);
+            
+            const isEntirelyBold = (() => {
+              const strongs = p.querySelectorAll('strong, b');
+              let boldLength = 0;
+              strongs.forEach(s => boldLength += s.textContent?.length || 0);
+              return boldLength > 0 && boldLength >= text.length * 0.8;
+            })();
+
+            if (isShort && hasNoEndingPunctuation && !isEntirelyBold) {
+              consecutiveShorts.push(p as HTMLElement);
+            } else {
+              processConsecutiveShorts();
+            }
+          });
+          processConsecutiveShorts();
+
+          // Clean up empty paragraphs to prevent massive gaps between pasted list items
+          doc.querySelectorAll('p').forEach(p => {
+            const html = p.innerHTML.trim().toLowerCase();
+            if (html === '' || html === '<br>' || html === '&nbsp;' || html === '<span>&nbsp;</span>' || html === '<span><br></span>') {
+              p.remove();
+            }
+          });
+
+          // Final cleanup: strip inline styles globally from list items
+          doc.querySelectorAll('li span').forEach(span => {
+            span.removeAttribute('style');
+            if (!span.attributes.length) {
+              span.replaceWith(...Array.from(span.childNodes));
+            }
+          });
+
           return doc.body.innerHTML;
         } catch (e) {
           console.error('Word paste transform error:', e);
@@ -286,6 +408,44 @@ export default function ContentEditor({ content, setContent, placeholder, isBlog
       editor.commands.setContent(content, { emitUpdate: false });
     }
   }, [content, editor]);
+
+  // Intercept pure plain-text pastes (like from Sticky Notes) since they bypass transformPastedHTML
+  useEffect(() => {
+    if (!editor) return;
+
+    const handlePaste = (e: ClipboardEvent) => {
+      const text = e.clipboardData?.getData('text/plain');
+      const html = e.clipboardData?.getData('text/html');
+
+      // Only trigger if it's pure plain text without HTML (e.g., Notepad)
+      if (!html && text) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        // Convert plain text into basic HTML paragraphs
+        const basicHtml = text
+          .split(/\r?\n\r?\n/) // split by double newlines into blocks
+          .filter(b => b.trim().length > 0)
+          .map(b => `<p>${b.replace(/\r?\n/g, '<br>')}</p>`)
+          .join('');
+
+        // Route it through our universal HTML transformer to guarantee 100% consistency
+        // with rich text pastes (same line-by-line bullet detection, styling, etc.)
+        const transformer = editor.options.editorProps.transformPastedHTML;
+        const finalHtml = transformer ? transformer(basicHtml) : basicHtml;
+        
+        setTimeout(() => editor.commands.insertContent(finalHtml), 0);
+      }
+    };
+
+    const dom = editor.view.dom;
+    // Use capture phase to ensure we intercept it before Prosemirror does
+    dom.addEventListener('paste', handlePaste, true);
+
+    return () => {
+      dom.removeEventListener('paste', handlePaste, true);
+    };
+  }, [editor]);
 
   const setLink = useCallback(() => {
     if (!editor) return;
@@ -810,10 +970,46 @@ export default function ContentEditor({ content, setContent, placeholder, isBlog
           color: #4b5563;
         }
         .tiptap-editor-canvas li p, .tiptap li p {
+          display: inline;
           margin: 0;
         }
-
-        /* LINKS */
+        
+        /* Table styles inside Editor */
+        .tiptap-editor-canvas table {
+          border-collapse: collapse;
+          table-layout: fixed;
+          width: 100%;
+          margin: 1.5rem 0;
+          overflow: hidden;
+          border-radius: 6px;
+          border: 1px solid #e2e8f0;
+        }
+        .tiptap-editor-canvas table td,
+        .tiptap-editor-canvas table th {
+          min-width: 1em;
+          border: 1px solid #e2e8f0;
+          padding: 10px 14px;
+          vertical-align: top;
+          box-sizing: border-box;
+          position: relative;
+        }
+        .tiptap-editor-canvas table th {
+          font-weight: 700;
+          text-align: left;
+          background-color: #f8fafc;
+          color: #0f172a;
+        }
+        .tiptap-editor-canvas table td {
+          color: #475569;
+        }
+        .tiptap-editor-canvas table .selectedCell:after {
+          z-index: 2;
+          position: absolute;
+          content: "";
+          left: 0; right: 0; top: 0; bottom: 0;
+          background: rgba(200, 200, 255, 0.4);
+          pointer-events: none;
+        }/* LINKS */
         .tiptap-editor-canvas a, .tiptap a,
         .tiptap-editor-canvas .editor-link, .tiptap .editor-link {
           color: #2563eb;
