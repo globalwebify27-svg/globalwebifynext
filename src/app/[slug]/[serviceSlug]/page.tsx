@@ -121,7 +121,7 @@ export default async function CityServicePage({ params }: Props) {
   const { faqs, cleanedContent } = parseFaqs(rawPage.content ?? '', locationName);
 
   const page = {
-    id:              rawPage.id,
+    id:              rawPage.id,  
     slug:            rawPage.slug,
     title:           replaceLocation(rawPage.title            ?? '', locationName),
     contentTitle:    replaceLocation(rawPage.contentTitle     ?? '', locationName),

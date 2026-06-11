@@ -49,7 +49,7 @@ function deleteFolderRecursiveSync(source: string) {
   }
 }
 
-export async function GET() {
+async function handleSeed(clean: boolean) {
   try {
     let seededBlogs = 0;
     let seededServices = 0;
@@ -71,55 +71,99 @@ export async function GET() {
       deleteFolderRecursiveSync(srcBlogs);
     }
 
-    // 0. Clean the database first for a guaranteed fresh start
-    await db.servicePage.deleteMany({});
-    await db.blogPost.deleteMany({});
-
-    // 1. Seed static blogs
-    for (const staticPost of staticBlogPosts) {
-      // Build raw HTML content from richContent sections
-      let contentHtml = '';
-      for (const sec of staticPost.richContent) {
-        if (sec.type === 'p') {
-          contentHtml += `<p className="text-gray-600 text-[14px] md:text-[15px] leading-relaxed mb-6 font-semibold">${sec.text}</p>`;
-        } else if (sec.type === 'h2') {
-          contentHtml += `<h2 className="text-[19px] md:text-[21px] font-black text-[#1a8b4c] uppercase tracking-wider mt-10 mb-4 border-b border-gray-100 pb-2.5 scroll-mt-24">${sec.text}</h2>`;
-        } else if (sec.type === 'h3') {
-          contentHtml += `<h3 className="text-[15px] md:text-[16px] font-black text-gray-950 mt-8 mb-3.5 tracking-tight">${sec.text}</h3>`;
-        } else if (sec.type === 'ul') {
-          contentHtml += '<ul className="pl-2 mb-6 space-y-3 flex flex-col">';
-          for (const item of sec.items || []) {
-            contentHtml += `<li className="text-gray-600 text-[14px] md:text-[14.5px] font-semibold flex items-start gap-2.5 hover:text-[#1a8b4c] transition-colors leading-relaxed"><span>${item}</span></li>`;
+    if (clean) {
+      // Clean the database first for a guaranteed fresh start
+      await db.servicePage.deleteMany({});
+      await db.blogPost.deleteMany({});
+    } else {
+      // 1. Perform rename of dedicated servers to dedicated hosting
+      const dedicatedServersSlugs = ['/dedicated-servers', 'dedicated-servers'];
+      const existingDedicated = await db.servicePage.findFirst({
+        where: { slug: { in: dedicatedServersSlugs } }
+      });
+      if (existingDedicated) {
+        await db.servicePage.update({
+          where: { id: existingDedicated.id },
+          data: {
+            slug: '/dedicated-hosting',
+            title: 'Dedicated Hosting',
+            seoTitle: 'Dedicated Hosting | GlobalWebify',
+            contentTitle: 'Professional Dedicated Hosting Services',
+            heroDescription: 'Get dynamic, high-performance Dedicated Hosting services tailored for growth.',
+            seoDescription: 'Professional Dedicated Hosting services to grow your business.'
           }
-          contentHtml += '</ul>';
-        }
+        });
       }
 
-      await db.blogPost.create({
-        data: {
-          title: staticPost.title,
-          slug: staticPost.slug,
-          summary: staticPost.excerpt,
-          content: contentHtml,
-          image: staticPost.image,
-          isActive: true,
-          seoTitle: staticPost.title,
-          seoDescription: staticPost.excerpt,
-        },
+      // 2. Delete removed pages
+      const slugsToDelete = [
+        '/domain-registration', 'domain-registration',
+        '/domain-transfer', 'domain-transfer',
+        '/business-email', 'business-email'
+      ];
+      await db.servicePage.deleteMany({
+        where: { slug: { in: slugsToDelete } }
       });
-      seededBlogs++;
     }
 
-    // 2. Dynamically seed all submenu services from navigation constants
-    const seededSlugs = new Set<string>();
-    
+    // Seed static blogs
+    const blogCount = await db.blogPost.count();
+    if (clean || blogCount === 0) {
+      for (const staticPost of staticBlogPosts) {
+        // Build raw HTML content from richContent sections
+        let contentHtml = '';
+        for (const sec of staticPost.richContent) {
+          if (sec.type === 'p') {
+            contentHtml += `<p className="text-gray-600 text-[14px] md:text-[15px] leading-relaxed mb-6 font-semibold">${sec.text}</p>`;
+          } else if (sec.type === 'h2') {
+            contentHtml += `<h2 className="text-[19px] md:text-[21px] font-black text-[#1a8b4c] uppercase tracking-wider mt-10 mb-4 border-b border-gray-100 pb-2.5 scroll-mt-24">${sec.text}</h2>`;
+          } else if (sec.type === 'h3') {
+            contentHtml += `<h3 className="text-[15px] md:text-[16px] font-black text-gray-950 mt-8 mb-3.5 tracking-tight">${sec.text}</h3>`;
+          } else if (sec.type === 'ul') {
+            contentHtml += '<ul className="pl-2 mb-6 space-y-3 flex flex-col">';
+            for (const item of sec.items || []) {
+              contentHtml += `<li className="text-gray-600 text-[14px] md:text-[14.5px] font-semibold flex items-start gap-2.5 hover:text-[#1a8b4c] transition-colors leading-relaxed"><span>${item}</span></li>`;
+            }
+            contentHtml += '</ul>';
+          }
+        }
+
+        const exists = await db.blogPost.findUnique({ where: { slug: staticPost.slug } });
+        if (!exists) {
+          await db.blogPost.create({
+            data: {
+              title: staticPost.title,
+              slug: staticPost.slug,
+              summary: staticPost.excerpt,
+              content: contentHtml,
+              image: staticPost.image,
+              isActive: true,
+              seoTitle: staticPost.title,
+              seoDescription: staticPost.excerpt,
+            },
+          });
+          seededBlogs++;
+        }
+      }
+    }
+
+    // Dynamically seed/update all submenu services from navigation constants
     const createServicePage = async (title: string, slug: string, category: string) => {
       // Validate slug and prevent duplicates
       if (!slug || slug === '/' || slug.startsWith('http')) return;
-      if (seededSlugs.has(slug)) return;
-      seededSlugs.add(slug);
 
-      // Select high-quality default images based on category
+      const cleanSlug = slug.startsWith('/') ? slug.slice(1) : slug;
+      const slugsToCheck = [`/${cleanSlug}`, cleanSlug];
+
+      const exists = await db.servicePage.findFirst({
+        where: { slug: { in: slugsToCheck } }
+      });
+
+      if (exists) {
+        return; // Already exists, keep user edits
+      }
+
+      // Select default images based on category
       let defaultImage = 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=800&q=80';
       if (category === 'website') {
         defaultImage = 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=800&q=80';
@@ -134,7 +178,7 @@ export async function GET() {
       await db.servicePage.create({
         data: {
           title,
-          slug,
+          slug: slug.startsWith('/') ? slug : `/${slug}`,
           category,
           content: `
             <h2>Professional ${title} Services</h2>
@@ -181,6 +225,7 @@ export async function GET() {
         await createServicePage(item.name, item.href, 'marketing');
       }
     }
+
     // 3. Remove redundant static placeholder folders to activate the dynamic fallback route
     const directoriesToRemove = [
       'perplexity-ai-seo-services',
@@ -218,7 +263,7 @@ export async function GET() {
 
     return NextResponse.json({
       success: true,
-      message: `Database successfully seeded and static directories cleaned up.`,
+      message: `Database successfully seeded/updated and static directories cleaned up.`,
       seededBlogs,
       seededServices,
       removedDirs: removedDirsCount,
@@ -230,4 +275,24 @@ export async function GET() {
       { status: 500 }
     );
   }
+}
+
+export async function GET(request: Request) {
+  const { searchParams } = new URL(request.url);
+  const clean = searchParams.get('clean') === 'true';
+  return handleSeed(clean);
+}
+
+export async function POST(request: Request) {
+  let clean = false;
+  try {
+    const body = await request.json();
+    clean = body?.clean === true;
+  } catch (e) {
+    try {
+      const { searchParams } = new URL(request.url);
+      clean = searchParams.get('clean') === 'true';
+    } catch (_) {}
+  }
+  return handleSeed(clean);
 }

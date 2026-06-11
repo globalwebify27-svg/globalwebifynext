@@ -108,9 +108,18 @@ export default function ServiceListClient({ services }: { services: Service[] })
       
       {/* Page Title & Search Filter */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <h3 className="text-xl md:text-2xl font-black text-[#1a8b4c] font-poppins uppercase tracking-tight">
-          {currentCat.label}
-        </h3>
+        <div className="flex items-center gap-4">
+          <h3 className="text-xl md:text-2xl font-black text-[#1a8b4c] font-poppins uppercase tracking-tight">
+            {currentCat.label}
+          </h3>
+          <Link
+            href={`/admin/services/new?category=${selectedCategory !== 'all' ? selectedCategory : 'website'}`}
+            className="px-3 py-1.5 bg-green-50 text-[#1a8b4c] border border-green-200 rounded-xl text-xs font-bold uppercase tracking-wider flex items-center gap-1 hover:bg-green-100 transition-colors"
+          >
+            <Plus size={14} /> Add New Page
+          </Link>
+        </div>
+
         
         {/* Advanced Search Input Bar */}
         <div className="relative w-full sm:w-80 group">

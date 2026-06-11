@@ -52,12 +52,11 @@ export const WEBSITE_SERVICES = [
 export const HOSTING_SERVICES = [
   { name: "Shared Hosting", href: "/shared-hosting" },
   { name: "VPS Hosting", href: "/vps-hosting" },
-  { name: "Dedicated Servers", href: "/dedicated-servers" },
+  { name: "Dedicated Hosting", href: "/dedicated-hosting" },
   { name: "Cloud Hosting", href: "/cloud-hosting" },
   { name: "WordPress Hosting", href: "/wordpress-hosting" },
-  { name: "Domain Registration", href: "/domain-registration" },
-  { name: "Domain Transfer", href: "/domain-transfer" },
-  { name: "Business Email", href: "/business-email" },
+  { name: "Unlimited Hosting", href: "/unlimited-hosting" },
+  { name: "Email Hosting", href: "/email-hosting" },
   { name: "SSL Certificates", href: "/ssl-certificates" }
 ];
 
@@ -97,13 +96,13 @@ export const MARKETING_SERVICES = [
 ];
 
 export const BRANDING_SERVICES = [
-  { name: "Logo Designing", href: "/logo-designing" },
-  { name: "Corporate Identity", href: "/corporate-identity" },
-  { name: "Brochure Designing", href: "/brochure-designing" },
-  { name: "Social Media Graphics", href: "/social-media-graphics" },
-  { name: "PR Distribution", href: "/pr-distribution" },
-  { name: "Online Reputation", href: "/online-reputation" },
-  { name: "Event Management", href: "/event-management" }
+  { name: "Online Reputation Management", href: "/online-reputation-management" },
+  { name: "Press Release Distribution", href: "/press-release-distribution" },
+  { name: "Digital Branding Agency", href: "/digital-branding-agency" },
+  { name: "Corporate Video Production Agency", href: "/corporate-video-production-agency" },
+  { name: "Influencer Marketing", href: "/influencer-marketing" },
+  { name: "Graphic Designing", href: "/graphic-designing" },
+  { name: "PR Agency", href: "/pr-agency" }
 ];
 
 export const COMPANY_LINKS = [
