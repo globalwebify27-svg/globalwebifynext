@@ -77,7 +77,7 @@ export const MegaMenu = ({ onClose, activeMenu, currentMenuId, currentCity }: Me
         <div className="w-[240px] lg:w-[290px] xl:w-[340px] shrink-0 relative overflow-hidden" style={{ minHeight: '300px' }}>
           <Image
             src="/nav-promo.png"
-            alt="Promo Background"
+            alt="Promo Background - Global Webify"
             fill
             className="object-cover"
             priority
@@ -88,6 +88,7 @@ export const MegaMenu = ({ onClose, activeMenu, currentMenuId, currentCity }: Me
             <p className="text-[12px] text-gray-600 leading-relaxed font-medium">{promo.sub}</p>
             <Link
               href="/contact"
+              title="Contact Us - Global Webify"
               onClick={onClose}
               className="mt-1 block text-center bg-[#1a8b4c] text-white text-[13px] font-semibold py-2 rounded-xl hover:bg-[#15703d] transition-colors shadow-sm"
             >
@@ -115,6 +116,7 @@ export const MegaMenu = ({ onClose, activeMenu, currentMenuId, currentCity }: Me
                       {/* Service Category Link */}
                       <Link
                         href={getPrefixedHref(item.href, currentMenuId, currentCity)}
+                        title={`${item.name} - Global Webify`}
                         onClick={onClose}
                         prefetch={true}
                         className={`flex items-center justify-between text-[14px] px-3 py-2 rounded-xl transition-colors duration-75 ${
@@ -133,6 +135,7 @@ export const MegaMenu = ({ onClose, activeMenu, currentMenuId, currentCity }: Me
                             <Link
                               key={sub.name}
                               href={getPrefixedHref(sub.href, currentMenuId, currentCity)}
+                              title={`${sub.name} - Global Webify`}
                               onClick={onClose}
                               prefetch={true}
                               className="text-[13px] text-gray-650 hover:text-white hover:bg-[#1a8b4c] px-2.5 py-1.5 rounded-lg transition-colors duration-75 block font-medium"

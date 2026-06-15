@@ -17,18 +17,18 @@ const PARENT_PAGES = [
 
 export default async function AdminServicesPage() {
   let services: any[] = [];
-  let parentPages: any[] = [];
   
   try {
     services = await db.servicePage.findMany({
-      orderBy: { updatedAt: 'desc' },
-    });
-
-    // Find any saved parent page records
-    const parentSlugs = PARENT_PAGES.map(p => p.slug);
-    parentPages = await db.servicePage.findMany({
-      where: { slug: { in: parentSlugs } },
-      select: { id: true, slug: true, title: true },
+      select: {
+        id: true,
+        title: true,
+        slug: true,
+        category: true,
+        isActive: true,
+        updatedAt: true
+      },
+      orderBy: { updatedAt: 'desc' }
     });
   } catch (error) {
     console.error('Failed to query services:', error);

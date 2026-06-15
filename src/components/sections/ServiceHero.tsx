@@ -93,6 +93,7 @@ export default function ServiceHero({ title, description, city }: ServiceHeroPro
           <div className="grid grid-cols-2 md:flex md:flex-wrap items-center justify-start gap-2.5 md:gap-3 w-full">
             <Link
               href="/contact"
+              title="Contact Us - Global Webify"
               className="text-white font-bold py-3.5 px-2 md:px-6 rounded-2xl shadow-md hover:shadow-lg hover:translate-y-[-1px] transition-all flex items-center justify-center gap-1.5 md:gap-2 text-[12px] md:text-[13.5px] tracking-wide"
               style={{
                 background: 'linear-gradient(to right, #7c3aed, #4f46e5)',
@@ -103,6 +104,7 @@ export default function ServiceHero({ title, description, city }: ServiceHeroPro
             </Link>
             <a
               href="tel:+917563901100"
+              title="Call Global Webify - Global Webify"
               className="text-white font-bold py-3.5 px-2 md:px-6 rounded-2xl shadow-sm hover:shadow-md hover:translate-y-[-1px] transition-all flex items-center justify-center gap-1.5 md:gap-2 text-[12px] md:text-[13.5px] tracking-wide"
               style={{
                 background: 'linear-gradient(to right, #1f2937, #111827)',
@@ -115,6 +117,7 @@ export default function ServiceHero({ title, description, city }: ServiceHeroPro
               href="https://wa.me/917563901100"
               target="_blank"
               rel="noopener noreferrer"
+              title="Chat on WhatsApp - Global Webify"
               className="text-white font-bold py-3.5 px-2 md:px-6 rounded-2xl shadow-md hover:shadow-lg hover:translate-y-[-1px] transition-all flex items-center justify-center gap-1.5 md:gap-2 text-[12px] md:text-[13.5px] tracking-wide"
               style={{
                 background: 'linear-gradient(to right, #25D366, #1b8a4a)',

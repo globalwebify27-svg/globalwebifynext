@@ -7,7 +7,7 @@ import {
   Facebook, Twitter, Instagram, Linkedin, Youtube, 
   Mail, Phone, MapPin, Code, ShoppingCart, Globe, 
   Smartphone, Settings, Search, Share2, FileText, 
-  Megaphone, BarChart3, Headphones,
+  Megaphone, BarChart3, Headphones, Clock,
   ExternalLink, Palette, RefreshCw, Wrench, Target, MessageCircle
 } from 'lucide-react';
 import { SOCIAL_LINKS } from '@/constants/navigation';
@@ -35,6 +35,16 @@ const serviceCol2 = [
   { name: "SMO Services", href: "/smo-services", icon: Megaphone, color: "text-amber-500 bg-amber-50" },
   { name: "WhatsApp Marketing", href: "/whatsapp-marketing", icon: MessageCircle, color: "text-green-500 bg-green-50" },
 ];
+
+const crmCol = [
+  { name: "CRM Software Development", href: "/crm-software-development", icon: Settings, color: "text-indigo-500 bg-indigo-50" },
+  { name: "Lead Management Software", href: "/lead-management-software", icon: Target, color: "text-red-500 bg-red-50" },
+  { name: "Hotel Management Software", href: "/hotel-management-software", icon: Wrench, color: "text-gray-500 bg-gray-100" },
+  { name: "Hospital Management Software", href: "/hospital-management-software", icon: Globe, color: "text-emerald-500 bg-emerald-50" },
+  { name: "HR Management Software", href: "/hr-management-software", icon: Code, color: "text-teal-500 bg-teal-50" },
+  { name: "School Management System", href: "/school-management-system", icon: ShoppingCart, color: "text-orange-500 bg-orange-50" }
+];
+
 
 const contactDetails = [
   { type: "Email", value: "help@globalwebify.com", icon: <Mail size={16} />, color: "bg-blue-50 text-blue-500" },
@@ -71,6 +81,32 @@ export default function Footer() {
             <p className="text-[15px] text-gray-600 font-medium leading-relaxed max-w-sm mx-auto lg:mx-0">
               Your trusted digital partner for web development, digital marketing, and branding. We help businesses grow with modern, effective, and affordable digital solutions.
             </p>
+
+            {/* Business Hours & Trust Info */}
+            <div className="pt-6 border-t border-gray-100/80 space-y-4 max-w-sm mx-auto lg:mx-0 text-left">
+              {/* Business Hours */}
+              <div className="space-y-2">
+                <div className="flex items-center gap-2 text-gray-700 font-semibold text-[13px]">
+                  <Clock size={16} className="text-[#1a8b4c]" />
+                  <span>Business Hours</span>
+                </div>
+                <div className="pl-6 text-[12px] text-gray-500 font-medium space-y-1">
+                  <p>Monday - Saturday: 11:00 AM - 07:00 PM</p>
+                  <p className="text-red-500/80 font-semibold">Sunday: Closed</p>
+                </div>
+              </div>
+
+              {/* Trust Badges */}
+              <div className="flex flex-wrap gap-2.5 pt-1">
+                <div className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-gray-100 rounded-xl shadow-xs">
+                  <span className="text-[11px] font-black text-amber-500">★ 4.6/5</span>
+                  <span className="text-[10px] font-bold text-gray-500">Google Rating</span>
+                </div>
+                <div className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-gray-100 rounded-xl shadow-xs">
+                  <span className="text-[10px] font-bold text-gray-500">ISO 9001:2015</span>
+                </div>
+              </div>
+            </div>
           </div>
 
           {/* Our Services - 2 icon columns */}
@@ -120,7 +156,37 @@ export default function Footer() {
                 })}
               </div>
             </div>
+
+            {/* CRM Solutions section under services */}
+            <div className="mt-8 pt-6 border-t border-gray-100/50">
+              <div className="flex items-center gap-3 mb-6 justify-center md:justify-start">
+                 <div className="w-10 h-10 rounded-full bg-green-50 flex items-center justify-center text-[#1a8b4c]">
+                   <Code size={20} />
+                 </div>
+                 <h4 className="text-[20px] font-black text-gray-950 uppercase tracking-tight">CRM Solutions</h4>
+              </div>
+              
+              <div className="grid grid-cols-2 gap-x-6 gap-y-3.5">
+                {crmCol.map((service, i) => {
+                  const Icon = service.icon;
+                  return (
+                    <Link 
+                      key={i}
+                      href={service.href} 
+                      title={`${service.name} - Global Webify`}
+                      className="group flex items-center gap-2.5 hover:translate-x-1 transition-transform duration-200"
+                    >
+                      <div className={`w-7 h-7 shrink-0 rounded-lg flex items-center justify-center ${service.color} transition-transform group-hover:scale-110`}>
+                        <Icon size={14} />
+                      </div>
+                      <span className="text-[13px] text-gray-650 font-semibold group-hover:text-[#1a8b4c] transition-colors leading-tight">{service.name}</span>
+                    </Link>
+                  );
+                })}
+              </div>
+            </div>
           </div>
+
 
           {/* Contact Column */}
           <div className="lg:col-span-4 space-y-4">
@@ -132,35 +198,62 @@ export default function Footer() {
             </div>
             
             <div className="space-y-3">
-              {contactDetails.map((contact, i) => (
-                <div key={i} className="flex items-center gap-4 p-3 bg-white border border-gray-50 rounded-2xl shadow-sm">
-                  <div className={`w-10 h-10 shrink-0 rounded-xl flex items-center justify-center ${contact.color}`}>
-                    {contact.icon}
-                  </div>
-                  <div>
-                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest leading-none mb-1">{contact.type}</p>
-                    <p className="text-[14px] font-bold text-gray-800">{contact.value}</p>
-                  </div>
-                </div>
-              ))}
+              {contactDetails.map((contact, i) => {
+                const getHref = () => {
+                  if (contact.type === "Email") return `mailto:${contact.value}`;
+                  if (contact.type === "Main") return `tel:+917563901100`;
+                  if (contact.type === "Toll Free") return `tel:18008905489`;
+                  if (contact.type === "US Office") return `tel:+19175908135`;
+                  return "#";
+                };
 
-              <div className="flex items-start gap-4 p-4 bg-white border border-gray-50 rounded-2xl shadow-sm">
-                <div className="w-10 h-10 shrink-0 rounded-xl flex items-center justify-center bg-green-50 text-green-500 mt-1">
+                return (
+                  <a 
+                    key={i} 
+                    href={getHref()} 
+                    title={`${contact.type === 'Email' ? 'Email' : 'Call'} ${contact.value} - Global Webify`}
+                    className="flex items-center gap-4 p-3 bg-white border border-gray-50 rounded-2xl shadow-sm hover:border-[#1a8b4c]/30 hover:shadow-md transition-all duration-300 group w-full"
+                  >
+                    <div className={`w-10 h-10 shrink-0 rounded-xl flex items-center justify-center ${contact.color} transition-transform group-hover:scale-110`}>
+                      {contact.icon}
+                    </div>
+                    <div className="text-left">
+                      <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest leading-none mb-1">{contact.type}</p>
+                      <p className="text-[14px] font-bold text-gray-800 group-hover:text-[#1a8b4c] transition-colors">{contact.value}</p>
+                    </div>
+                  </a>
+                );
+              })}
+
+              <a 
+                href="https://maps.google.com/?q=2nd+Floor,+Alam+Complex,+Ashok+Nagar+Road,+Kadru,+Ranchi,+Jharkhand,+India-834002"
+                target="_blank"
+                rel="noopener noreferrer"
+                title="View Ranchi Office on Google Maps - Global Webify"
+                className="flex items-start gap-4 p-4 bg-white border border-gray-50 rounded-2xl shadow-sm hover:border-[#1a8b4c]/30 hover:shadow-md transition-all duration-300 group text-left w-full"
+              >
+                <div className="w-10 h-10 shrink-0 rounded-xl flex items-center justify-center bg-green-50 text-green-500 mt-1 transition-transform group-hover:scale-110">
                   <MapPin size={18} />
                 </div>
-                <p className="text-[13px] font-bold text-gray-700 leading-relaxed">
+                <p className="text-[13px] font-bold text-gray-700 leading-relaxed group-hover:text-[#1a8b4c] transition-colors">
                   2nd Floor, Alam Complex, Ashok Nagar Road, Kadru, Ranchi, Jharkhand, India-834002
                 </p>
-              </div>
+              </a>
 
-              <div className="flex items-start gap-4 p-4 bg-white border border-gray-50 rounded-2xl shadow-sm">
-                <div className="w-10 h-10 shrink-0 rounded-xl flex items-center justify-center bg-green-50 text-green-500 mt-1">
+              <a 
+                href="https://maps.google.com/?q=36/1E/1L,+Topsia+Road,+Panchannagram,+Kolkata,+Pin+-+700039,+West+Bengal,+India."
+                target="_blank"
+                rel="noopener noreferrer"
+                title="View Kolkata Office on Google Maps - Global Webify"
+                className="flex items-start gap-4 p-4 bg-white border border-gray-50 rounded-2xl shadow-sm hover:border-[#1a8b4c]/30 hover:shadow-md transition-all duration-300 group text-left w-full"
+              >
+                <div className="w-10 h-10 shrink-0 rounded-xl flex items-center justify-center bg-green-50 text-green-500 mt-1 transition-transform group-hover:scale-110">
                   <MapPin size={18} />
                 </div>
-                <p className="text-[13px] font-bold text-gray-700 leading-relaxed">
+                <p className="text-[13px] font-bold text-gray-700 leading-relaxed group-hover:text-[#1a8b4c] transition-colors">
                   36/1E/1L, Topsia Road, Panchannagram, Kolkata, Pin - 700039, West Bengal, India.
                 </p>
-              </div>
+              </a>
 
               <Link 
                 href="/market-area" 

@@ -10,6 +10,11 @@ import { replaceLocation } from '@/lib/replaceLocation';
 export const revalidate = 3600; // Cache page and revalidate at most every hour or on-demand via revalidatePath
 
 export async function generateMetadata(): Promise<Metadata> {
+  const defaultTitle = "GlobalWeblify | Web Development & Digital Marketing Agency";
+  const defaultDesc = "Leading Web Development, SEO, and Digital Marketing Agency in India. We build AI-powered solutions for your business growth.";
+  const defaultKeywords = "Web Development, SEO, Digital Marketing, AI Solutions, GlobalWeblify";
+  const defaultLogo = "https://globalwebify.com/global_webify_logo.png";
+
   try {
     const host = headers().get('host');
     const location = getSubdomainLocation(host);
@@ -17,26 +22,75 @@ export async function generateMetadata(): Promise<Metadata> {
     if (location) {
       const subContent = await getSubdomainContent('homepage');
       if (subContent) {
+        const title = replaceLocation(subContent.seoTitle || '', location) || `GlobalWeblify ${location}`;
+        const description = replaceLocation(subContent.seoDescription || '', location);
         return {
-          title: replaceLocation(subContent.seoTitle || '', location) || `GlobalWeblify ${location}`,
-          description: replaceLocation(subContent.seoDescription || '', location),
+          title,
+          description,
           keywords: `Web Development ${location}, SEO ${location}, Digital Marketing ${location}`,
+          openGraph: {
+            title,
+            description,
+            url: `https://${host}`,
+            siteName: 'GlobalWeblify',
+            images: [{ url: defaultLogo, width: 1200, height: 630, alt: 'GlobalWeblify Logo' }],
+            locale: 'en_US',
+            type: 'website',
+          },
+          twitter: {
+            card: 'summary_large_image',
+            title,
+            description,
+            images: [defaultLogo],
+          }
         };
       }
     }
 
     const seo = await getHomepageSeo();
+    const title = seo.title || defaultTitle;
+    const description = seo.description || defaultDesc;
     return {
-      title: seo.title || "GlobalWeblify | Web Development & Digital Marketing Agency",
-      description: seo.description || "Leading Web Development, SEO, and Digital Marketing Agency in India. We build AI-powered solutions for your business growth.",
-      keywords: seo.keywords || "Web Development, SEO, Digital Marketing, AI Solutions, GlobalWeblify",
+      title,
+      description,
+      keywords: seo.keywords || defaultKeywords,
+      openGraph: {
+        title,
+        description,
+        url: 'https://globalwebify.com',
+        siteName: 'GlobalWeblify',
+        images: [{ url: defaultLogo, width: 1200, height: 630, alt: 'GlobalWeblify Logo' }],
+        locale: 'en_US',
+        type: 'website',
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title,
+        description,
+        images: [defaultLogo],
+      }
     };
   } catch (error) {
     // Expected to throw DYNAMIC_SERVER_USAGE during static generation
     return {
-      title: "GlobalWeblify | Web Development & Digital Marketing Agency",
-      description: "Leading Web Development, SEO, and Digital Marketing Agency in India. We build AI-powered solutions for your business growth.",
-      keywords: "Web Development, SEO, Digital Marketing, AI Solutions, GlobalWeblify",
+      title: defaultTitle,
+      description: defaultDesc,
+      keywords: defaultKeywords,
+      openGraph: {
+        title: defaultTitle,
+        description: defaultDesc,
+        url: 'https://globalwebify.com',
+        siteName: 'GlobalWeblify',
+        images: [{ url: defaultLogo, width: 1200, height: 630, alt: 'GlobalWeblify Logo' }],
+        locale: 'en_US',
+        type: 'website',
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title: defaultTitle,
+        description: defaultDesc,
+        images: [defaultLogo],
+      }
     };
   }
 }

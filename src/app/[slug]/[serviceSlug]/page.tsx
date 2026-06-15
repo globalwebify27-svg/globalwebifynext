@@ -124,10 +124,84 @@ export default async function CityServicePage({ params }: Props) {
     updatedAt:       rawPage.updatedAt,
   };
 
-  const remainingSubMenus = await db.servicePage.findMany({
+  const rawRemainingSubMenus = await db.servicePage.findMany({
     where: { category: page.category, isActive: true, id: { not: page.id } },
-    select: { title: true, slug: true, seoDescription: true, heroDescription: true, content: true, image: true },
+    select: { title: true, slug: true, seoDescription: true, heroDescription: true, content: true, image: true, id: true },
     orderBy: { createdAt: 'desc' }
+  });
+
+  const currentCleanSlug = page.slug.startsWith('/') ? page.slug.substring(1) : page.slug;
+
+  const seoSlugs = [
+    'seo-services',
+    'on-page-seo',
+    'off-page-seo',
+    'technical-seo',
+    'local-business-seo',
+    'gmb-seo'
+  ];
+
+  const aiSeoSlugs = [
+    'ai-seo-services',
+    'generative-engine-optimization-services',
+    'answer-engine-optimization-services',
+    'perplexity-ai-seo-services',
+    'chatgpt-ai-seo-services',
+    'gemini-ai-seo-services',
+    'claude-ai-seo-services',
+    'agentic-ai-seo-services',
+    'ai-powered-content-creation-services'
+  ];
+
+  let filteredRawSubMenus = rawRemainingSubMenus;
+  if (seoSlugs.includes(currentCleanSlug)) {
+    filteredRawSubMenus = rawRemainingSubMenus.filter(m => {
+      const ms = m.slug.startsWith('/') ? m.slug.substring(1) : m.slug;
+      return !aiSeoSlugs.includes(ms);
+    });
+  } else if (aiSeoSlugs.includes(currentCleanSlug)) {
+    filteredRawSubMenus = rawRemainingSubMenus.filter(m => {
+      const ms = m.slug.startsWith('/') ? m.slug.substring(1) : m.slug;
+      return !seoSlugs.includes(ms);
+    });
+  }
+
+  const subMenuSlugs = filteredRawSubMenus.map(m => {
+    const clean = m.slug.startsWith('/') ? m.slug.substring(1) : m.slug;
+    return clean;
+  });
+
+  const subMenuOverrides = await db.subdomainContent.findMany({
+    where: { pageType: { in: subMenuSlugs } }
+  });
+
+  const remainingSubMenus = filteredRawSubMenus.map(m => {
+    const cleanSlug = m.slug.startsWith('/') ? m.slug.substring(1) : m.slug;
+    const override = subMenuOverrides.find(o => o.pageType === cleanSlug);
+
+    let title = m.title;
+    let heroDescription = m.heroDescription;
+    let seoDescription = m.seoDescription;
+    let content = m.content;
+
+    if (override) {
+      if (override.heroTitle || override.title) {
+        title = override.heroTitle || override.title || m.title;
+      }
+      if (override.heroDescription || override.seoDescription || override.content) {
+        heroDescription = override.heroDescription || null;
+        seoDescription = override.seoDescription || null;
+        content = override.content || "";
+      }
+    }
+
+    return {
+      ...m,
+      title: replaceLocation(title ?? '', locationName),
+      heroDescription: replaceLocation(heroDescription ?? '', locationName),
+      seoDescription: replaceLocation(seoDescription ?? '', locationName),
+      content: replaceLocation(content ?? '', locationName),
+    };
   });
 
   return (
@@ -140,14 +214,7 @@ export default async function CityServicePage({ params }: Props) {
         cityKey={cityKey} 
       />
       
-      {/* Back to city landing */}
-      <section className="py-5 bg-[#f8fbfa] border-t border-gray-100">
-        <div className="max-w-7xl mx-auto px-4 text-center">
-          <Link href={`/${cityKey}`} className="inline-flex items-center gap-2 text-[#1a8b4c] font-black text-xs uppercase tracking-wider hover:gap-3 transition-all">
-            <MapPin size={14} /> View All Services in {locationName}
-          </Link>
-        </div>
-      </section>
+
     </>
   );
 }

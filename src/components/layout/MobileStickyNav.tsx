@@ -160,6 +160,7 @@ export default function MobileStickyNav() {
               <a 
                 href={item.href}
                 target={item.target}
+                title={`${item.label} - Global Webify`}
                 className="flex-1 flex flex-col items-center justify-center gap-1.5 text-white transition-colors relative z-10 overflow-hidden"
               >
                 <motion.div
@@ -182,6 +183,7 @@ export default function MobileStickyNav() {
             ) : (
               <button 
                 onClick={() => setIsDrawerOpen(true)}
+                title={`${item.label} - Global Webify`}
                 className="flex-1 flex flex-col items-center justify-center gap-1.5 text-white transition-colors relative z-10 w-full overflow-hidden"
               >
                 <motion.div

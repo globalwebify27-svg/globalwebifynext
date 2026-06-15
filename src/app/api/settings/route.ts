@@ -49,15 +49,21 @@ export async function POST(request: Request) {
       'partnershipPageImage'
     ];
 
+    const promises = [];
     for (const key of updatableKeys) {
       if (body && body[key] !== undefined) {
-        const value = typeof body[key] === 'boolean' ? String(body[key]) : String(body[key]);
-        await db.siteSetting.upsert({
-          where: { key },
-          update: { value },
-          create: { key, value }
-        });
+        const value = String(body[key]);
+        promises.push(
+          db.siteSetting.upsert({
+            where: { key },
+            update: { value },
+            create: { key, value }
+          })
+        );
       }
+    }
+    if (promises.length > 0) {
+      await Promise.all(promises);
     }
 
     // Revalidate paths

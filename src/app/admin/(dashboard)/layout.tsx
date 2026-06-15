@@ -23,57 +23,64 @@ const getSidebarServices = unstable_cache(
   { revalidate: 60, tags: ['services'] }
 );
 
+const globalForSeed = global as typeof globalThis & {
+  isSeeded?: boolean;
+};
+
 export default async function AdminDashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  // Auto-seed missing category pages for the admin panel
-  const SEED_CATEGORIES = ['/seo-services', '/ai-seo-services', '/social-media-marketing', '/ppc-services'];
-  try {
-    const existing = await db.servicePage.count({
-      where: {
-        slug: {
-          in: [
-            ...SEED_CATEGORIES,
-            ...SEED_CATEGORIES.map(s => s.replace(/^\//, ''))
-          ]
-        }
-      }
-    });
-    if (existing < SEED_CATEGORIES.length) {
-      for (const slug of SEED_CATEGORIES) {
-        const exists = await db.servicePage.findFirst({
-          where: {
-            OR: [
-              { slug },
-              { slug: slug.replace(/^\//, '') }
+  // Auto-seed missing category pages for the admin panel (only once on server startup)
+  if (!globalForSeed.isSeeded) {
+    const SEED_CATEGORIES = ['/seo-services', '/ai-seo-services', '/social-media-marketing', '/ppc-services'];
+    try {
+      const existing = await db.servicePage.count({
+        where: {
+          slug: {
+            in: [
+              ...SEED_CATEGORIES,
+              ...SEED_CATEGORIES.map(s => s.replace(/^\//, ''))
             ]
           }
-        });
-        if (!exists) {
-          const cleanSlug = slug.replace(/^\//, '');
-          const title = cleanSlug.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
-          await db.servicePage.create({
-            data: {
-              slug,
-              title,
-              contentTitle: title,
-              seoTitle: `Best ${title} | GlobalWebify`,
-              seoDescription: `Explore our professional ${title} to grow your business online.`,
-              seoKeywords: title.toLowerCase(),
-              heroDescription: `Expert ${title} tailored to drive traffic, leads, and sales for your business.`,
-              content: `<h2>Welcome to our ${title}</h2><p>We provide industry-leading solutions to help you dominate your market.</p>`,
-              category: 'marketing',
-              image: '/web-dev-banner-bg.png',
-              isActive: true,
+        }
+      });
+      if (existing < SEED_CATEGORIES.length) {
+        for (const slug of SEED_CATEGORIES) {
+          const exists = await db.servicePage.findFirst({
+            where: {
+              OR: [
+                { slug },
+                { slug: slug.replace(/^\//, '') }
+              ]
             }
           });
+          if (!exists) {
+            const cleanSlug = slug.replace(/^\//, '');
+            const title = cleanSlug.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+            await db.servicePage.create({
+              data: {
+                slug,
+                title,
+                contentTitle: title,
+                seoTitle: `Best ${title} | GlobalWebify`,
+                seoDescription: `Explore our professional ${title} to grow your business online.`,
+                seoKeywords: title.toLowerCase(),
+                heroDescription: `Expert ${title} tailored to drive traffic, leads, and sales for your business.`,
+                content: `<h2>Welcome to our ${title}</h2><p>We provide industry-leading solutions to help you dominate your market.</p>`,
+                category: 'marketing',
+                image: '/web-dev-banner-bg.png',
+                isActive: true,
+              }
+            });
+          }
         }
       }
+      globalForSeed.isSeeded = true;
+    } catch (e) {
+      console.error("Auto-seed failed", e);
     }
-  } catch (e) {
-    console.error("Auto-seed failed", e);
   }
   const headersList = headers();
   const pathname = headersList.get('x-pathname') || '';

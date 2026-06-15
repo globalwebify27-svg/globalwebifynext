@@ -470,6 +470,7 @@ export default function AuditModal({ isOpen, onClose }: AuditModalProps) {
                     <a
                       href={`https://wa.me/917563901100?text=${encodeURIComponent(`Hi! I ran the free audit for ${url} — score: ${scores.overall}/100. I'd love the full report & improvement plan!`)}`}
                       target="_blank" rel="noopener noreferrer"
+                      title="Get Audit Report on WhatsApp - Global Webify"
                       style={{
                         width:"100%", boxSizing:"border-box",
                         display:"flex", alignItems:"center", justifyContent:"center", gap:"7px",

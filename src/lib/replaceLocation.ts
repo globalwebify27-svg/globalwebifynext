@@ -17,7 +17,11 @@ export function replaceLocation(text: string, loc: string): string {
     return cleaned.trim();
   }
   
-  return text.replace(spanRegex, loc).replace(rawRegex, loc);
+  let result = text.replace(spanRegex, loc).replace(rawRegex, loc);
+  if (loc && loc.toLowerCase() !== 'ranchi') {
+    result = result.replace(/ranchi/gi, loc);
+  }
+  return result;
 }
 
 /**

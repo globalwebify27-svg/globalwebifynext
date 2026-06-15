@@ -71,7 +71,7 @@ const ProjectCard = ({ project, index }: { project: any, index: number }) => {
       className="relative"
       style={{ perspective: 1000 }}
     >
-      <Link href={project.link} target="_blank" rel="noopener noreferrer">
+      <Link href={project.link} target="_blank" rel="noopener noreferrer" title={`${project.title} - Global Webify`}>
         <motion.div
           onMouseMove={handleMouse}
           onMouseLeave={() => { x.set(0.5); y.set(0.5); }}

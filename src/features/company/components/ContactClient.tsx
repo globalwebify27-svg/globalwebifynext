@@ -279,7 +279,7 @@ export default function ContactClient() {
                   <div className="space-y-2 text-xs font-semibold text-gray-600">
                     <div className="flex items-start gap-2.5">
                       <MapPin size={14} className="text-gray-400 shrink-0 mt-0.5" />
-                      <span>2nd Floor, Alam Complex, Ashok Nagar Road, Kadru, Ranchi, Jharkhand 834002</span>
+                      <a href="https://maps.google.com/?q=2nd+Floor,+Alam+Complex,+Ashok+Nagar+Road,+Kadru,+Ranchi,+Jharkhand+834002" target="_blank" rel="noopener noreferrer" title="View Ranchi HQ on Google Maps - Global Webify" className="hover:text-[#1a8b4c] transition-colors">2nd Floor, Alam Complex, Ashok Nagar Road, Kadru, Ranchi, Jharkhand 834002</a>
                     </div>
                     <div className="flex items-center gap-2.5">
                       <Phone size={14} className="text-gray-400" />
@@ -302,7 +302,7 @@ export default function ContactClient() {
                   <div className="space-y-2 text-xs font-semibold text-gray-600">
                     <div className="flex items-start gap-2.5">
                       <MapPin size={14} className="text-gray-400 shrink-0 mt-0.5" />
-                      <span>473 Mundet Place, Ste US, Hillside, New Jersey 07205</span>
+                      <a href="https://maps.google.com/?q=473+Mundet+Place,+Ste+US,+Hillside,+New+Jersey+07205" target="_blank" rel="noopener noreferrer" title="View US Office on Google Maps - Global Webify" className="hover:text-[#1a8b4c] transition-colors">473 Mundet Place, Ste US, Hillside, New Jersey 07205</a>
                     </div>
                     <div className="flex items-center gap-2.5">
                       <Phone size={14} className="text-gray-400" />
@@ -338,7 +338,7 @@ export default function ContactClient() {
                   <div className="space-y-2 text-xs font-semibold text-gray-600">
                     <div className="flex items-start gap-2.5">
                       <MapPin size={14} className="text-gray-400 shrink-0 mt-0.5" />
-                      <span>36/1E/1L, Topsia Road, Kolkata - 700039</span>
+                      <a href="https://maps.google.com/?q=36/1E/1L,+Topsia+Road,+Kolkata+-+700039" target="_blank" rel="noopener noreferrer" title="View Kolkata Partner Office on Google Maps - Global Webify" className="hover:text-[#1a8b4c] transition-colors">36/1E/1L, Topsia Road, Kolkata - 700039</a>
                     </div>
                     <div className="flex items-center gap-2.5">
                       <Phone size={14} className="text-gray-400" />

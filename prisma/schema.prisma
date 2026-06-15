@@ -34,6 +34,7 @@ model ContactSubmission {
   message   String   @db.Text
   createdAt DateTime @default(now())
 
+  @@index([createdAt(sort: Desc)])
   @@map("contactsubmission")
 }
 
@@ -64,6 +65,7 @@ model LoginAttempt {
   timestamp DateTime @default(now())
   success   Boolean
 
+  @@index([ip, timestamp])
   @@map("loginattempt")
 }
 
@@ -124,6 +126,7 @@ model JobApplication {
   lockedUntil DateTime?
   createdAt   DateTime @default(now())
 
+  @@index([createdAt(sort: Desc)])
   @@map("jobapplication")
 }
 

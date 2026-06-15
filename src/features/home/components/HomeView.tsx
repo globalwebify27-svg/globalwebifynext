@@ -2,17 +2,17 @@ import React from 'react';
 import dynamic from 'next/dynamic';
 import Hero from '@/components/sections/Hero';
 import { db } from '@/lib/db';
-import { FAQSection } from '@/components/sections/FAQSection';
 import { getHomepageFaqs, getHeroTexts, getAboutSeo, getCityHeroSettings, getHomepageHeroDesc, getHomepageAboutCard, getSectionHeaders } from '@/app/admin/(dashboard)/homepage/actions';
 import { getSubdomainHomepageFaqs, getSubdomainHomepageHeroDesc, getSubdomainAboutSeo, getSubdomainHomepageAboutCard, getSubdomainSectionHeaders } from '@/app/admin/(dashboard)/subdomains/homepage/actions';
 
-import ServicesGrid from '@/components/sections/ServicesGrid';
-import Portfolio from '@/components/sections/Portfolio';
-import TechStack from '@/components/sections/TechStack';
-import LatestBlog from '@/components/sections/LatestBlog';
-import ResultsSection from '@/components/sections/ResultsSection';
-import AboutSEO from '@/components/sections/AboutSEO';
-import TrustSection from '@/components/sections/TrustSection';
+const ServicesGrid = dynamic(() => import('@/components/sections/ServicesGrid'), { ssr: true });
+const Portfolio = dynamic(() => import('@/components/sections/Portfolio'), { ssr: true });
+const TechStack = dynamic(() => import('@/components/sections/TechStack'), { ssr: true });
+const LatestBlog = dynamic(() => import('@/components/sections/LatestBlog'), { ssr: true });
+const ResultsSection = dynamic(() => import('@/components/sections/ResultsSection'), { ssr: true });
+const AboutSEO = dynamic(() => import('@/components/sections/AboutSEO'), { ssr: true });
+const TrustSection = dynamic(() => import('@/components/sections/TrustSection'), { ssr: true });
+const FAQSection = dynamic(() => import('@/components/sections/FAQSection').then(mod => mod.FAQSection), { ssr: true });
 
 function replaceLocation(text: string, loc: string = ""): string {
   if (!text) return '';
@@ -26,20 +26,40 @@ function replaceLocation(text: string, loc: string = ""): string {
     return cleaned.trim();
   }
   
-  return text.replace(spanRegex, loc).replace(rawRegex, loc);
+  let result = text.replace(spanRegex, loc).replace(rawRegex, loc);
+  if (loc && loc.toLowerCase() !== 'ranchi') {
+    result = result.replace(/ranchi/gi, loc);
+  }
+  return result;
 }
 
 export default async function HomeView({ city, cityKey, location, subdomainContent }: { city?: string; cityKey?: string; location?: string; subdomainContent?: any } = {}) {
   let dbPosts: any[] = [];
+  let serviceDescriptions: Record<string, string> = {};
 
+  // Fix 2: Fire both DB queries in parallel instead of sequentially
   try {
-    dbPosts = await db.blogPost.findMany({
-      where: { isActive: true },
-      orderBy: { createdAt: 'desc' },
-      take: 4
+    const [rawPosts, services] = await Promise.all([
+      db.blogPost.findMany({
+        where: { isActive: true },
+        orderBy: { createdAt: 'desc' },
+        take: 4
+      }),
+      db.servicePage.findMany({
+        where: { isActive: true },
+        select: { slug: true, heroDescription: true }
+      })
+    ]);
+
+    dbPosts = rawPosts;
+    services.forEach(s => {
+      const key = s.slug.startsWith('/') ? s.slug.substring(1) : s.slug;
+      if (s.heroDescription) {
+        serviceDescriptions[key] = s.heroDescription;
+      }
     });
   } catch (e) {
-    console.error("Could not fetch blogs:", e);
+    console.error("Could not fetch blog posts or service descriptions:", e);
   }
 
   let homepageFaqs = [];
@@ -52,45 +72,46 @@ export default async function HomeView({ city, cityKey, location, subdomainConte
 
   if (location || subdomainContent) {
     try {
-      homepageFaqs = await getSubdomainHomepageFaqs();
-      const heroData = await getSubdomainHomepageHeroDesc();
+      // Parallelize subdomain queries
+      const [faqs, heroData, seo, card, headers] = await Promise.all([
+        getSubdomainHomepageFaqs(),
+        getSubdomainHomepageHeroDesc(),
+        getSubdomainAboutSeo(),
+        getSubdomainHomepageAboutCard(),
+        getSubdomainSectionHeaders()
+      ]);
+      homepageFaqs = faqs;
       homepageHeroTitle = heroData.title;
       homepageHeroDesc = heroData.description;
-      aboutSeoData = await getSubdomainAboutSeo();
-      aboutCard = await getSubdomainHomepageAboutCard();
-      sectionHeaders = await getSubdomainSectionHeaders();
+      aboutSeoData = seo;
+      aboutCard = card;
+      sectionHeaders = headers;
     } catch (e) {
       console.error("Could not fetch subdomain homepage settings:", e);
     }
   } else {
     try {
-      homepageFaqs = await getHomepageFaqs();
-      heroTexts = await getHeroTexts();
-      homepageHeroDesc = await getHomepageHeroDesc();
-      aboutSeoData = await getAboutSeo();
-      aboutCard = await getHomepageAboutCard();
-      sectionHeaders = await getSectionHeaders();
+      // Parallelize global homepage queries
+      const [faqs, texts, heroDesc, seo, card, headers] = await Promise.all([
+        getHomepageFaqs(),
+        getHeroTexts(),
+        getHomepageHeroDesc(),
+        getAboutSeo(),
+        getHomepageAboutCard(),
+        getSectionHeaders()
+      ]);
+      homepageFaqs = faqs;
+      heroTexts = texts;
+      homepageHeroDesc = heroDesc;
+      aboutSeoData = seo;
+      aboutCard = card;
+      sectionHeaders = headers;
     } catch (e) {
       console.error("Could not fetch global homepage settings:", e);
     }
   }
 
   // Load and process location for descriptions for ServicesGrid from database
-  let serviceDescriptions: Record<string, string> = {};
-  try {
-    const services = await db.servicePage.findMany({
-      where: { isActive: true },
-      select: { slug: true, heroDescription: true }
-    });
-    services.forEach(s => {
-      const key = s.slug.startsWith('/') ? s.slug.substring(1) : s.slug;
-      if (s.heroDescription) {
-        serviceDescriptions[key] = s.heroDescription;
-      }
-    });
-  } catch (e) {
-    console.error("Could not fetch service descriptions:", e);
-  }
 
   // Apply Location Replacements
   const locationName = location || city || "";
@@ -163,11 +184,12 @@ export default async function HomeView({ city, cityKey, location, subdomainConte
 
         <TechStack sectionTitle={sectionHeaders?.techStack?.title} sectionDesc={sectionHeaders?.techStack?.description} />
 
-        <LatestBlog dbPosts={processedPosts} sectionTitle={sectionHeaders?.latestBlog?.title} sectionDesc={sectionHeaders?.latestBlog?.description} />
+        {(!cityKey || subdomainContent) && <AboutSEO data={aboutSeoData} />}
 
         <ResultsSection cardData={aboutCard} />
 
-        {(!cityKey || subdomainContent) && <AboutSEO data={aboutSeoData} />}
+        <LatestBlog dbPosts={processedPosts} sectionTitle={sectionHeaders?.latestBlog?.title} sectionDesc={sectionHeaders?.latestBlog?.description} />
+
         <TrustSection sectionTitle={sectionHeaders?.trust?.title} sectionDesc={sectionHeaders?.trust?.description} />
         {homepageFaqs.length > 0 && <FAQSection faqs={homepageFaqs} sectionTitle={sectionHeaders?.faq?.title} sectionDesc={sectionHeaders?.faq?.description} />}
       </div>

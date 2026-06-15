@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { ArrowUpRight, Star } from 'lucide-react';
+import { ArrowUpRight, Star, Award } from 'lucide-react';
 import { Section } from '../layout/Responsive/Section';
 import { AnimatePresence } from 'framer-motion';
 
@@ -198,7 +198,7 @@ export default function ResultsSection({ cardData }: { cardData?: any }) {
         </div>
 
         {/* Bottom stats row - Optimized for Mobile */}
-        <div className="grid grid-cols-2 lg:grid-cols-2 gap-4 md:gap-6 mt-6">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-6 mt-6">
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -211,6 +211,22 @@ export default function ResultsSection({ cardData }: { cardData?: any }) {
             </div>
             <div className="hidden md:flex w-12 h-12 bg-gray-50 text-[#1a8b4c] rounded-full items-center justify-center group-hover:bg-[#1a8b4c] group-hover:text-white transition-colors shadow-sm">
               <Star size={24} fill="currentColor" />
+            </div>
+          </motion.div>
+
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "150px" }}
+            transition={{ delay: 0.05 }}
+            className="bg-[#f0fdf4] border border-[#1a8b4c]/10 shadow-lg shadow-[#1a8b4c]/5 rounded-[24px] md:rounded-[32px] p-5 md:p-6 flex flex-col md:flex-row items-center justify-between group hover:border-[#1a8b4c]/30 transition-all text-center md:text-left"
+          >
+            <div>
+              <h4 className="text-[28px] md:text-[36px] font-black text-gray-950 leading-none mb-1">10+</h4>
+              <p className="text-gray-500 text-[9px] md:text-[11px] font-black uppercase tracking-[0.2em]">Years Experience</p>
+            </div>
+            <div className="hidden md:flex w-12 h-12 bg-gray-50 text-[#1a8b4c] rounded-full items-center justify-center group-hover:bg-[#1a8b4c] group-hover:text-white transition-colors shadow-sm">
+              <Award size={24} />
             </div>
           </motion.div>
 

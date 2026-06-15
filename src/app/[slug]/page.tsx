@@ -194,11 +194,47 @@ export default async function DynamicPage({ params }: Props) {
     updatedAt:       fetchedPage.updatedAt,
   };
 
-  const remainingSubMenus = await db.servicePage.findMany({
+  const rawRemainingSubMenus = await db.servicePage.findMany({
     where: { category: page.category, isActive: true, id: { not: page.id } },
     select: { title: true, slug: true, seoDescription: true, heroDescription: true, content: true, image: true },
     orderBy: { createdAt: 'desc' }
   });
+
+  const currentCleanSlug = page.slug.startsWith('/') ? page.slug.substring(1) : page.slug;
+
+  const seoSlugs = [
+    'seo-services',
+    'on-page-seo',
+    'off-page-seo',
+    'technical-seo',
+    'local-business-seo',
+    'gmb-seo'
+  ];
+
+  const aiSeoSlugs = [
+    'ai-seo-services',
+    'generative-engine-optimization-services',
+    'answer-engine-optimization-services',
+    'perplexity-ai-seo-services',
+    'chatgpt-ai-seo-services',
+    'gemini-ai-seo-services',
+    'claude-ai-seo-services',
+    'agentic-ai-seo-services',
+    'ai-powered-content-creation-services'
+  ];
+
+  let remainingSubMenus = rawRemainingSubMenus;
+  if (seoSlugs.includes(currentCleanSlug)) {
+    remainingSubMenus = rawRemainingSubMenus.filter(m => {
+      const ms = m.slug.startsWith('/') ? m.slug.substring(1) : m.slug;
+      return !aiSeoSlugs.includes(ms);
+    });
+  } else if (aiSeoSlugs.includes(currentCleanSlug)) {
+    remainingSubMenus = rawRemainingSubMenus.filter(m => {
+      const ms = m.slug.startsWith('/') ? m.slug.substring(1) : m.slug;
+      return !seoSlugs.includes(ms);
+    });
+  }
 
   return (
     <ServicePageView 

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, startTransition } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -110,10 +110,18 @@ export default function Header({ initialSettings }: HeaderProps) {
     }, 250);
   };
 
+  const handleSetIsOpen = (open: boolean) => {
+    startTransition(() => {
+      setIsOpen(open);
+    });
+  };
+
   const closeMenu = () => {
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
-    setActiveMenu(null);
-    setIsOpen(false);
+    startTransition(() => {
+      setActiveMenu(null);
+      setIsOpen(false);
+    });
     setMenuForceHidden(true);
     
     // Automatically lift the force-close lock after 300ms so subsequent hovers work correctly
@@ -123,7 +131,9 @@ export default function Header({ initialSettings }: HeaderProps) {
   };
 
   const toggleMobileMenu = (menu: string) => {
-    setMobileMenuOpen(mobileMenuOpen === menu ? null : menu);
+    startTransition(() => {
+      setMobileMenuOpen(mobileMenuOpen === menu ? null : menu);
+    });
   };
 
   useEffect(() => {
@@ -171,11 +181,11 @@ export default function Header({ initialSettings }: HeaderProps) {
     <header className="fixed top-0 left-0 right-0 z-[9999] bg-white border-b border-gray-200 font-sans">
       {/* Preload the promo background image to ensure instant display on hover */}
       <div className="absolute -left-[9999px] -top-[9999px] w-1 h-1 opacity-0 pointer-events-none" aria-hidden="true">
-        <img src="/nav-promo.png" alt="preload" />
+        <img src="/nav-promo.png" alt="Promo Background Preload - Global Webify" />
       </div>
 
       {/* Top Bar Component */}
-      <TopBar isOpen={isOpen} setIsOpen={setIsOpen} />
+      <TopBar isOpen={isOpen} setIsOpen={handleSetIsOpen} />
 
       {/* Main Nav Bar */}
       <nav
@@ -200,6 +210,7 @@ export default function Header({ initialSettings }: HeaderProps) {
                       ? `/${partnershipSlug}` 
                       : `/${link.id}`
                 }
+                title={`${link.name} - Global Webify`}
                 onClick={(e) => {
                   if (link.hasDropdown) {
                     e.preventDefault();
@@ -342,6 +353,7 @@ export default function Header({ initialSettings }: HeaderProps) {
                     <a 
                       key={i}
                       href={item.href}
+                      title={item.href.includes('wa.me') ? 'WhatsApp - Global Webify' : `Call ${item.num} - Global Webify`}
                       target={item.href.includes('wa.me') ? "_blank" : undefined}
                       rel={item.href.includes('wa.me') ? "noopener noreferrer" : undefined}
                       className="flex items-center gap-3 p-4 rounded-xl bg-white border-2 border-gray-100 shadow-sm transition-all active:scale-[0.98] active:bg-gray-50"

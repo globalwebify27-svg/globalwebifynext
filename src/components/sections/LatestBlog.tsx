@@ -86,6 +86,7 @@ export default function LatestBlog({ dbPosts = [], sectionTitle, sectionDesc }: 
               <Link 
                 href={slug}
                 key={post.title}
+                title={`${post.title} - Global Webify`}
                 className="block h-full cursor-pointer"
               >
                 <motion.article

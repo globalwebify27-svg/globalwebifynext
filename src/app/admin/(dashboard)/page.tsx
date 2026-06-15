@@ -7,31 +7,47 @@ import { getSlugTitle } from '@/lib/replaceLocation';
 export const revalidate = 0; // Disable cache so the dashboard stats are always real-time
 
 export default async function AdminDashboardOverview() {
-  // Fetch real-time metrics
-  const servicesCount = await db.servicePage.count();
-  const blogsCount = await db.blogPost.count();
-  
-  // Fetch contact messages count
-  let contactsCount = 0;
-  try {
-    const rawCount: any[] = await db.$queryRawUnsafe('SELECT COUNT(*) as count FROM ContactSubmission');
-    if (rawCount && rawCount[0]) {
-      contactsCount = Number(rawCount[0].count);
-    }
-  } catch (e) {
-    console.error(e);
-  }
-  
-  // Fetch lists
-  const recentServices = await db.servicePage.findMany({
-    orderBy: { createdAt: 'desc' },
-    take: 5
-  });
+  // Fetch real-time metrics and lists in parallel to prevent sequential blocking
+  const [
+    servicesCount,
+    blogsCount,
+    rawCount,
+    recentServices,
+    recentBlogs
+  ] = await Promise.all([
+    db.servicePage.count(),
+    db.blogPost.count(),
+    db.$queryRawUnsafe<any[]>('SELECT COUNT(*) as count FROM ContactSubmission').catch(e => {
+      console.error(e);
+      return [];
+    }),
+    db.servicePage.findMany({
+      select: {
+        id: true,
+        slug: true,
+        category: true,
+        createdAt: true
+      },
+      orderBy: { createdAt: 'desc' },
+      take: 5
+    }),
+    db.blogPost.findMany({
+      select: {
+        id: true,
+        title: true,
+        slug: true,
+        isActive: true,
+        createdAt: true
+      },
+      orderBy: { createdAt: 'desc' },
+      take: 5
+    })
+  ]);
 
-  const recentBlogs = await db.blogPost.findMany({
-    orderBy: { createdAt: 'desc' },
-    take: 5
-  });
+  let contactsCount = 0;
+  if (rawCount && rawCount[0]) {
+    contactsCount = Number(rawCount[0].count);
+  }
 
   return (
     <div className="space-y-10 font-sans">

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, startTransition } from 'react';
 import { Plus, Minus } from 'lucide-react';
 
 export interface FAQItem {
@@ -14,7 +14,9 @@ export function FAQSection({ faqs, sectionTitle, sectionDesc }: { faqs: FAQItem[
   if (!faqs || faqs.length === 0) return null;
 
   const toggle = (index: number) => {
-    setOpenIndex(openIndex === index ? null : index);
+    startTransition(() => {
+      setOpenIndex(openIndex === index ? null : index);
+    });
   };
 
   const isGrid = faqs.length > 4;

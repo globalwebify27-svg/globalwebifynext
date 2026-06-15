@@ -19,14 +19,14 @@ export const TopBar = ({ isOpen, setIsOpen }: TopBarProps) => {
         
         {/* LEFT: Logo - Hanging/Large Style */}
         <div className="flex items-center gap-2 md:gap-4 shrink-0 h-full relative">
-          <Link href="/" className="flex items-center shrink-0 h-full relative z-50">
+          <Link href="/" title="Global Webify Home" className="flex items-center shrink-0 h-full relative z-50">
             <div className={cn(
               "relative transition-all duration-300 px-1 -ml-2.5 md:ml-0",
               isOpen ? "h-[65px] w-[100px] md:h-[80px] md:w-[120px]" : "h-[55px] md:h-[75px] w-[90px] md:w-[110px]"
             )}>
               <Image
                 src="/global_webify_logo.png"
-                alt="GlobalWebify"
+                alt="Global Webify Logo"
                 fill
                 priority
                 quality={100}
@@ -56,13 +56,14 @@ export const TopBar = ({ isOpen, setIsOpen }: TopBarProps) => {
               href={social.href}
               target="_blank"
               rel="noopener noreferrer"
+              title={`${social.name} - Global Webify`}
               className={cn(
                 "w-8 h-8 rounded-full flex items-center justify-center shadow-md active:scale-95 transition-all p-1.5 overflow-hidden",
                 social.bg.startsWith('bg-') ? social.bg : ""
               )}
               style={!social.bg.startsWith('bg-') ? { background: social.bg } : {}}
             >
-              <img src={social.icon} alt={social.name} className="w-full h-full object-contain" />
+              <img src={social.icon} alt={`${social.name} - Global Webify`} className="w-full h-full object-contain" />
             </a>
           ))}
         </div>
@@ -71,19 +72,19 @@ export const TopBar = ({ isOpen, setIsOpen }: TopBarProps) => {
         <div className="flex items-center gap-2 md:gap-4 z-10 h-full">
           {/* Desktop & Tablet Contacts */}
           <div className="hidden md:flex items-center gap-2 lg:gap-3 xl:gap-5 text-[11px] xl:text-[12.8px] font-medium text-gray-700 tracking-tight mr-1 lg:mr-2 xl:mr-4 font-sans whitespace-nowrap shrink-0">
-            <a href={`tel:${TOP_BAR_CONTACT.phone1}`} className="flex items-center gap-1 xl:gap-1.5 hover:text-primary transition-colors group whitespace-nowrap shrink-0">
+            <a href={`tel:${TOP_BAR_CONTACT.phone1}`} title={`Call ${TOP_BAR_CONTACT.phone1} - Global Webify`} className="flex items-center gap-1 xl:gap-1.5 hover:text-primary transition-colors group whitespace-nowrap shrink-0">
               <div className="w-5 h-5 lg:w-6 lg:h-6 xl:w-7 xl:h-7 rounded-full bg-pink-50 flex items-center justify-center text-pink-500 shadow-sm border border-pink-100 group-hover:bg-pink-100 transition-colors shrink-0">
                 <Phone size={10} className="xl:w-3 xl:h-3" fill="currentColor" />
               </div>
               <span className="font-sans whitespace-nowrap">{TOP_BAR_CONTACT.phone1}</span>
             </a>
-            <a href={`tel:${TOP_BAR_CONTACT.phone2}`} className="hidden lg:flex items-center gap-1 xl:gap-1.5 hover:text-primary transition-colors group whitespace-nowrap shrink-0">
+            <a href={`tel:${TOP_BAR_CONTACT.phone2}`} title={`Call ${TOP_BAR_CONTACT.phone2} - Global Webify`} className="hidden lg:flex items-center gap-1 xl:gap-1.5 hover:text-primary transition-colors group whitespace-nowrap shrink-0">
               <div className="w-5 h-5 lg:w-6 lg:h-6 xl:w-7 xl:h-7 rounded-full bg-pink-50 flex items-center justify-center text-pink-500 shadow-sm border border-pink-100 group-hover:bg-pink-100 transition-colors shrink-0">
                 <Phone size={10} className="xl:w-3 xl:h-3" fill="currentColor" />
               </div>
               <span className="font-sans whitespace-nowrap">{TOP_BAR_CONTACT.phone2}</span>
             </a>
-            <a href={`mailto:${TOP_BAR_CONTACT.email}`} className="hidden lg:flex items-center gap-1 xl:gap-1.5 hover:text-primary transition-colors group whitespace-nowrap shrink-0">
+            <a href={`mailto:${TOP_BAR_CONTACT.email}`} title={`Email ${TOP_BAR_CONTACT.email} - Global Webify`} className="hidden lg:flex items-center gap-1 xl:gap-1.5 hover:text-primary transition-colors group whitespace-nowrap shrink-0">
               <div className="w-5 h-5 lg:w-6 lg:h-6 xl:w-7 xl:h-7 rounded-full bg-purple-50 flex items-center justify-center text-purple-600 shadow-sm border border-purple-100 group-hover:bg-purple-100 transition-colors shrink-0">
                 <Mail size={10} className="xl:w-3 xl:h-3" fill="currentColor" />
               </div>
@@ -99,24 +100,26 @@ export const TopBar = ({ isOpen, setIsOpen }: TopBarProps) => {
                 href={social.href}
                 target="_blank"
                 rel="noopener noreferrer"
+                title={`${social.name} - Global Webify`}
                 className={cn(
                   "w-6 h-6 xl:w-7 xl:h-7 rounded-full flex items-center justify-center hover:scale-110 transition-transform shadow-sm p-1.5 overflow-hidden",
                   social.bg.startsWith('bg-') ? social.bg : ""
                 )}
                 style={!social.bg.startsWith('bg-') ? { background: social.bg } : {}}
               >
-                <img src={social.icon} alt={social.name} className="w-full h-full object-contain" />
+                <img src={social.icon} alt={`${social.name} - Global Webify`} className="w-full h-full object-contain" />
               </a>
             ))}
           </div>
 
-          <Link href="/contact" className="hidden lg:flex items-center justify-center bg-[#22c55e] text-white px-5 py-2 rounded-full text-[12px] xl:text-[12.8px] font-semibold uppercase tracking-widest shadow-lg shadow-green-100 hover:bg-[#16a34a] transition-all active:scale-95 font-sans whitespace-nowrap">
+          <Link href="/contact" title="Contact Us - Global Webify" className="hidden lg:flex items-center justify-center bg-[#22c55e] text-white px-5 py-2 rounded-full text-[12px] xl:text-[12.8px] font-semibold uppercase tracking-widest shadow-lg shadow-green-100 hover:bg-[#16a34a] transition-all active:scale-95 font-sans whitespace-nowrap">
             Contact Us
           </Link>
 
           {/* Hamburger Menu */}
           <button
             onClick={() => setIsOpen(!isOpen)}
+            title="Toggle Menu - Global Webify"
             className="lg:hidden flex items-center justify-center w-8 h-8 rounded-full bg-[#1a8b4c] text-white hover:bg-[#15803d] transition-all shadow-md active:scale-95"
           >
             {isOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}

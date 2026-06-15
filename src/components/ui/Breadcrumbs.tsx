@@ -12,6 +12,7 @@ import {
   COMPANY_LINKS 
 } from '@/constants/navigation';
 import { CITIES_MAP } from '@/features/services/constants/cities';
+import { replaceLocation } from '@/lib/replaceLocation';
 
 const ROUTE_NAMES: Record<string, string> = {
   '': 'Home',
@@ -242,6 +243,9 @@ export const Breadcrumbs = ({ pathname, dynamicPages = [] }: { pathname: string,
   if (currentSegment === 'blog') {
     currentName = 'Blog';
   }
+  
+  const locationName = cityPrefix ? (CITIES_MAP[cityPrefix]?.name || '') : '';
+  currentName = replaceLocation(currentName, locationName);
 
   breadcrumbsList.push({
     name: currentName,
@@ -300,6 +304,7 @@ export const Breadcrumbs = ({ pathname, dynamicPages = [] }: { pathname: string,
               ) : (
                 <Link
                   href={crumb.href}
+                  title={`${crumb.name} - Global Webify`}
                   className="shrink-0 block"
                 >
                   {isFirst ? (

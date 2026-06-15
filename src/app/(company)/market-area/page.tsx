@@ -85,6 +85,7 @@ export default function MarketAreaPage() {
                     <Link
                       key={idx}
                       href={targetUrl}
+                      title={`${city.title} - Global Webify`}
                       className="group block bg-white border border-gray-100 rounded-[32px] p-8 text-center shadow-sm hover:shadow-xl hover:border-[#1a8b4c]/30 hover:-translate-y-1 transition-all duration-300 relative overflow-hidden"
                     >
                       {/* Decorative hover gradient */}
@@ -141,12 +142,14 @@ export default function MarketAreaPage() {
             <div className="flex flex-wrap items-center justify-center gap-3">
               <Link
                 href="/contact"
+                title="Contact Support - Global Webify"
                 className="bg-[#2563eb] hover:bg-blue-700 text-white font-bold py-3.5 px-8 rounded-2xl transition-colors shadow-md text-xs uppercase tracking-wider flex items-center gap-2"
               >
                 Contact Support <ArrowRight size={14} />
               </Link>
               <a
                 href="tel:+917563901100"
+                title="Call Agent - Global Webify"
                 className="bg-gray-900 hover:bg-black text-white font-bold py-3.5 px-6 rounded-2xl transition-colors shadow-md text-xs uppercase tracking-wider flex items-center gap-2"
               >
                 <Phone size={14} /> Call Agent

@@ -1,11 +1,11 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, startTransition } from 'react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  Code, Search, Sparkles, Target, FileText,
-  Palette, ArrowRight, X, Phone, Check
+  Code, Search, Target, ArrowRight, X, Phone, Check,
+  Users, Share2, ShoppingCart
 } from 'lucide-react';
 import { Section } from '../layout/Responsive/Section';
 
@@ -42,10 +42,10 @@ const services: Service[] = [
     mesh: "bg-blue-500/10"
   },
   {
-    title: "AI SEO Services",
-    icon: <Sparkles />,
-    desc: "The future of search is here. We use advanced AI-driven keyword intelligence and automated ranking strategies to help your business appear in Google AI, ChatGPT, and modern search recommendations.",
-    link: "/ai-seo-services",
+    title: "CRM Software Development",
+    icon: <Users />,
+    desc: "Streamline your customer relationships and business operations. We build custom, scalable CRM systems tailored to your workflows, enabling efficient tracking, automation, and real-time reporting.",
+    link: "/crm-software-development",
     color: "#f97316",
     borderColor: "border-orange-300",
     hoverBorder: "border-orange-500",
@@ -62,20 +62,20 @@ const services: Service[] = [
     mesh: "bg-amber-500/10"
   },
   {
-    title: "Content Marketing",
-    icon: <FileText />,
-    desc: "High-quality, engaging content that builds authority and drives conversions. From blogs to technical copy, we create content that resonates with your audience and boosts your brand presence.",
-    link: "/content-marketing",
+    title: "Social Media Marketing",
+    icon: <Share2 />,
+    desc: "Expand your brand reach and engage with your target audience across major platforms. Our tailored strategies and creative content drive meaningful interactions and grow your online community.",
+    link: "/social-media-marketing",
     color: "#06b6d4",
     borderColor: "border-cyan-300",
     hoverBorder: "border-cyan-500",
     mesh: "bg-cyan-500/10"
   },
   {
-    title: "Web Design Services",
-    icon: <Palette />,
-    desc: "User-focused, visually stunning designs that convert visitors into customers. Our design approach balances modern aesthetics with intuitive UI/UX for a world-class digital experience.",
-    link: "/web-design-services",
+    title: "Ecommerce Web Designing",
+    icon: <ShoppingCart />,
+    desc: "Launch a high-converting online store with seamless shopping experiences. We design secure, responsive, and search-optimized e-commerce platforms that turn casual visitors into loyal buyers.",
+    link: "/ecommerce-web-designing",
     color: "#10b981",
     borderColor: "border-emerald-300",
     hoverBorder: "border-emerald-500",
@@ -96,6 +96,7 @@ function ServiceCard({ service, index, cityKey, onOpenQuote }: { service: Servic
     >
       <Link
         href={linkHref}
+        title={`${service.title} - Global Webify`}
         className={`relative flex-1 flex flex-col w-full bg-white rounded-[32px] border-2 ${service.borderColor} shadow-[0_8px_30px_rgba(0,0,0,0.04),inset_2px_2px_8px_rgba(255,255,255,0.9),inset_-2px_-2px_8px_rgba(0,0,0,0.03)] transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(0,0,0,0.08),inset_2px_2px_8px_rgba(255,255,255,0.9),inset_-2px_-2px_8px_rgba(0,0,0,0.03)] hover:border-[#1a8b4c] overflow-hidden group/card`}
       >
         <div className="relative flex-1 p-6 md:p-8 flex flex-col items-center text-center z-10">
@@ -171,11 +172,15 @@ export default function ServicesGrid({ cityKey, dynamicDescriptions, sectionTitl
   const [activeService, setActiveService] = useState<string | null>(null);
 
   const openQuoteModal = (serviceTitle: string) => {
-    setActiveService(serviceTitle);
+    startTransition(() => {
+      setActiveService(serviceTitle);
+    });
   };
 
   const closeQuoteModal = () => {
-    setActiveService(null);
+    startTransition(() => {
+      setActiveService(null);
+    });
   };
 
   useEffect(() => {
@@ -297,8 +302,9 @@ export default function ServicesGrid({ cityKey, dynamicDescriptions, sectionTitl
 
               {/* Action Buttons */}
               <div className="grid grid-cols-2 gap-2.5 mb-5 md:mb-6">
-                <a
+                 <a
                   href="tel:+917563901100"
+                  title="Call Now - Global Webify"
                   className="py-3 rounded-xl sm:rounded-2xl bg-[#1e6d3c] hover:bg-[#16522c] text-white font-bold font-jost text-[13px] sm:text-[14px] flex items-center justify-center gap-1.5 transition-all duration-300 shadow-md hover:shadow-lg active:scale-[0.98]"
                 >
                   <Phone className="w-3.5 h-3.5 sm:w-4 sm:h-4" strokeWidth={2.5} />
@@ -308,6 +314,7 @@ export default function ServicesGrid({ cityKey, dynamicDescriptions, sectionTitl
                   href={`https://wa.me/917563901100?text=${encodeURIComponent(`Hi, I am interested in a free quote for "${activeService}".`)}`}
                   target="_blank"
                   rel="noopener noreferrer"
+                  title="WhatsApp - Global Webify"
                   className="py-3 rounded-xl sm:rounded-2xl bg-[#25D366] hover:bg-[#1ebe57] text-white font-bold font-jost text-[13px] sm:text-[14px] flex items-center justify-center gap-1.5 transition-all duration-300 shadow-md hover:shadow-lg active:scale-[0.98]"
                 >
                   <svg 

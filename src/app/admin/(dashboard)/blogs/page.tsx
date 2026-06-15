@@ -10,9 +10,16 @@ export default async function AdminBlogsPage() {
   
   try {
     posts = await db.blogPost.findMany({
-      orderBy: {
-        createdAt: 'desc',
+      select: {
+        id: true,
+        title: true,
+        slug: true,
+        isActive: true,
+        createdAt: true
       },
+      orderBy: {
+        createdAt: 'desc'
+      }
     });
   } catch (error) {
     console.error('Failed to query blogs:', error);
