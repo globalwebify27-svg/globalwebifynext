@@ -243,12 +243,18 @@ export default function BlogPostForm({ post }: { post?: BlogPost }) {
               <input
                 type="text"
                 required
+                disabled={!!post?.id}
                 value={slug}
                 onChange={(e) => setSlug(e.target.value)}
                 placeholder="5-seo-strategies"
-                className="w-full bg-gray-50 border border-gray-200 rounded-xl pl-16 pr-4 py-3 text-xs md:text-sm font-mono font-semibold text-gray-800 placeholder-gray-400 focus:outline-none focus:border-[#1a8b4c] transition-colors"
+                className="w-full bg-gray-50 border border-gray-200 rounded-xl pl-16 pr-4 py-3 text-xs md:text-sm font-mono font-semibold text-gray-800 placeholder-gray-400 focus:outline-none focus:border-[#1a8b4c] transition-colors disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed"
               />
             </div>
+            {post?.id && (
+              <span className="text-[9px] text-amber-600 font-bold uppercase tracking-wider mt-1">
+                ⚠️ Blog post slugs cannot be edited after creation to prevent broken links.
+              </span>
+            )}
           </div>
 
           {/* Image Banner */}

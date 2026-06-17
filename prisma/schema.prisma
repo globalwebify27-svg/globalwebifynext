@@ -53,6 +53,13 @@ model ServicePage {
   isActive        Boolean  @default(true)
   contentTitle    String?  @db.VarChar(255)
   heroDescription String?  @db.VarChar(500)
+  bgType          String   @default("image")
+  bgColor         String?  @db.VarChar(50)
+  bgGradientStart String?  @db.VarChar(50)
+  bgGradientEnd   String?  @db.VarChar(50)
+  mobileImage     String?
+  bgImage         String?
+
 
   @@index([category, isActive])
   @@index([slug, isActive])

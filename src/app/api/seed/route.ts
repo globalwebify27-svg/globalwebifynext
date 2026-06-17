@@ -262,7 +262,7 @@ async function handleSeed(clean: boolean) {
       'on-page-seo',
       'off-page-seo',
       'technical-seo',
-      'local-business-seo',
+      'local-seo',
       'generative-engine-optimization-services',
       'answer-engine-optimization-services',
       'chatgpt-ai-seo-services',

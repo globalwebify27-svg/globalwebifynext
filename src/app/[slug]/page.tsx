@@ -192,6 +192,12 @@ export default async function DynamicPage({ params }: Props) {
     isActive:        fetchedPage.isActive,
     createdAt:       fetchedPage.createdAt,
     updatedAt:       fetchedPage.updatedAt,
+    bgType:          fetchedPage.bgType     ?? 'image',
+    bgColor:         fetchedPage.bgColor,
+    bgGradientStart: fetchedPage.bgGradientStart,
+    bgGradientEnd:   fetchedPage.bgGradientEnd,
+    mobileImage:     fetchedPage.mobileImage,
+    bgImage:         fetchedPage.bgImage,
   };
 
   const rawRemainingSubMenus = await db.servicePage.findMany({
@@ -207,7 +213,7 @@ export default async function DynamicPage({ params }: Props) {
     'on-page-seo',
     'off-page-seo',
     'technical-seo',
-    'local-business-seo',
+    'local-seo',
     'gmb-seo'
   ];
 

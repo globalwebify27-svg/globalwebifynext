@@ -62,14 +62,14 @@ export default function AdminPartnershipPage() {
 
     if (res.success) {
       setSettings(payload);
-      showToast("Partnership settings saved successfully!");
+      showToast("Franchise settings saved successfully!");
     } else {
       showToast(`Failed to save settings: ${res.error || 'Unknown error'}`, 'error');
     }
   };
 
   if (loading) {
-    return <div className="p-10 text-center text-gray-500 font-semibold font-poppins">Loading Partnership Settings...</div>;
+    return <div className="p-10 text-center text-gray-500 font-semibold font-poppins">Loading Franchise Settings...</div>;
   }
 
   return (
@@ -87,9 +87,9 @@ export default function AdminPartnershipPage() {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-black text-gray-955 font-poppins flex items-center gap-2">
-            <Settings className="text-[#1a8b4c]" /> Partnership Page Editor
+            <Settings className="text-[#1a8b4c]" /> Franchise Page Editor
           </h1>
-          <p className="text-sm text-gray-500 mt-1">Configure titles, descriptions, and the active URL path for the Partnership page.</p>
+          <p className="text-sm text-gray-500 mt-1">Configure titles, descriptions, and the active URL path for the Franchise Opportunity page.</p>
         </div>
         <button
           onClick={handleSave}
@@ -111,19 +111,23 @@ export default function AdminPartnershipPage() {
             <div className="flex flex-col gap-2">
               <label className="text-xs font-bold text-gray-700 uppercase tracking-wider block font-poppins flex items-center gap-1.5">
                 URL Slug / Path
-                <span className="text-gray-400 cursor-help" title="The URL address of the partnership page (e.g. 'partnership' or 'partner-program')"><HelpCircle size={13} /></span>
+                <span className="text-gray-400 cursor-help" title="The URL address of the franchise page (e.g. 'franchisee' or 'franchise-opportunity')"><HelpCircle size={13} /></span>
               </label>
               <div className="flex items-center">
                 <span className="bg-gray-100 border border-r-0 border-gray-200 text-gray-500 px-3 py-2.5 rounded-l-xl text-xs font-semibold">/</span>
                 <input
                   type="text"
                   required
+                  disabled
                   value={settings.partnershipPageSlug}
                   onChange={(e) => setSettings({...settings, partnershipPageSlug: e.target.value})}
-                  className="flex-1 bg-white border border-gray-200 rounded-r-xl px-3 py-2.5 text-xs font-semibold focus:outline-none focus:border-[#1a8b4c]"
-                  placeholder="partnership"
+                  className="flex-1 bg-gray-50 border border-gray-200 rounded-r-xl px-3 py-2.5 text-xs font-semibold text-gray-400 cursor-not-allowed focus:outline-none"
+                  placeholder="franchisee"
                 />
               </div>
+              <span className="text-[9px] text-amber-600 font-bold uppercase tracking-wider mt-1">
+                ⚠️ URL slugs cannot be edited after creation to prevent broken links.
+              </span>
             </div>
 
             <div className="flex flex-col gap-2">

@@ -221,7 +221,7 @@ export default function Header({ initialSettings }: HeaderProps) {
                 className={cn(
                   "px-3 xl:px-4 py-2 text-[12.8px] font-semibold flex items-center gap-1.5 rounded-full font-sans transition-all duration-75",
                   link.id === 'partnership'
-                    ? "text-[#1a8b4c] border-2 border-[#1a8b4c]/80 bg-[#1a8b4c]/5 hover:bg-[#1a8b4c] hover:text-white hover:border-transparent font-bold shadow-sm"
+                    ? "text-white border-2 border-[#1a8b4c]/50 font-bold shadow-sm animate-premium-dark-glow hover:animate-none hover:bg-[#1a8b4c] hover:border-transparent"
                     : activeMenu === link.id
                       ? "text-white bg-[#1a8b4c]"
                       : "text-[#0a0a0a] hover:text-white hover:bg-[#1a8b4c]"
@@ -284,14 +284,14 @@ export default function Header({ initialSettings }: HeaderProps) {
                         onClick={closeMenu}
                         className={cn(
                           "w-full text-left py-4 flex justify-between items-center group transition-all",
-                          link.id === 'partnership' ? "bg-green-50/60 my-2 px-4 py-3 rounded-2xl border border-green-100" : ""
+                          link.id === 'partnership' ? "my-2 px-4 py-3 rounded-2xl border border-[#1a8b4c]/40 animate-premium-dark-glow" : ""
                         )}
                       >
                         <div className="flex items-center gap-3">
-                          <div className="w-1.5 h-1.5 rounded-full bg-[#1a8b4c]" />
+                          <div className={cn("w-1.5 h-1.5 rounded-full", link.id === 'partnership' ? "bg-white" : "bg-[#1a8b4c]")} />
                           <span className={cn(
                             "text-[14px] font-semibold tracking-normal hover:text-[#1a8b4c] transition-colors",
-                            link.id === 'partnership' ? "text-[#1a8b4c] font-black" : "text-[#1a1a1a]"
+                            link.id === 'partnership' ? "text-white font-black hover:text-white" : "text-[#1a1a1a]"
                           )}>
                             {link.name}
                           </span>

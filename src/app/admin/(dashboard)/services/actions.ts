@@ -17,6 +17,11 @@ export async function saveService(formData: {
   content: string;
   image?: string;
   isActive?: boolean;
+  bgType?: string;
+  bgColor?: string;
+  bgGradientStart?: string;
+  bgGradientEnd?: string;
+  mobileImage?: string;
 }) {
   await requireAdmin();
   const data = {
@@ -31,6 +36,11 @@ export async function saveService(formData: {
     content: formData.content,
     image: formData.image || null,
     isActive: formData.isActive ?? true,
+    bgType: formData.bgType || 'image',
+    bgColor: formData.bgColor || null,
+    bgGradientStart: formData.bgGradientStart || null,
+    bgGradientEnd: formData.bgGradientEnd || null,
+    mobileImage: formData.mobileImage || null,
   };
 
   let savedRecord;

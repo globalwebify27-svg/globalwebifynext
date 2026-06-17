@@ -67,6 +67,12 @@ export function ServicePageView({ page, remainingSubMenus, faqs, locationName = 
         title={page.title || ""} 
         description={page.heroDescription || undefined}
         city={locationName || undefined}
+        bgImage={page.bgImage || undefined}
+        mobileImage={page.mobileImage || undefined}
+        bgType={page.bgType}
+        bgColor={page.bgColor}
+        bgGradientStart={page.bgGradientStart}
+        bgGradientEnd={page.bgGradientEnd}
       />
 
       {/* Intro Content */}

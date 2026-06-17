@@ -40,6 +40,12 @@ export default async function EditServicePage({ params }: Props) {
     seoKeywords: service.seoKeywords || undefined,
     content: service.content,
     image: service.image || undefined,
+    bgType: service.bgType || 'image',
+    bgColor: service.bgColor || undefined,
+    bgGradientStart: service.bgGradientStart || undefined,
+    bgGradientEnd: service.bgGradientEnd || undefined,
+    mobileImage: service.mobileImage || undefined,
+    bgImage: service.bgImage || undefined,
   };
 
   return (

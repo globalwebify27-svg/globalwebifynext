@@ -11,9 +11,25 @@ interface ServiceHeroProps {
   title: string;
   description?: string;
   city?: string;
+  bgImage?: string;
+  mobileImage?: string;
+  bgType?: string;
+  bgColor?: string;
+  bgGradientStart?: string;
+  bgGradientEnd?: string;
 }
 
-export default function ServiceHero({ title, description, city }: ServiceHeroProps) {
+export default function ServiceHero({
+  title,
+  description,
+  city,
+  bgImage,
+  mobileImage,
+  bgType = 'image',
+  bgColor,
+  bgGradientStart,
+  bgGradientEnd
+}: ServiceHeroProps) {
   const [isAuditOpen, setIsAuditOpen] = useState(false);
   // Format the title to highlight the main part in purple
   let rawTitle = title || "";
@@ -42,19 +58,39 @@ export default function ServiceHero({ title, description, city }: ServiceHeroPro
 
   return (
     <section className="relative w-full min-h-[340px] md:min-h-[400px] py-8 md:py-14 flex items-center justify-center bg-gray-950 overflow-hidden border-b border-gray-900">
-      {/* Background Image Banner */}
-      <div className="absolute inset-0 w-full h-full z-0">
-        <Image
-          src="/web-dev-banner-bg.png"
-          alt={title}
-          fill
-          priority
-          sizes="100vw"
-          quality={80}
-          className="object-cover object-center"
+      
+      {bgType === 'color' ? (
+        <div 
+          className="absolute inset-0 w-full h-full z-0" 
+          style={{ backgroundColor: bgColor || '#062013' }}
         />
-        <div className="absolute inset-0 bg-gray-950/40 z-10" />
-      </div>
+      ) : bgType === 'gradient' ? (
+        <div 
+          className="absolute inset-0 w-full h-full z-0" 
+          style={{ backgroundImage: `linear-gradient(to right, ${bgGradientStart || '#062013'}, ${bgGradientEnd || '#0c3e25'})` }}
+        />
+      ) : bgType === 'image' && bgImage ? (
+        <div className="absolute inset-0 w-full h-full z-0">
+          <img
+            src={bgImage}
+            alt={title}
+            className="absolute inset-0 w-full h-full object-cover object-center"
+            loading="eager"
+          />
+          <div className="absolute inset-0 bg-gray-950/40 z-10" />
+        </div>
+      ) : (
+        /* Fallback Default site-wide background */
+        <div className="absolute inset-0 w-full h-full z-0">
+          <img
+            src="/web-dev-banner-bg.png"
+            alt={title}
+            className="absolute inset-0 w-full h-full object-cover object-center"
+            loading="eager"
+          />
+          <div className="absolute inset-0 bg-gray-950/40 z-10" />
+        </div>
+      )}
 
       {/* Decorative Glow Elements */}
       <div className="absolute bottom-0 left-0 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl z-10 pointer-events-none" />

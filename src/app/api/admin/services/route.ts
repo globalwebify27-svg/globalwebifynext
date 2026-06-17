@@ -5,6 +5,7 @@ import { revalidatePath } from 'next/cache';
 export async function POST(request: Request) {
   try {
     const formData = await request.json();
+    console.log('API Save Service Request Body:', formData);
     
     const data = {
       title: formData.title,
@@ -18,6 +19,12 @@ export async function POST(request: Request) {
       content: formData.content,
       image: formData.image || null,
       isActive: formData.isActive ?? true,
+      bgType: formData.bgType || 'image',
+      bgColor: formData.bgColor || null,
+      bgGradientStart: formData.bgGradientStart || null,
+      bgGradientEnd: formData.bgGradientEnd || null,
+      mobileImage: formData.mobileImage || null,
+      bgImage: formData.bgImage || null,
     };
 
     let savedRecord;
@@ -40,6 +47,7 @@ export async function POST(request: Request) {
     revalidatePath('/web-development');
     revalidatePath('/sitemap.ts');
     revalidatePath('/[slug]');
+    revalidatePath('/[slug]/[serviceSlug]');
     revalidatePath('/admin/services');
 
     return NextResponse.json({ success: true, id: savedRecord.id, slug: savedRecord.slug });

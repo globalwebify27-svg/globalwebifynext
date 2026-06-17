@@ -167,11 +167,17 @@ export default function JobForm({ job }: { job?: Job }) {
               <input
                 type="text"
                 required
+                disabled={!!job?.id}
                 value={slug}
                 onChange={(e) => setSlug(e.target.value)}
                 placeholder="e.g. senior-frontend-engineer"
-                className="w-full bg-gray-50/50 border border-gray-200/80 rounded-xl px-4 py-2.5 text-xs md:text-sm font-mono font-semibold text-gray-800 placeholder-gray-400 focus:outline-none focus:border-[#1a8b4c] focus:bg-white transition-all"
+                className="w-full bg-gray-50/50 border border-gray-200/80 rounded-xl px-4 py-2.5 text-xs md:text-sm font-mono font-semibold text-gray-800 placeholder-gray-400 focus:outline-none focus:border-[#1a8b4c] focus:bg-white transition-all disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed"
               />
+              {job?.id && (
+                <span className="text-[9px] text-amber-600 font-bold uppercase tracking-wider">
+                  ⚠️ Job slugs cannot be edited after creation to prevent broken links.
+                </span>
+              )}
             </div>
 
             {/* Category */}

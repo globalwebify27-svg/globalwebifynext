@@ -122,6 +122,12 @@ export default async function CityServicePage({ params }: Props) {
     isActive:        rawPage.isActive,
     createdAt:       rawPage.createdAt,
     updatedAt:       rawPage.updatedAt,
+    bgType:          rawPage.bgType     ?? 'image',
+    bgColor:         rawPage.bgColor,
+    bgGradientStart: rawPage.bgGradientStart,
+    bgGradientEnd:   rawPage.bgGradientEnd,
+    mobileImage:     rawPage.mobileImage,
+    bgImage:         rawPage.bgImage,
   };
 
   const rawRemainingSubMenus = await db.servicePage.findMany({
@@ -137,7 +143,7 @@ export default async function CityServicePage({ params }: Props) {
     'on-page-seo',
     'off-page-seo',
     'technical-seo',
-    'local-business-seo',
+    'local-seo',
     'gmb-seo'
   ];
 

@@ -148,7 +148,7 @@ export default function SidebarNav({ initialActiveServiceCategory }: SidebarNavP
       {/* Partnership Settings Button */}
       <Link href="/admin/partnership" className={linkClass(isPartnershipPage)}>
         <Handshake className={iconClass(isPartnershipPage)} />
-        <span>Partnership Settings</span>
+        <span>Franchise Settings</span>
       </Link>
 
       {/* Collapsible Manage Services Dropdown */}

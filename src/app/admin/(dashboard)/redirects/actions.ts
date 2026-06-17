@@ -30,7 +30,7 @@ export async function getAvailableRoutes() {
       { url: '/portfolio', label: 'Portfolio (Static)' },
       { url: '/team', label: 'Team (Static)' },
       { url: '/gallery', label: 'Gallery (Static)' },
-      { url: '/partnership', label: 'Partnership (Static)' },
+      { url: '/franchisee', label: 'Franchise Opportunity (Static)' },
       { url: '/career', label: 'Careers (Static)' },
       { url: '/blog', label: 'Blog Directory (Static)' },
     ];
