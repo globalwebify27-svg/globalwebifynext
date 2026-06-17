@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import Link from 'next/link';
 import { m, AnimatePresence } from 'framer-motion';
 import { 
@@ -43,6 +43,7 @@ export default function PartnershipClient({ settings }: PartnershipClientProps) 
   const [showToast, setShowToast] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
+  const expandableRef = useRef<HTMLDivElement>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -191,9 +192,9 @@ export default function PartnershipClient({ settings }: PartnershipClientProps) 
               className="bg-gradient-to-tr from-blue-50/50 to-indigo-50/50 border border-gray-100 rounded-[32px] p-2 shadow-sm overflow-hidden flex items-center justify-center"
             >
               <img 
-                src={pageImage} 
+                src={pageImage?.toLowerCase().includes('partner1.jpg') ? '/partnership/partner1.jpg' : (pageImage || '/partnership/partner1.jpg')} 
                 alt="Become a Partner"
-                className="w-full h-auto max-h-[440px] object-contain rounded-2xl drop-shadow-sm hover:scale-[1.02] transition-transform duration-500" 
+                className="w-full h-auto max-h-[440px] object-cover rounded-2xl drop-shadow-sm hover:scale-[1.02] transition-transform duration-500" 
               />
             </m.div>
           </div>
@@ -201,7 +202,7 @@ export default function PartnershipClient({ settings }: PartnershipClientProps) 
 
         {/* Expandable Overview Section */}
         {expandParagraph && (
-          <div className="bg-white/90 backdrop-blur-sm border border-gray-100 rounded-[32px] p-6 md:p-10 mb-12 shadow-[0_8px_30px_rgb(0,0,0,0.02)]">
+          <div ref={expandableRef} style={{ overflowAnchor: 'none' }} className="bg-white/90 backdrop-blur-sm border border-gray-100 rounded-[32px] p-6 md:p-10 mb-12 shadow-[0_8px_30px_rgb(0,0,0,0.02)]">
             <h2 className="text-[20px] md:text-[26px] font-black text-[#1a8b4c] tracking-tight mb-4 font-heading uppercase">
               {expandHeading}
             </h2>
@@ -226,7 +227,13 @@ export default function PartnershipClient({ settings }: PartnershipClientProps) 
             <div className="flex justify-center mt-6">
               <button
                 type="button"
-                onClick={() => setIsExpanded(!isExpanded)}
+                onClick={() => {
+                  if (isExpanded && expandableRef.current) {
+                    const y = expandableRef.current.getBoundingClientRect().top + window.scrollY - 100;
+                    window.scrollTo({ top: y, behavior: 'smooth' });
+                  }
+                  setIsExpanded(!isExpanded);
+                }}
                 className="inline-flex items-center gap-2 bg-[#0082f0] hover:bg-[#006ec7] text-white px-8 py-3.5 rounded-full font-black text-xs uppercase tracking-wider transition-all shadow-md active:scale-95"
               >
                 {isExpanded ? (

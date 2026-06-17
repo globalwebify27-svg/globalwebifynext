@@ -1,6 +1,6 @@
 export const CITIES = [
   { key: 'india', name: 'India' },
-  { key: 'uk', name: 'UK' },
+  { key: 'united-kingdom', name: 'United Kingdom' },
   { key: 'ranchi', name: 'Ranchi' },
   { key: 'dubai', name: 'Dubai' },
   { key: 'delhi', name: 'Delhi' },

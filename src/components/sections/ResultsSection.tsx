@@ -27,18 +27,45 @@ const testimonials = [
   }
 ];
 
-export default function ResultsSection({ cardData }: { cardData?: any }) {
+export default function ResultsSection({ cardData, reviews, sectionTitle, sectionDesc }: { cardData?: any; reviews?: any[]; sectionTitle?: string; sectionDesc?: string }) {
   const [index, setIndex] = React.useState(0);
   const [isExpanded, setIsExpanded] = React.useState(false);
 
+  const items = React.useMemo(() => {
+    if (reviews && reviews.length > 0) {
+      return reviews.map((r) => {
+        const initials = r.author
+          ? r.author
+              .split(' ')
+              .filter(Boolean)
+              .map((n: string) => n[0])
+              .join('')
+              .substring(0, 2)
+              .toUpperCase()
+          : 'G';
+        return {
+          author: r.author,
+          role: 'Google Review',
+          initials,
+          text: r.text,
+          rating: r.rating,
+        };
+      });
+    }
+    return testimonials.map((t) => ({ ...t, rating: 5 }));
+  }, [reviews]);
+
   React.useEffect(() => {
+    if (items.length <= 1) return;
     const timer = setInterval(() => {
-      setIndex((prev) => (prev + 1) % testimonials.length);
+      setIndex((prev) => (prev + 1) % items.length);
     }, 5000);
     return () => clearInterval(timer);
-  }, []);
+  }, [items]);
 
-  const current = testimonials[index];
+  // Ensure index is within range of current items
+  const safeIndex = index >= items.length ? 0 : index;
+  const current = items[safeIndex] || items[0] || testimonials[0];
 
   return (
     <Section id="results" variant="white" className="pt-10 pb-20 md:pt-16 md:pb-32 bg-white font-sans overflow-hidden">
@@ -46,9 +73,26 @@ export default function ResultsSection({ cardData }: { cardData?: any }) {
         
         {/* Header Section */}
         <div className="mb-12 text-center">
-          <h2 className="text-[28px] md:text-[36px] font-black text-[#064e3b] leading-tight tracking-tight lg:whitespace-nowrap">
-            Results That Speak Louder Than <span className="text-[#1a8b4c]">Words</span>
-          </h2>
+          {sectionTitle ? (
+            <h2 
+              className="text-[28px] md:text-[36px] font-black text-[#064e3b] leading-tight tracking-tight"
+              dangerouslySetInnerHTML={{ __html: sectionTitle }}
+            />
+          ) : (
+            <h2 className="text-[28px] md:text-[36px] font-black text-[#064e3b] leading-tight tracking-tight">
+              Results That Speak Louder Than <span className="text-[#1a8b4c]">Words</span>
+            </h2>
+          )}
+          {sectionDesc ? (
+            <p 
+              className="text-gray-600 text-[14px] md:text-[16px] font-medium mt-3 max-w-2xl mx-auto"
+              dangerouslySetInnerHTML={{ __html: sectionDesc }}
+            />
+          ) : (
+            <p className="text-gray-600 text-[14px] md:text-[16px] font-medium mt-3 max-w-2xl mx-auto">
+              Explore our milestones, client success reviews, and AI-powered performance statistics that define our journey.
+            </p>
+          )}
         </div>
 
         {/* Bento Grid Layout */}
@@ -105,6 +149,7 @@ export default function ResultsSection({ cardData }: { cardData?: any }) {
                 <m.div 
                   initial={{ width: 0 }}
                   whileInView={{ width: "85%" }}
+                  viewport={{ once: true }}
                   transition={{ duration: 1, delay: 0.5 }}
                   className="h-full bg-blue-400"
                 />
@@ -127,6 +172,7 @@ export default function ResultsSection({ cardData }: { cardData?: any }) {
                 <m.div 
                   initial={{ width: 0 }}
                   whileInView={{ width: "95%" }}
+                  viewport={{ once: true }}
                   transition={{ duration: 1, delay: 0.7 }}
                   className="h-full bg-purple-400"
                 />
@@ -143,18 +189,25 @@ export default function ResultsSection({ cardData }: { cardData?: any }) {
           >
             <div className="relative z-10 flex-1 flex flex-col">
               <div className="flex gap-1 mb-6 text-yellow-500">
-                {[1, 2, 3, 4, 5].map((s) => <Star key={s} size={20} fill="currentColor" />)}
+                {Array.from({ length: 5 }).map((_, idx) => (
+                  <Star
+                    key={idx}
+                    size={20}
+                    fill={idx < (current.rating || 5) ? "currentColor" : "none"}
+                    stroke="currentColor"
+                  />
+                ))}
               </div>
 
-              <div className="flex-1 relative h-[220px] md:h-[260px] overflow-hidden">
+              <div className="flex-1 relative h-[280px] overflow-hidden">
                 <AnimatePresence mode="wait">
                   <m.p 
-                    key={index}
+                    key={safeIndex}
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -10 }}
                     transition={{ duration: 0.3 }}
-                    className="text-gray-800 font-medium text-[14px] md:text-[15px] italic leading-relaxed mb-8 absolute inset-0"
+                    className="text-gray-800 font-medium text-[14px] md:text-[15px] italic leading-relaxed"
                   >
                     "{current.text}"
                   </m.p>
@@ -164,7 +217,7 @@ export default function ResultsSection({ cardData }: { cardData?: any }) {
 
             <div className="relative z-10 mt-auto">
               <m.div 
-                key={`author-${index}`}
+                key={`author-${safeIndex}`}
                 initial={{ opacity: 0, x: 10 }}
                 animate={{ opacity: 1, x: 0 }}
                 className="flex items-center gap-4 mb-8"
@@ -180,12 +233,18 @@ export default function ResultsSection({ cardData }: { cardData?: any }) {
 
               <div className="flex items-center justify-between">
                 <div className="flex gap-2">
-                  {testimonials.map((_, i) => (
-                    <div 
-                      key={i} 
-                      className={`h-1.5 rounded-full transition-all duration-300 ${i === index ? 'w-6 bg-[#1a8b4c]' : 'w-1.5 bg-gray-300'}`} 
-                    />
-                  ))}
+                  {items.length <= 6 ? (
+                    items.map((_, i) => (
+                      <div 
+                        key={i} 
+                        className={`h-1.5 rounded-full transition-all duration-300 ${i === safeIndex ? 'w-6 bg-[#1a8b4c]' : 'w-1.5 bg-gray-300'}`} 
+                      />
+                    ))
+                  ) : (
+                    <span className="text-[11px] font-bold text-gray-500 font-poppins uppercase tracking-wider">
+                      Review <span className="text-[#1a8b4c] font-black">{safeIndex + 1}</span> of <span className="font-black">{items.length}</span>
+                    </span>
+                  )}
                 </div>
                 {/* Removed external link icon */}
               </div>

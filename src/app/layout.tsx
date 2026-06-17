@@ -57,6 +57,12 @@ export const metadata: Metadata = {
   }
 };
 
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+};
+
 import PublicLayoutWrapper from "@/components/layout/PublicLayoutWrapper";
 import BreadcrumbWrapper from "@/components/ui/BreadcrumbWrapper";
 

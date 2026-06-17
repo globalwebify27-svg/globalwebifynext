@@ -237,7 +237,8 @@ const defaultSubdomainSectionHeaders = {
   techStack: { title: "Our Technology Arsenal", description: "We use the latest technology stack to build robust and scalable solutions." },
   latestBlog: { title: "Digital Insights & Strategies", description: "Stay ahead of the curve with our latest articles and news." },
   trust: { title: "Why Leading Brands Trust Us", description: "We deliver results that matter to your bottom line." },
-  faq: { title: "Frequently Asked Questions", description: "Everything you need to know about our services." }
+  faq: { title: "Frequently Asked Questions", description: "Everything you need to know about our services." },
+  results: { title: "Results That Speak Louder Than Words in {location}", description: "Explore our milestones, client success reviews, and AI-powered performance statistics that define our journey." }
 };
 
 export async function getSubdomainSectionHeaders() {

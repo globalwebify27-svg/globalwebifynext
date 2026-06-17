@@ -11,7 +11,8 @@ export default function SubdomainSectionHeadersPage() {
     techStack: { title: '', description: '' },
     latestBlog: { title: '', description: '' },
     trust: { title: '', description: '' },
-    faq: { title: '', description: '' }
+    faq: { title: '', description: '' },
+    results: { title: '', description: '' }
   });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -49,6 +50,7 @@ export default function SubdomainSectionHeadersPage() {
     { key: 'services', label: 'Services Grid Section' },
     { key: 'portfolio', label: 'Portfolio Section' },
     { key: 'techStack', label: 'Tech Stack Section' },
+    { key: 'results', label: 'Results/Growth Section' },
     { key: 'latestBlog', label: 'Latest Blog Section' },
     { key: 'trust', label: 'Trust Section' },
     { key: 'faq', label: 'FAQ Section' }

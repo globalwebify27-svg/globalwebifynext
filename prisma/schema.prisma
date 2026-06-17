@@ -141,3 +141,15 @@ model Redirect {
   @@map("redirect")
 }
 
+model Review {
+  id        Int      @id @default(autoincrement())
+  author    String
+  text      String   @db.Text
+  rating    Int      @default(5)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([createdAt(sort: Desc)])
+  @@map("review")
+}
+

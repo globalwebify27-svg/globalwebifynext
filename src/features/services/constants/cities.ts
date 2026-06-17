@@ -5,8 +5,7 @@ export interface CityInfo {
 
 export const CITIES_MAP: Record<string, CityInfo> = {
   india: { name: 'India', subtitle: 'Country' },
-  uk: { name: 'UK', subtitle: 'United Kingdom' },
-  ranchi: { name: 'Ranchi', subtitle: 'Jharkhand , India' },
+  'united-kingdom': { name: 'United Kingdom', subtitle: 'United Kingdom' },
   dubai: { name: 'Dubai', subtitle: 'United Arab Emirates' },
   delhi: { name: 'Delhi', subtitle: 'India' },
   noida: { name: 'Noida', subtitle: 'Uttar Pradesh , India' },
@@ -20,10 +19,6 @@ export const CITIES_MAP: Record<string, CityInfo> = {
   sharjah: { name: 'Sharjah', subtitle: 'United Arab Emirates' },
   'al-ain': { name: 'Al Ain', subtitle: 'United Arab Emirates' },
   ajman: { name: 'Ajman', subtitle: 'United Arab Emirates' },
-  'ras-al-khaimah': { name: 'Ras Al Khaimah', subtitle: 'United Arab Emirates' },
-  'jebel-ali-free-zone': { name: 'Jebel Ali Free Zone (JAFZ)', subtitle: 'United Arab Emirates' },
-  fujairah: { name: 'Fujairah', subtitle: 'United Arab Emirates' },
-  'umm-al-quwain': { name: 'Umm Al Quwain', subtitle: 'United Arab Emirates' },
 };
 
 export const CITIES_LIST = Object.keys(CITIES_MAP).map(key => ({

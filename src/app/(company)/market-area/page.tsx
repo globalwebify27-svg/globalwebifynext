@@ -12,7 +12,6 @@ const REGIONS = [
     name: "India",
     cities: [
       { slug: 'india', title: 'India', subtitle: 'Country Page' },
-      { slug: 'ranchi', title: 'Ranchi', subtitle: 'Jharkhand, India' },
       { slug: 'delhi', title: 'Delhi', subtitle: 'India' },
       { slug: 'noida', title: 'Noida', subtitle: 'Uttar Pradesh, India' },
       { slug: 'gurugram', title: 'Gurugram', subtitle: 'Haryana, India' },
@@ -26,7 +25,7 @@ const REGIONS = [
   {
     name: "United Kingdom (UK)",
     cities: [
-      { slug: 'uk', title: 'UK', subtitle: 'United Kingdom' }
+      { slug: 'united-kingdom', title: 'United Kingdom', subtitle: 'United Kingdom' }
     ]
   },
   {
@@ -37,10 +36,6 @@ const REGIONS = [
       { slug: 'sharjah', title: 'Sharjah', subtitle: 'United Arab Emirates' },
       { slug: 'al-ain', title: 'Al Ain', subtitle: 'United Arab Emirates' },
       { slug: 'ajman', title: 'Ajman', subtitle: 'United Arab Emirates' },
-      { slug: 'ras-al-khaimah', title: 'Ras Al Khaimah', subtitle: 'United Arab Emirates' },
-      { slug: 'jebel-ali-free-zone', title: 'Jebel Ali Free Zone (JAFZ)', subtitle: 'United Arab Emirates' },
-      { slug: 'fujairah', title: 'Fujairah', subtitle: 'United Arab Emirates' },
-      { slug: 'umm-al-quwain', title: 'Umm Al Quwain', subtitle: 'United Arab Emirates' },
     ]
   }
 ];

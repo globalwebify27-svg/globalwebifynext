@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { m, AnimatePresence } from 'framer-motion';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import { Section } from '../layout/Responsive/Section';
@@ -16,6 +16,16 @@ interface AboutSEOProps {
 
 export default function AboutSEO({ data }: AboutSEOProps) {
   const [isExpanded, setIsExpanded] = useState(false);
+  const sectionRef = useRef<HTMLElement>(null);
+
+  const handleToggle = () => {
+    if (isExpanded && sectionRef.current) {
+      const yOffset = -100; // Offset for sticky header
+      const y = sectionRef.current.getBoundingClientRect().top + window.scrollY + yOffset;
+      window.scrollTo({ top: y, behavior: 'smooth' });
+    }
+    setIsExpanded(!isExpanded);
+  };
 
   const defaultTitle = "Web Design & Web Development <span class=\"text-[#1a8b4c]\">Services in India</span>";
   const defaultSubtitle = "Professional Web Design Solutions for Global Brands";
@@ -32,14 +42,19 @@ export default function AboutSEO({ data }: AboutSEOProps) {
   const subtitle = data?.subtitle || defaultSubtitle;
   
   // Format HTML content with fallback to legacy paragraphs array
-  const htmlContent = data?.content || 
+  const rawHtmlContent = data?.content || 
     (data?.paragraphs && data.paragraphs.length > 0 
       ? data.paragraphs.map(p => `<p>${p}</p>`).join('') 
       : defaultParagraphs.map(p => `<p>${p}</p>`).join(''));
 
+  // Clean trailing blank paragraphs, empty lines, &nbsp; and breaks
+  const htmlContent = rawHtmlContent.trim()
+    .replace(/(?:<p>\s*(?:<br\s*\/?>|&nbsp;)?\s*<\/p>|<br\s*\/?>|\s)+$/, '')
+    .trim();
+
   return (
     <Section id="about-seo" variant="white" className="bg-[#fcfdfc] border-t border-gray-100">
-      <article className="max-w-[1000px] mx-auto px-4 text-center">
+      <article ref={sectionRef} className="max-w-[1000px] mx-auto px-4 text-center">
         
         <h2 
           className="text-[28px] md:text-[36px] font-black text-gray-950 mb-4 leading-tight"
@@ -136,9 +151,9 @@ export default function AboutSEO({ data }: AboutSEOProps) {
         </div>
 
         <button 
-          onClick={() => setIsExpanded(!isExpanded)}
-          className="mt-8 inline-flex items-center gap-2 px-8 py-3 rounded-full border-2 border-[#1a8b4c] text-[#1a8b4c] font-black text-[15px] hover:bg-[#1a8b4c] hover:text-white transition-all shadow-sm focus:outline-none focus:ring-2 focus:ring-[#1a8b4c] focus:ring-offset-2"
-          aria-label={isExpanded ? "Show less content" : "Show more content about Global Webify services"}
+        onClick={handleToggle}
+        className="mt-8 inline-flex items-center gap-2 px-8 py-3 rounded-full border-2 border-[#1a8b4c] text-[#1a8b4c] font-black text-[15px] hover:bg-[#1a8b4c] hover:text-white transition-all shadow-sm focus:outline-none focus:ring-2 focus:ring-[#1a8b4c] focus:ring-offset-2"
+        aria-label={isExpanded ? "Show less content" : "Show more content about Global Webify services"}
         >
           {isExpanded ? (
             <>Read Less <ChevronUp size={20} /></>

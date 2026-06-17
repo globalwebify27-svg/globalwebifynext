@@ -210,15 +210,15 @@ export default function ServicesGrid({ cityKey, dynamicDescriptions, sectionTitl
           <h2 id="services-title" className="text-[24px] md:text-[32px] lg:text-[36px] font-bold text-gray-900 leading-[1.2] tracking-tight mb-4 font-heading px-2" dangerouslySetInnerHTML={{ __html: sectionTitle }} />
         ) : (
           <h2 id="services-title" className="text-[24px] md:text-[32px] lg:text-[36px] font-bold text-gray-900 leading-[1.2] tracking-tight mb-4 font-heading px-2">
-            <span className="block xl:whitespace-nowrap">Is your business losing customers because of weak online platforms?</span>
+            <span className="block">Is your business losing customers because of weak online platforms?</span>
             <span className="text-[#1a8b4c]">We have the solution.</span>
           </h2>
         )}
 
         {sectionDesc ? (
-          <p className="text-gray-500 text-[14px] md:text-[16px] font-medium mx-auto leading-relaxed xl:whitespace-nowrap px-4" dangerouslySetInnerHTML={{ __html: sectionDesc }} />
+          <p className="text-gray-500 text-[14px] md:text-[16px] font-medium mx-auto leading-relaxed px-4" dangerouslySetInnerHTML={{ __html: sectionDesc }} />
         ) : (
-          <p className="text-gray-500 text-[14px] md:text-[16px] font-medium mx-auto leading-relaxed xl:whitespace-nowrap px-4">
+          <p className="text-gray-500 text-[14px] md:text-[16px] font-medium mx-auto leading-relaxed px-4">
             Explore our high-performance digital solutions designed for modern business growth and conversion.
           </p>
         )}

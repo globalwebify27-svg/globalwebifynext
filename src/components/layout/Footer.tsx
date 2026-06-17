@@ -323,23 +323,23 @@ export default function Footer() {
             <div className="flex flex-row flex-nowrap justify-center items-center gap-1.5 sm:gap-2 w-full">
                {/* Bank of Baroda */}
                <div className="w-[54px] h-[38px] sm:w-[76px] sm:h-[50px] relative bg-white border border-gray-100 rounded-lg flex items-center justify-center shadow-sm shrink-0">
-                 <Image src="/BankOfBaroda.avif" alt="Bank of Baroda" fill className="object-contain p-0.5" sizes="(max-width: 640px) 54px, 76px" />
+                 <Image src="/BankOfBaroda.avif" alt="Bank of Baroda" fill unoptimized className="object-contain p-0.5" sizes="(max-width: 640px) 54px, 76px" />
                </div>
                {/* Indian Overseas Bank */}
                <div className="w-[54px] h-[38px] sm:w-[76px] sm:h-[50px] relative bg-white border border-gray-100 rounded-lg flex items-center justify-center shadow-sm shrink-0">
-                 <Image src="/IndianOverseasBank.avif" alt="Indian Overseas Bank" fill className="object-contain p-0.5" sizes="(max-width: 640px) 54px, 76px" />
+                 <Image src="/IndianOverseasBank.avif" alt="Indian Overseas Bank" fill unoptimized className="object-contain p-0.5" sizes="(max-width: 640px) 54px, 76px" />
                </div>
                {/* PayPal */}
                <div className="w-[54px] h-[38px] sm:w-[76px] sm:h-[50px] relative bg-white border border-gray-100 rounded-lg flex items-center justify-center shadow-sm shrink-0">
-                 <Image src="/PayPal.avif" alt="PayPal" fill className="object-contain p-0.5" sizes="(max-width: 640px) 54px, 76px" />
+                 <Image src="/PayPal.avif" alt="PayPal" fill unoptimized className="object-contain p-0.5" sizes="(max-width: 640px) 54px, 76px" />
                </div>
                {/* Razorpay */}
                <div className="w-[54px] h-[38px] sm:w-[76px] sm:h-[50px] relative bg-white border border-gray-100 rounded-lg flex items-center justify-center shadow-sm shrink-0">
-                 <Image src="/Razorpay.avif" alt="Razorpay" fill className="object-contain p-0.5" sizes="(max-width: 640px) 54px, 76px" />
+                 <Image src="/Razorpay.avif" alt="Razorpay" fill unoptimized className="object-contain p-0.5" sizes="(max-width: 640px) 54px, 76px" />
                </div>
                {/* PhonePe */}
                <div className="w-[54px] h-[38px] sm:w-[76px] sm:h-[50px] relative bg-white border border-gray-100 rounded-lg flex items-center justify-center shadow-sm shrink-0">
-                 <Image src="/PhonePe.avif" alt="PhonePe" fill className="object-contain p-0.5" sizes="(max-width: 640px) 54px, 76px" />
+                 <Image src="/PhonePe.avif" alt="PhonePe" fill unoptimized className="object-contain p-0.5" sizes="(max-width: 640px) 54px, 76px" />
                </div>
              </div>
           </div>
@@ -352,19 +352,18 @@ export default function Footer() {
            </p>
            <div className="flex flex-wrap justify-center items-center gap-x-6 gap-y-2 sm:gap-x-8 text-center">
              {["Privacy Policy", "Terms of Service", "Cookie Policy", "Sitemap"].map((link) => {
-               if (link === "Sitemap") {
-                 return (
-                   <Link 
-                     key={link} 
-                     href="/sitemap" 
-                     className="text-[13px] font-bold text-gray-400 hover:text-[#1a8b4c] transition-colors"
-                   >
-                     {link}
-                   </Link>
-                 );
-               }
+               const slugMap: Record<string, string> = {
+                 "Privacy Policy": "/privacy-policy",
+                 "Terms of Service": "/terms-of-service",
+                 "Cookie Policy": "/cookie-policy",
+                 "Sitemap": "/sitemap"
+               };
                return (
-                 <Link key={link} href="#" className="text-[13px] font-bold text-gray-400 hover:text-[#1a8b4c] transition-colors">
+                 <Link 
+                   key={link} 
+                   href={slugMap[link] || "#"} 
+                   className="text-[13px] font-bold text-gray-400 hover:text-[#1a8b4c] transition-colors"
+                 >
                    {link}
                  </Link>
                );

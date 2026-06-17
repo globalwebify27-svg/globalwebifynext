@@ -104,11 +104,11 @@ export default function TechStack({ sectionTitle, sectionDesc }: { sectionTitle?
           )}
           {sectionDesc ? (
             <p 
-              className="text-gray-400 text-[13px] md:text-[15px] font-medium mx-auto lg:whitespace-nowrap"
+              className="text-gray-400 text-[13px] md:text-[15px] font-medium mx-auto"
               dangerouslySetInnerHTML={{ __html: sectionDesc }}
             />
           ) : (
-            <p className="text-gray-400 text-[13px] md:text-[15px] font-medium mx-auto lg:whitespace-nowrap">
+            <p className="text-gray-400 text-[13px] md:text-[15px] font-medium mx-auto">
               We use the most powerful and modern technologies to build scalable, high-performance digital solutions for your business.
             </p>
           )}

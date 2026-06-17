@@ -40,21 +40,21 @@ export default function TrustSection({ sectionTitle, sectionDesc }: { sectionTit
           </div>
           {sectionTitle ? (
             <h2 
-              className="text-[28px] md:text-[36px] font-black text-gray-950 leading-tight lg:whitespace-nowrap"
+              className="text-[28px] md:text-[36px] font-black text-gray-950 leading-tight"
               dangerouslySetInnerHTML={{ __html: sectionTitle }}
             />
           ) : (
-            <h2 className="text-[28px] md:text-[36px] font-black text-gray-950 leading-tight lg:whitespace-nowrap">
+            <h2 className="text-[28px] md:text-[36px] font-black text-gray-950 leading-tight">
               Our Excellence <span className="text-[#1a8b4c]">Officially Certified</span>
             </h2>
           )}
           {sectionDesc ? (
             <p 
-              className="text-gray-500 mt-4 font-medium mx-auto lg:whitespace-nowrap"
+              className="text-gray-500 mt-4 font-medium mx-auto"
               dangerouslySetInnerHTML={{ __html: sectionDesc }}
             />
           ) : (
-            <p className="text-gray-500 mt-4 font-medium mx-auto lg:whitespace-nowrap">
+            <p className="text-gray-500 mt-4 font-medium mx-auto">
               We take pride in our industry-recognized certifications and proven digital framework that validate our commitment to quality and performance.
             </p>
           )}

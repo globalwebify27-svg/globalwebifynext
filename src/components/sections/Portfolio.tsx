@@ -147,7 +147,7 @@ export default function Portfolio({ sectionTitle, sectionDesc }: { sectionTitle?
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="text-[24px] md:text-[32px] lg:text-[36px] font-bold text-[#1a8b4c] leading-tight mb-6 tracking-tight font-heading xl:whitespace-nowrap"
+              className="text-[24px] md:text-[32px] lg:text-[36px] font-bold text-[#1a8b4c] leading-tight mb-6 tracking-tight font-heading"
               dangerouslySetInnerHTML={{ __html: sectionTitle }}
             />
           ) : (
@@ -155,7 +155,7 @@ export default function Portfolio({ sectionTitle, sectionDesc }: { sectionTitle?
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="text-[24px] md:text-[32px] lg:text-[36px] font-bold text-[#1a8b4c] leading-tight mb-6 tracking-tight font-heading xl:whitespace-nowrap"
+              className="text-[24px] md:text-[32px] lg:text-[36px] font-bold text-[#1a8b4c] leading-tight mb-6 tracking-tight font-heading"
             >
               Our Work Speaks for Itself
             </m.h2>
@@ -167,7 +167,7 @@ export default function Portfolio({ sectionTitle, sectionDesc }: { sectionTitle?
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.1 }}
-              className="text-gray-600 text-[14px] md:text-[18px] font-medium lg:whitespace-nowrap"
+              className="text-gray-600 text-[14px] md:text-[18px] font-medium"
               dangerouslySetInnerHTML={{ __html: sectionDesc }}
             />
           ) : (
@@ -176,7 +176,7 @@ export default function Portfolio({ sectionTitle, sectionDesc }: { sectionTitle?
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.1 }}
-              className="text-gray-600 text-[14px] md:text-[18px] font-medium lg:whitespace-nowrap"
+              className="text-gray-600 text-[14px] md:text-[18px] font-medium"
             >
               We've successfully delivered <span className="text-[#1a8b4c] font-bold underline decoration-green-200 decoration-4 underline-offset-4">500+ live projects</span>. Explore how we help businesses win online.
             </m.p>

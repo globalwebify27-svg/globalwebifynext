@@ -119,84 +119,86 @@ export default function MobileStickyNav() {
         initial={{ y: 100 }}
         animate={{ y: 0 }}
         transition={{ type: "spring", damping: 20, stiffness: 100 }}
-        className="md:hidden fixed bottom-0 left-0 right-0 z-[100] bg-[#1a8b4c] border-t border-white/20 shadow-[0_-8px_30px_rgba(0,0,0,0.25)] flex items-stretch h-[70px] safe-area-bottom overflow-hidden"
+        className="md:hidden fixed bottom-0 left-0 right-0 z-[100] bg-[#1a8b4c] border-t border-white/20 shadow-[0_-8px_30px_rgba(0,0,0,0.25)] flex flex-col pb-[env(safe-area-inset-bottom)]"
       >
         {/* Background with very subtle noise or gradient */}
         <div className="absolute inset-0 bg-gradient-to-b from-white/5 to-transparent pointer-events-none" />
 
-        {/* Buttons in a clear grid structure */}
-        {[
-          { 
-            href: "tel:18008905489", 
-            icon: <Phone size={22} />, 
-            label: "Call", 
-            type: "a",
-            animateState: animateCall,
-            delay: 0
-          },
-          { 
-            href: "https://wa.me/917563901100", 
-            icon: <MessageCircle size={22} />, 
-            label: "WhatsApp", 
-            type: "a", 
-            target: "_blank",
-            animateState: animateWhatsApp,
-            delay: 0.5
-          },
-          { 
-            icon: <Briefcase size={22} />, 
-            label: "Our Work", 
-            type: "drawer",
-            animateState: false,
-            delay: 1.0
-          }
-        ].map((item, i) => (
-          <m.div
-            key={item.label}
-            className={`flex-1 flex border-white/20 relative overflow-hidden ${i !== 2 ? 'border-r-[1.5px]' : ''}`}
-            whileTap={{ backgroundColor: "rgba(255,255,255,0.1)" }}
-          >
-            {item.type === "a" ? (
-              <a 
-                href={item.href}
-                target={item.target}
-                title={`${item.label} - Global Webify`}
-                className="flex-1 flex flex-col items-center justify-center gap-1.5 text-white transition-colors relative z-10 overflow-hidden"
-              >
-                <m.div
-                  animate={item.animateState ? "tingle" : "idle"}
-                  variants={getVariants(item.delay)}
+        {/* Buttons in a clear grid structure with inner height */}
+        <div className="flex items-stretch h-[64px] w-full relative z-10">
+          {[
+            { 
+              href: "tel:18008905489", 
+              icon: <Phone size={22} />, 
+              label: "Call", 
+              type: "a",
+              animateState: animateCall,
+              delay: 0
+            },
+            { 
+              href: "https://wa.me/917563901100", 
+              icon: <MessageCircle size={22} />, 
+              label: "WhatsApp", 
+              type: "a", 
+              target: "_blank",
+              animateState: animateWhatsApp,
+              delay: 0.5
+            },
+            { 
+              icon: <Briefcase size={22} />, 
+              label: "Our Work", 
+              type: "drawer",
+              animateState: false,
+              delay: 1.0
+            }
+          ].map((item, i) => (
+            <m.div
+              key={item.label}
+              className={`flex-1 flex border-white/20 relative overflow-hidden ${i !== 2 ? 'border-r-[1.5px]' : ''}`}
+              whileTap={{ backgroundColor: "rgba(255,255,255,0.1)" }}
+            >
+              {item.type === "a" ? (
+                <a 
+                  href={item.href}
+                  target={item.target}
+                  title={`${item.label} - Global Webify`}
+                  className="flex-1 flex flex-col items-center justify-center gap-1 text-white transition-colors relative z-10 overflow-hidden"
                 >
-                  {item.icon}
-                </m.div>
-                <span className="text-[10px] font-black uppercase tracking-[0.15em]">{item.label}</span>
-
-                {item.animateState && (
                   <m.div
-                    initial={{ left: "-100%" }}
-                    animate={{ left: "200%" }}
-                    transition={{ duration: 0.6, ease: "easeInOut" }}
-                    className="absolute inset-y-0 w-[60%] bg-gradient-to-r from-transparent via-white/35 to-transparent skew-x-[-25deg] pointer-events-none z-0"
-                  />
-                )}
-              </a>
-            ) : (
-              <button 
-                onClick={() => setIsDrawerOpen(true)}
-                title={`${item.label} - Global Webify`}
-                className="flex-1 flex flex-col items-center justify-center gap-1.5 text-white transition-colors relative z-10 w-full overflow-hidden"
-              >
-                <m.div
-                  animate={item.animateState ? "tingle" : "idle"}
-                  variants={getVariants(item.delay)}
+                    animate={item.animateState ? "tingle" : "idle"}
+                    variants={getVariants(item.delay)}
+                  >
+                    {item.icon}
+                  </m.div>
+                  <span className="text-[9px] font-black uppercase tracking-[0.15em]">{item.label}</span>
+
+                  {item.animateState && (
+                    <m.div
+                      initial={{ left: "-100%" }}
+                      animate={{ left: "200%" }}
+                      transition={{ duration: 0.6, ease: "easeInOut" }}
+                      className="absolute inset-y-0 w-[60%] bg-gradient-to-r from-transparent via-white/35 to-transparent skew-x-[-25deg] pointer-events-none z-0"
+                    />
+                  )}
+                </a>
+              ) : (
+                <button 
+                  onClick={() => setIsDrawerOpen(true)}
+                  title={`${item.label} - Global Webify`}
+                  className="flex-1 flex flex-col items-center justify-center gap-1 text-white transition-colors relative z-10 w-full overflow-hidden"
                 >
-                  {item.icon}
-                </m.div>
-                <span className="text-[10px] font-black uppercase tracking-[0.15em]">{item.label}</span>
-              </button>
-            )}
-          </m.div>
-        ))}
+                  <m.div
+                    animate={item.animateState ? "tingle" : "idle"}
+                    variants={getVariants(item.delay)}
+                  >
+                    {item.icon}
+                  </m.div>
+                  <span className="text-[9px] font-black uppercase tracking-[0.15em]">{item.label}</span>
+                </button>
+              )}
+            </m.div>
+          ))}
+        </div>
 
         {/* Subtle bottom glow */}
         <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-t from-white/10 to-transparent pointer-events-none" />

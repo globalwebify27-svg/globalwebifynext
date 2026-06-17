@@ -36,10 +36,11 @@ function replaceLocation(text: string, loc: string = ""): string {
 export default async function HomeView({ city, cityKey, location, subdomainContent }: { city?: string; cityKey?: string; location?: string; subdomainContent?: any } = {}) {
   let dbPosts: any[] = [];
   let serviceDescriptions: Record<string, string> = {};
+  let reviews: any[] = [];
 
   // Fix 2: Fire both DB queries in parallel instead of sequentially
   try {
-    const [rawPosts, services] = await Promise.all([
+    const [rawPosts, services, dbReviews] = await Promise.all([
       db.blogPost.findMany({
         where: { isActive: true },
         orderBy: { createdAt: 'desc' },
@@ -48,10 +49,14 @@ export default async function HomeView({ city, cityKey, location, subdomainConte
       db.servicePage.findMany({
         where: { isActive: true },
         select: { slug: true, heroDescription: true }
+      }),
+      db.review.findMany({
+        orderBy: { createdAt: 'desc' }
       })
     ]);
 
     dbPosts = rawPosts;
+    reviews = dbReviews;
     services.forEach(s => {
       const key = s.slug.startsWith('/') ? s.slug.substring(1) : s.slug;
       if (s.heroDescription) {
@@ -59,7 +64,7 @@ export default async function HomeView({ city, cityKey, location, subdomainConte
       }
     });
   } catch (e) {
-    console.error("Could not fetch blog posts or service descriptions:", e);
+    console.error("Could not fetch blog posts, service descriptions, or reviews:", e);
   }
 
   let homepageFaqs = [];
@@ -186,7 +191,7 @@ export default async function HomeView({ city, cityKey, location, subdomainConte
 
         {(!cityKey || subdomainContent) && <AboutSEO data={aboutSeoData} />}
 
-        <ResultsSection cardData={aboutCard} />
+        <ResultsSection cardData={aboutCard} reviews={reviews} sectionTitle={sectionHeaders?.results?.title} sectionDesc={sectionHeaders?.results?.description} />
 
         <LatestBlog dbPosts={processedPosts} sectionTitle={sectionHeaders?.latestBlog?.title} sectionDesc={sectionHeaders?.latestBlog?.description} />
 

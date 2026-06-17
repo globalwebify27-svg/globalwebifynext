@@ -334,3 +334,107 @@ TypeError: Cannot read properties of undefined (reading 'call')
     at flushWork (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/compiled/scheduler/cjs/scheduler.development.js:225:14)
     at MessagePort.performWorkUntilDeadline (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/compiled/scheduler/cjs/scheduler.development.js:534:21)
 ====================
+
+=== ERROR REPORT ===
+Time: 2026-06-15T12:20:43.452Z
+Message: TrendingUp is not defined
+Digest: 528643262
+Stack Trace:
+ReferenceError: TrendingUp is not defined
+    at PrivacyPolicyPage (webpack-internal:///(rsc)/./src/app/(company)/privacy-policy/page.tsx:275:125)
+    at e_ (C:\Users\vikur\Downloads\GlobalWeblify\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:264092)
+    at e (C:\Users\vikur\Downloads\GlobalWeblify\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:268224)
+    at eF (C:\Users\vikur\Downloads\GlobalWeblify\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:268712)
+    at eq (C:\Users\vikur\Downloads\GlobalWeblify\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:274676)
+    at ej (C:\Users\vikur\Downloads\GlobalWeblify\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:264920)
+    at e_ (C:\Users\vikur\Downloads\GlobalWeblify\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:263962)
+    at e (C:\Users\vikur\Downloads\GlobalWeblify\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:268224)
+    at eF (C:\Users\vikur\Downloads\GlobalWeblify\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:268712)
+    at C:\Users\vikur\Downloads\GlobalWeblify\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:265943
+    at Array.toJSON (C:\Users\vikur\Downloads\GlobalWeblify\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:266407)
+    at stringify (<anonymous>)
+    at eq (C:\Users\vikur\Downloads\GlobalWeblify\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:274775)
+    at eJ (C:\Users\vikur\Downloads\GlobalWeblify\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:275293)
+    at AsyncLocalStorage.run (node:internal/async_local_storage/async_context_frame:63:14)
+    at Timeout._onTimeout (C:\Users\vikur\Downloads\GlobalWeblify\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:283288)
+    at listOnTimeout (node:internal/timers:605:17)
+    at process.processTimers (node:internal/timers:541:7)
+====================
+
+=== ERROR REPORT ===
+Time: 2026-06-15T12:20:43.459Z
+Message: TrendingUp is not defined
+Digest: 528643262
+Stack Trace:
+ReferenceError: TrendingUp is not defined
+    at PrivacyPolicyPage (webpack-internal:///(rsc)/./src/app/(company)/privacy-policy/page.tsx:275:125)
+    at e_ (C:\Users\vikur\Downloads\GlobalWeblify\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:264092)
+    at e (C:\Users\vikur\Downloads\GlobalWeblify\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:268224)
+    at eF (C:\Users\vikur\Downloads\GlobalWeblify\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:268712)
+    at eq (C:\Users\vikur\Downloads\GlobalWeblify\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:274676)
+    at ej (C:\Users\vikur\Downloads\GlobalWeblify\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:264920)
+    at e_ (C:\Users\vikur\Downloads\GlobalWeblify\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:263962)
+    at e (C:\Users\vikur\Downloads\GlobalWeblify\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:268224)
+    at eF (C:\Users\vikur\Downloads\GlobalWeblify\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:268712)
+    at C:\Users\vikur\Downloads\GlobalWeblify\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:265943
+    at Array.toJSON (C:\Users\vikur\Downloads\GlobalWeblify\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:266407)
+    at stringify (<anonymous>)
+    at eq (C:\Users\vikur\Downloads\GlobalWeblify\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:274775)
+    at eJ (C:\Users\vikur\Downloads\GlobalWeblify\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:275293)
+    at AsyncLocalStorage.run (node:internal/async_local_storage/async_context_frame:63:14)
+    at Timeout._onTimeout (C:\Users\vikur\Downloads\GlobalWeblify\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:283288)
+    at listOnTimeout (node:internal/timers:605:17)
+    at process.processTimers (node:internal/timers:541:7)
+====================
+
+=== ERROR REPORT ===
+Time: 2026-06-15T12:23:41.381Z
+Message: Unsupported Server Component type: undefined
+Digest: 3019917652
+Stack Trace:
+Error: Unsupported Server Component type: undefined
+    at e (C:\Users\vikur\Downloads\GlobalWeblify\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:268661)
+    at eF (C:\Users\vikur\Downloads\GlobalWeblify\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:268712)
+    at C:\Users\vikur\Downloads\GlobalWeblify\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:265943
+    at Object.toJSON (C:\Users\vikur\Downloads\GlobalWeblify\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:266407)
+    at stringify (<anonymous>)
+    at eq (C:\Users\vikur\Downloads\GlobalWeblify\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:274775)
+    at ej (C:\Users\vikur\Downloads\GlobalWeblify\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:264920)
+    at e_ (C:\Users\vikur\Downloads\GlobalWeblify\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:263962)
+    at e (C:\Users\vikur\Downloads\GlobalWeblify\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:268224)
+    at eF (C:\Users\vikur\Downloads\GlobalWeblify\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:268712)
+    at C:\Users\vikur\Downloads\GlobalWeblify\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:265943
+    at Array.toJSON (C:\Users\vikur\Downloads\GlobalWeblify\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:266407)
+    at stringify (<anonymous>)
+    at eq (C:\Users\vikur\Downloads\GlobalWeblify\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:274775)
+    at eJ (C:\Users\vikur\Downloads\GlobalWeblify\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:275293)
+    at Timeout._onTimeout (C:\Users\vikur\Downloads\GlobalWeblify\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:265080)
+    at listOnTimeout (node:internal/timers:605:17)
+    at process.processTimers (node:internal/timers:541:7)
+====================
+
+=== ERROR REPORT ===
+Time: 2026-06-15T12:23:41.384Z
+Message: Unsupported Server Component type: undefined
+Digest: 3019917652
+Stack Trace:
+Error: Unsupported Server Component type: undefined
+    at e (C:\Users\vikur\Downloads\GlobalWeblify\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:268661)
+    at eF (C:\Users\vikur\Downloads\GlobalWeblify\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:268712)
+    at C:\Users\vikur\Downloads\GlobalWeblify\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:265943
+    at Object.toJSON (C:\Users\vikur\Downloads\GlobalWeblify\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:266407)
+    at stringify (<anonymous>)
+    at eq (C:\Users\vikur\Downloads\GlobalWeblify\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:274775)
+    at ej (C:\Users\vikur\Downloads\GlobalWeblify\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:264920)
+    at e_ (C:\Users\vikur\Downloads\GlobalWeblify\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:263962)
+    at e (C:\Users\vikur\Downloads\GlobalWeblify\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:268224)
+    at eF (C:\Users\vikur\Downloads\GlobalWeblify\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:268712)
+    at C:\Users\vikur\Downloads\GlobalWeblify\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:265943
+    at Array.toJSON (C:\Users\vikur\Downloads\GlobalWeblify\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:266407)
+    at stringify (<anonymous>)
+    at eq (C:\Users\vikur\Downloads\GlobalWeblify\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:274775)
+    at eJ (C:\Users\vikur\Downloads\GlobalWeblify\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:275293)
+    at Timeout._onTimeout (C:\Users\vikur\Downloads\GlobalWeblify\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:265080)
+    at listOnTimeout (node:internal/timers:605:17)
+    at process.processTimers (node:internal/timers:541:7)
+====================

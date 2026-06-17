@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from 'react';
+import { motion } from 'framer-motion';
 
 export function ExpandableContent({ 
   htmlContent,
@@ -11,15 +12,16 @@ export function ExpandableContent({
 }) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [needsButton, setNeedsButton] = useState(false);
+  const [actualHeight, setActualHeight] = useState(10000);
   const contentRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     if (contentRef.current) {
-      // Natural height of content without layout constraint
-      const naturalHeight = contentRef.current.scrollHeight;
-      setNeedsButton(naturalHeight > maxHeight + 15);
+      const h = contentRef.current.scrollHeight;
+      setActualHeight(h);
+      setNeedsButton(h > maxHeight + 15);
     }
   }, [htmlContent, maxHeight]);
 
@@ -27,23 +29,30 @@ export function ExpandableContent({
     return null;
   }
 
-  // Aggressively clean up existing data from the database
   const cleanHtml = htmlContent
-    // 1. Remove all empty paragraphs (spaces, nbsps, brs)
     .replace(/<p[^>]*>(?:\s|&nbsp;|<br>|<br\s*\/>)*<\/p>/gi, '')
-    // 2. Remove empty divs
     .replace(/<div[^>]*>(?:\s|&nbsp;|<br>|<br\s*\/>)*<\/div>/gi, '')
-    // 3. Merge adjacent UL tags (removes the closing of the first and opening of the second)
     .replace(/<\/ul>\s*<ul[^>]*>/gi, '')
-    // 4. Merge adjacent OL tags
     .replace(/<\/ol>\s*<ol[^>]*>/gi, '');
 
   const handleToggle = () => {
     if (isExpanded) {
-      containerRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      setTimeout(() => {
+      if (containerRef.current) {
+        const yOffset = -100;
+        const y = containerRef.current.getBoundingClientRect().top + window.scrollY + yOffset;
+        
+        // Smooth scroll to the top of the section first
+        window.scrollTo({ top: y, behavior: 'smooth' });
+
+        // Let the scroll finish or get close to finishing before collapsing the content.
+        // This prevents the page height from suddenly shrinking while the scroll viewport is below the new page bottom,
+        // which causes the browser to snap to the footer.
+        setTimeout(() => {
+          setIsExpanded(false);
+        }, 350);
+      } else {
         setIsExpanded(false);
-      }, 250);
+      }
     } else {
       setIsExpanded(true);
     }
@@ -51,10 +60,11 @@ export function ExpandableContent({
 
   return (
     <div ref={containerRef} className="w-full max-w-4xl mx-auto">
-      {/* Outer wrapper applying height restriction */}
-      <div
-        className="relative overflow-hidden transition-[max-height] duration-300 ease-in-out"
-        style={{ maxHeight: isExpanded ? '10000px' : `${maxHeight}px` }}
+      <motion.div
+        initial={false}
+        animate={{ height: isExpanded ? 'auto' : maxHeight }}
+        transition={{ duration: 0.4, ease: "easeInOut" }}
+        className="relative overflow-hidden w-full"
       >
         {/* Inner container with no restriction, used for measurement */}
         <div
@@ -240,7 +250,7 @@ export function ExpandableContent({
         {needsButton && !isExpanded && (
           <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-white via-white/95 to-transparent pointer-events-none z-10" />
         )}
-      </div>
+      </motion.div>
 
       {/* Read More / Read Less button */}
       {needsButton && (
