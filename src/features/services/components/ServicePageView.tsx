@@ -55,7 +55,13 @@ export function ServicePageView({ page, remainingSubMenus, faqs, locationName = 
       
       setTimeout(() => {
         setIsExpanded(false);
-      }, 250);
+        setTimeout(() => {
+          const button = window.innerWidth < 768 ? mobileButtonRef.current : desktopButtonRef.current;
+          if (button) {
+            button.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }
+        }, 50);
+      }, 400);
     } else {
       setIsExpanded(true);
     }
