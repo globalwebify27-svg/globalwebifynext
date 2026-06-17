@@ -30,6 +30,17 @@ const testimonials = [
 export default function ResultsSection({ cardData, reviews, sectionTitle, sectionDesc }: { cardData?: any; reviews?: any[]; sectionTitle?: string; sectionDesc?: string }) {
   const [index, setIndex] = React.useState(0);
   const [isExpanded, setIsExpanded] = React.useState(false);
+  const [isDesktop, setIsDesktop] = React.useState(false);
+
+  React.useEffect(() => {
+    const checkDevice = () => {
+      const isLargeHover = window.innerWidth >= 1024 && window.matchMedia('(hover: hover)').matches;
+      setIsDesktop(prev => (prev !== isLargeHover ? isLargeHover : prev));
+    };
+    checkDevice();
+    window.addEventListener('resize', checkDevice);
+    return () => window.removeEventListener('resize', checkDevice);
+  }, []);
 
   const items = React.useMemo(() => {
     if (reviews && reviews.length > 0) {
@@ -100,8 +111,8 @@ export default function ResultsSection({ cardData, reviews, sectionTitle, sectio
           
           {/* LEFT LARGE CARD: Main Info */}
           <m.div 
-            initial={{ opacity: 0, x: -20 }}
-            whileInView={{ opacity: 1, x: 0 }}
+            initial={isDesktop ? { opacity: 0, x: -20 } : { opacity: 1, x: 0 }}
+            whileInView={isDesktop ? { opacity: 1, x: 0 } : undefined}
             viewport={{ once: true, margin: "150px" }}
             className="lg:col-span-6 bg-gradient-to-br from-gray-950 to-[#022c22] shadow-2xl rounded-[40px] p-8 md:p-12 flex flex-col justify-between relative overflow-hidden group min-h-[450px]"
           >
@@ -128,16 +139,16 @@ export default function ResultsSection({ cardData, reviews, sectionTitle, sectio
             </div>
 
             {/* Decorative background circle */}
-            <div className="absolute top-0 right-0 w-[300px] h-[300px] bg-[#1a8b4c]/20 blur-[100px] rounded-full -mr-32 -mt-32 pointer-events-none" />
+            <div className="absolute top-0 right-0 w-[300px] h-[300px] bg-[#1a8b4c]/20 blur-[100px] rounded-full -mr-32 -mt-32 pointer-events-none hidden lg:block" />
           </m.div>
 
           {/* MIDDLE COLUMN: Stats */}
           <div className="lg:col-span-3 flex flex-col gap-4 md:gap-6">
             
-            {/* ROI Card */}
+             {/* ROI Card */}
             <m.div 
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
+              initial={isDesktop ? { opacity: 0, y: 20 } : { opacity: 1, y: 0 }}
+              whileInView={isDesktop ? { opacity: 1, y: 0 } : undefined}
               viewport={{ once: true, margin: "150px" }}
               className="bg-gradient-to-br from-[#0f172a] to-[#1e3a8a] shadow-xl shadow-blue-900/20 rounded-[32px] p-8 flex flex-col justify-center flex-1 group hover:-translate-y-1 transition-all"
             >
@@ -147,8 +158,8 @@ export default function ResultsSection({ cardData, reviews, sectionTitle, sectio
               </p>
               <div className="mt-4 h-1.5 w-full bg-white/10 rounded-full overflow-hidden">
                 <m.div 
-                  initial={{ width: 0 }}
-                  whileInView={{ width: "85%" }}
+                  initial={isDesktop ? { width: 0 } : { width: "85%" }}
+                  whileInView={isDesktop ? { width: "85%" } : undefined}
                   viewport={{ once: true }}
                   transition={{ duration: 1, delay: 0.5 }}
                   className="h-full bg-blue-400"
@@ -158,8 +169,8 @@ export default function ResultsSection({ cardData, reviews, sectionTitle, sectio
 
             {/* Leads Card */}
             <m.div 
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
+              initial={isDesktop ? { opacity: 0, y: 20 } : { opacity: 1, y: 0 }}
+              whileInView={isDesktop ? { opacity: 1, y: 0 } : undefined}
               viewport={{ once: true, margin: "150px" }}
               transition={{ delay: 0.1 }}
               className="bg-gradient-to-br from-[#1e1b4b] to-[#4c1d95] shadow-xl shadow-purple-900/20 rounded-[32px] p-8 flex flex-col justify-center flex-1 text-white group hover:-translate-y-1 transition-all"
@@ -170,8 +181,8 @@ export default function ResultsSection({ cardData, reviews, sectionTitle, sectio
               </p>
               <div className="mt-4 h-1.5 w-full bg-white/10 rounded-full overflow-hidden">
                 <m.div 
-                  initial={{ width: 0 }}
-                  whileInView={{ width: "95%" }}
+                  initial={isDesktop ? { width: 0 } : { width: "95%" }}
+                  whileInView={isDesktop ? { width: "95%" } : undefined}
                   viewport={{ once: true }}
                   transition={{ duration: 1, delay: 0.7 }}
                   className="h-full bg-purple-400"
@@ -182,8 +193,8 @@ export default function ResultsSection({ cardData, reviews, sectionTitle, sectio
 
           {/* RIGHT COLUMN: Testimonial Slider */}
           <m.div 
-            initial={{ opacity: 0, x: 20 }}
-            whileInView={{ opacity: 1, x: 0 }}
+            initial={isDesktop ? { opacity: 0, x: 20 } : { opacity: 1, x: 0 }}
+            whileInView={isDesktop ? { opacity: 1, x: 0 } : undefined}
             viewport={{ once: true, margin: "150px" }}
             className="lg:col-span-3 bg-[#f3f4f6] rounded-[40px] p-8 md:p-10 flex flex-col justify-between relative overflow-hidden group min-h-[450px]"
           >
@@ -259,8 +270,8 @@ export default function ResultsSection({ cardData, reviews, sectionTitle, sectio
         {/* Bottom stats row - Optimized for Mobile */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-6 mt-6">
           <m.div 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
+            initial={isDesktop ? { opacity: 0, y: 20 } : { opacity: 1, y: 0 }}
+            whileInView={isDesktop ? { opacity: 1, y: 0 } : undefined}
             viewport={{ once: true, margin: "150px" }}
             className="bg-[#f0fdf4] border border-[#1a8b4c]/10 shadow-lg shadow-[#1a8b4c]/5 rounded-[24px] md:rounded-[32px] p-5 md:p-6 flex flex-col md:flex-row items-center justify-between group hover:border-[#1a8b4c]/30 transition-all text-center md:text-left"
           >
@@ -274,8 +285,8 @@ export default function ResultsSection({ cardData, reviews, sectionTitle, sectio
           </m.div>
 
           <m.div 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
+            initial={isDesktop ? { opacity: 0, y: 20 } : { opacity: 1, y: 0 }}
+            whileInView={isDesktop ? { opacity: 1, y: 0 } : undefined}
             viewport={{ once: true, margin: "150px" }}
             transition={{ delay: 0.05 }}
             className="bg-[#f0fdf4] border border-[#1a8b4c]/10 shadow-lg shadow-[#1a8b4c]/5 rounded-[24px] md:rounded-[32px] p-5 md:p-6 flex flex-col md:flex-row items-center justify-between group hover:border-[#1a8b4c]/30 transition-all text-center md:text-left"
@@ -290,8 +301,8 @@ export default function ResultsSection({ cardData, reviews, sectionTitle, sectio
           </m.div>
 
           <m.div 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
+            initial={isDesktop ? { opacity: 0, y: 20 } : { opacity: 1, y: 0 }}
+            whileInView={isDesktop ? { opacity: 1, y: 0 } : undefined}
             viewport={{ once: true, margin: "150px" }}
             transition={{ delay: 0.1 }}
             className="bg-[#f0fdf4] border border-[#1a8b4c]/10 shadow-lg shadow-[#1a8b4c]/5 rounded-[24px] md:rounded-[32px] p-5 md:p-6 flex flex-col md:flex-row items-center justify-between group hover:border-[#1a8b4c]/30 transition-all text-center md:text-left"

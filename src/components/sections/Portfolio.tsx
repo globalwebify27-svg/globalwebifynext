@@ -232,13 +232,11 @@ export default function Portfolio({ sectionTitle, sectionDesc }: { sectionTitle?
               {[...logos, ...logos].map((num, i) => (
                 <div key={`${num}-${i}`} className="mx-3 flex-shrink-0">
                   <div className="bg-white rounded-xl w-[140px] md:w-[180px] h-[90px] md:h-[120px] flex items-center justify-center shadow-lg transition-transform hover:scale-105 duration-500 p-2 relative">
-                    <Image
+                    <img
                       src={num <= 4 ? `/${num}.avif` : `/${num}.webp`}
                       alt={`Partner Logo ${num}`}
-                      fill
-                      className="object-contain p-2"
-                      sizes="(max-width: 768px) 140px, 180px"
-                      loading="lazy"
+                      loading="eager"
+                      className="w-full h-full object-contain p-2"
                     />
                   </div>
                 </div>
