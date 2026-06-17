@@ -42,7 +42,7 @@ const crmCol = [
   { name: "Hotel Management Software", href: "/hotel-management-software", icon: Wrench, color: "text-gray-500 bg-gray-100" },
   { name: "Hospital Management Software", href: "/hospital-management-software", icon: Globe, color: "text-emerald-500 bg-emerald-50" },
   { name: "HR Management Software", href: "/hr-management-software", icon: Code, color: "text-teal-500 bg-teal-50" },
-  { name: "School Management System", href: "/school-management-system", icon: ShoppingCart, color: "text-orange-500 bg-orange-50" }
+  { name: "School Management Software", href: "/school-management-software", icon: ShoppingCart, color: "text-orange-500 bg-orange-50" }
 ];
 
 

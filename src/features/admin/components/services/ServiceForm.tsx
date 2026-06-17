@@ -283,11 +283,17 @@ export default function ServiceForm({ service }: { service?: Service }) {
               <input
                 type="text"
                 required
+                disabled={!!service?.id}
                 value={slug}
                 onChange={(e) => setSlug(e.target.value)}
                 placeholder="e.g. /instagram-marketing"
-                className="w-full bg-gray-50/50 border border-gray-200/80 rounded-xl px-4 py-2.5 text-xs md:text-sm font-mono font-semibold text-gray-800 placeholder-gray-400 focus:outline-none focus:border-[#1a8b4c] focus:bg-white transition-all"
+                className="w-full bg-gray-50/50 border border-gray-200/80 rounded-xl px-4 py-2.5 text-xs md:text-sm font-mono font-semibold text-gray-800 placeholder-gray-400 focus:outline-none focus:border-[#1a8b4c] focus:bg-white transition-all disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed"
               />
+              {service?.id && (
+                <span className="text-[9px] text-amber-600 font-bold uppercase tracking-wider">
+                  ⚠️ URL slugs cannot be edited after page creation to prevent broken links.
+                </span>
+              )}
             </div>
 
 

@@ -7,7 +7,7 @@ const CRM_SERVICES = [
   { name: "Hotel Management Software", href: "/hotel-management-software" },
   { name: "Hospital Management Software", href: "/hospital-management-software" },
   { name: "HR Management Software", href: "/hr-management-software" },
-  { name: "School Management System", href: "/school-management-system" }
+  { name: "School Management Software", href: "/school-management-software" }
 ];
 
 async function seed() {
