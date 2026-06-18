@@ -83,8 +83,8 @@ export const MegaMenu = ({ onClose, activeMenu, currentMenuId, currentCity }: Me
             className="object-cover"
             priority
           />
-          <div className="absolute inset-0 bg-black/5" />
-          <div className="absolute bottom-6 left-6 right-6 p-4 flex flex-col gap-2 bg-white/85 backdrop-blur-md border border-white/50 rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.1)]">
+          <div className="absolute inset-0 bg-black/5 z-0" />
+          <div className="absolute bottom-6 left-6 right-6 p-4 flex flex-col gap-2 bg-white/85 backdrop-blur-md border border-white/50 rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.1)] z-10">
             <p className="text-[16px] font-bold text-gray-900 leading-snug">{promo.title}</p>
             <p className="text-[12px] text-gray-600 leading-relaxed font-medium">{promo.sub}</p>
             <Link

@@ -12,7 +12,7 @@ import { getSubdomainLocation } from '@/lib/subdomain';
 import { getSubdomainContent } from '@/app/admin/(dashboard)/subdomains/actions';
 import PartnershipClient from '@/features/company/components/PartnershipClient';
 
-export const revalidate = 3600; // Cache page and revalidate at most every hour or on-demand
+
 
 interface Props {
   params: { slug: string };
@@ -48,7 +48,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         }
       };
     }
-  } catch {}
+  } catch (error: any) {
+    if (error && error.digest === 'DYNAMIC_SERVER_USAGE') throw error;
+  }
 
   // City landing page metadata
   const cityInfo = rawSlug ? CITIES_MAP[rawSlug.toLowerCase()] : null;
@@ -76,7 +78,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
           canonical: `/${cleanSlug}`
         }
       };
-    } catch (error) {
+    } catch (error: any) {
+      if (error && error.digest === 'DYNAMIC_SERVER_USAGE') throw error;
       console.error("Failed to load city SEO metadata:", error);
       return {
         title: `Best Web Development & Digital Marketing Services in ${locationName} | GlobalWeblify`,
@@ -107,7 +110,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         canonical: `/${cleanSlug}`
       }
     };
-  } catch { return {}; }
+  } catch (error: any) { 
+    if (error && error.digest === 'DYNAMIC_SERVER_USAGE') throw error;
+    return {}; 
+  }
 }
 
 // ---------- Page component ----------

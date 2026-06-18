@@ -10,7 +10,7 @@ import { CITIES_MAP } from '@/features/services/constants/cities';
 import { parseFaqs } from '@/features/services/utils/faq-parser';
 import { getSubdomainContent } from '@/app/admin/(dashboard)/subdomains/actions';
 
-export const revalidate = 3600; // Cache page and revalidate at most every hour or on-demand
+
 
 interface Props {
   params: { slug: string; serviceSlug: string };
@@ -57,7 +57,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         canonical: `/${cityKey}/${raw.startsWith('/') ? raw.slice(1) : raw}`
       }
     };
-  } catch { return {}; }
+  } catch (error: any) { 
+    if (error && error.digest === 'DYNAMIC_SERVER_USAGE') throw error;
+    return {}; 
+  }
 }
 
 export default async function CityServicePage({ params }: Props) {

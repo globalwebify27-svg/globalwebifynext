@@ -7,7 +7,7 @@ import { getSubdomainLocation } from '@/lib/subdomain';
 import { getSubdomainContent } from '@/app/admin/(dashboard)/subdomains/actions';
 import { replaceLocation } from '@/lib/replaceLocation';
 
-export const revalidate = 3600; // Cache page and revalidate at most every hour or on-demand via revalidatePath
+
 
 export async function generateMetadata(): Promise<Metadata> {
   const defaultTitle = "GlobalWeblify | Web Development & Digital Marketing Agency";
@@ -76,8 +76,12 @@ export async function generateMetadata(): Promise<Metadata> {
         canonical: '/'
       }
     };
-  } catch (error) {
-    // Expected to throw DYNAMIC_SERVER_USAGE during static generation
+  } catch (error: any) {
+    if (error && error.digest === 'DYNAMIC_SERVER_USAGE') {
+      throw error;
+    }
+    
+    // Fallback for other errors during generation
     return {
       title: defaultTitle,
       description: defaultDesc,

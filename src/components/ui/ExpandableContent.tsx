@@ -37,19 +37,19 @@ export function ExpandableContent({
 
   const handleToggle = () => {
     if (isExpanded) {
-      // First, collapse the content
-      setIsExpanded(false);
-      
-      // Immediately scroll back to the top of the container
       if (containerRef.current) {
         const yOffset = -120; // Offset for fixed header
         const y = containerRef.current.getBoundingClientRect().top + window.scrollY + yOffset;
         
-        // Small delay ensures the scroll happens right as the animation starts
-        setTimeout(() => {
-          window.scrollTo({ top: y, behavior: 'smooth' });
-        }, 10);
+        // Step 1: Instantly scroll to the top of the container BEFORE it shrinks
+        window.scrollTo({ top: y, behavior: 'auto' });
       }
+      
+      // Step 2: Shrink the container immediately after scrolling
+      // Using a tiny timeout ensures the browser paints the scroll position first
+      setTimeout(() => {
+        setIsExpanded(false);
+      }, 5);
     } else {
       setIsExpanded(true);
     }
