@@ -10,6 +10,16 @@ export async function POST(request: Request) {
                'unknown';
 
     const tenMinutesAgo = new Date(Date.now() - 10 * 60 * 1000);
+    const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
+
+    // Cleanup old records to prevent unbounded table growth
+    try {
+      await db.loginAttempt.deleteMany({
+        where: { timestamp: { lt: oneDayAgo } }
+      });
+    } catch (cleanupError) {
+      console.error('Failed to cleanup login attempts:', cleanupError);
+    }
     
     // 1. Check Rate Limiter (Brute Force Protection)
     const recentFailedAttempts = await db.loginAttempt.count({
@@ -41,8 +51,15 @@ export async function POST(request: Request) {
 
     const { username, password } = await request.json();
 
-    const expectedUsername = process.env.ADMIN_USERNAME || 'admin';
-    const expectedPassword = process.env.ADMIN_PASSWORD || 'adminpassword123';
+    const expectedUsername = process.env.ADMIN_USERNAME || (process.env.NODE_ENV === 'development' ? 'admin' : null);
+    const expectedPassword = process.env.ADMIN_PASSWORD || (process.env.NODE_ENV === 'development' ? 'adminpassword123' : null);
+
+    if (!expectedUsername || !expectedPassword) {
+      return NextResponse.json(
+        { success: false, message: 'Admin credentials not configured on server' },
+        { status: 500 }
+      );
+    }
 
     if (username === expectedUsername && password === expectedPassword) {
       // Log successful attempt

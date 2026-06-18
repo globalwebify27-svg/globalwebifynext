@@ -38,11 +38,13 @@ export default function Error({
         We apologize for the inconvenience. An unexpected error has occurred while loading this page.
       </p>
 
-      {/* Render details for direct model/user visibility */}
-      <div className="w-full max-w-2xl bg-gray-50 border border-gray-200 rounded-xl p-4 text-left font-mono text-[11px] text-red-600 overflow-auto mb-8 whitespace-pre-wrap max-h-[300px]">
-        <p className="font-bold mb-2 text-xs text-red-800">Error: {error.message}</p>
-        <p className="leading-relaxed">{error.stack}</p>
-      </div>
+      {/* Render details only in development */}
+      {process.env.NODE_ENV === 'development' && (
+        <div className="w-full max-w-2xl bg-gray-50 border border-gray-200 rounded-xl p-4 text-left font-mono text-[11px] text-red-600 overflow-auto mb-8 whitespace-pre-wrap max-h-[300px]">
+          <p className="font-bold mb-2 text-xs text-red-800">Error: {error.message}</p>
+          <p className="leading-relaxed">{error.stack}</p>
+        </div>
+      )}
 
       <div className="flex flex-wrap gap-4 justify-center">
         <button

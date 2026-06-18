@@ -37,21 +37,18 @@ export function ExpandableContent({
 
   const handleToggle = () => {
     if (isExpanded) {
+      // First, collapse the content
+      setIsExpanded(false);
+      
+      // Immediately scroll back to the top of the container
       if (containerRef.current) {
-        const yOffset = -100;
+        const yOffset = -120; // Offset for fixed header
         const y = containerRef.current.getBoundingClientRect().top + window.scrollY + yOffset;
         
-        // Smooth scroll to the top of the section first
-        window.scrollTo({ top: y, behavior: 'smooth' });
-
-        // Let the scroll finish or get close to finishing before collapsing the content.
-        // This prevents the page height from suddenly shrinking while the scroll viewport is below the new page bottom,
-        // which causes the browser to snap to the footer.
+        // Small delay ensures the scroll happens right as the animation starts
         setTimeout(() => {
-          setIsExpanded(false);
-        }, 350);
-      } else {
-        setIsExpanded(false);
+          window.scrollTo({ top: y, behavior: 'smooth' });
+        }, 10);
       }
     } else {
       setIsExpanded(true);

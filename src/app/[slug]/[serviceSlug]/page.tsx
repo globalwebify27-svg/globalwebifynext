@@ -41,6 +41,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         title: replaceLocation(subContent.seoTitle || page.seoTitle || page.title || '', loc),
         description: replaceLocation(subContent.seoDescription || page.seoDescription || '', loc),
         keywords: page.seoKeywords ? page.seoKeywords.split(',').map(k => replaceLocation(k, loc).trim()) : undefined,
+        alternates: {
+          canonical: `/${cityKey}/${raw.startsWith('/') ? raw.slice(1) : raw}`
+        }
       };
     }
 
@@ -50,6 +53,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       title: title,
       description: desc,
       keywords: page.seoKeywords ? page.seoKeywords.split(',').map(k => replaceLocation(k, loc).trim()) : undefined,
+      alternates: {
+        canonical: `/${cityKey}/${raw.startsWith('/') ? raw.slice(1) : raw}`
+      }
     };
   } catch { return {}; }
 }

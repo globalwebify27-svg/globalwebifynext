@@ -26,6 +26,7 @@ export async function generateStaticParams() {
 // ---------- Metadata ----------
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const rawSlug = params?.slug || '';
+  const cleanSlug = rawSlug.startsWith('/') ? rawSlug.slice(1) : rawSlug;
   
   // Dynamic Partnership Metadata check
   try {
@@ -35,14 +36,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       return acc;
     }, {} as Record<string, string>);
     const partnershipSlug = settingsMap['partnershipPageSlug'] || 'partnership';
-    const cleanSlug = rawSlug.startsWith('/') ? rawSlug.slice(1) : rawSlug;
     const cleanPartnerSlug = partnershipSlug.startsWith('/') ? partnershipSlug.slice(1) : partnershipSlug;
 
     if (cleanSlug.toLowerCase() === cleanPartnerSlug.toLowerCase()) {
       return {
         title: settingsMap['partnershipPageTitle'] || 'Partner Network | GlobalWeblify',
         description: settingsMap['partnershipHeroDesc'] || 'Join the GlobalWeblify Partner Network.',
-        keywords: ['GlobalWeblify Partnerships', 'Agency Partnership Program']
+        keywords: ['GlobalWeblify Partnerships', 'Agency Partnership Program'],
+        alternates: {
+          canonical: `/${cleanSlug}`
+        }
       };
     }
   } catch {}
@@ -57,6 +60,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         title: replaceLocation(subContent.seoTitle || '', locationName) || `Best Web Development & Digital Marketing Services in ${locationName} | GlobalWeblify`,
         description: replaceLocation(subContent.seoDescription || '', locationName),
         keywords: `Web Development ${locationName}, SEO ${locationName}, Digital Marketing ${locationName}`,
+        alternates: {
+          canonical: `/${cleanSlug}`
+        }
       };
     }
 
@@ -66,12 +72,18 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         title: citySeo.title,
         description: citySeo.description,
         keywords: citySeo.keywords,
+        alternates: {
+          canonical: `/${cleanSlug}`
+        }
       };
     } catch (error) {
       console.error("Failed to load city SEO metadata:", error);
       return {
         title: `Best Web Development & Digital Marketing Services in ${locationName} | GlobalWeblify`,
         description: `Explore GlobalWeblify's professional web development, SEO, digital marketing, and branding services in ${locationName}. Custom solutions tailored to your local market.`,
+        alternates: {
+          canonical: `/${cleanSlug}`
+        }
       };
     }
   }
@@ -91,6 +103,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       title: title,
       description: description,
       keywords: page.seoKeywords ? page.seoKeywords.split(',').map(k => k.trim()) : undefined,
+      alternates: {
+        canonical: `/${cleanSlug}`
+      }
     };
   } catch { return {}; }
 }

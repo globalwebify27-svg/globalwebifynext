@@ -42,6 +42,9 @@ export async function generateMetadata(): Promise<Metadata> {
             title,
             description,
             images: [defaultLogo],
+          },
+          alternates: {
+            canonical: '/'
           }
         };
       }
@@ -68,6 +71,9 @@ export async function generateMetadata(): Promise<Metadata> {
         title,
         description,
         images: [defaultLogo],
+      },
+      alternates: {
+        canonical: '/'
       }
     };
   } catch (error) {
@@ -90,6 +96,9 @@ export async function generateMetadata(): Promise<Metadata> {
         title: defaultTitle,
         description: defaultDesc,
         images: [defaultLogo],
+      },
+      alternates: {
+        canonical: '/'
       }
     };
   }

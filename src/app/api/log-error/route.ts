@@ -14,7 +14,7 @@ Stack Trace:
 ${stack}
 ====================
 `;
-    fs.appendFileSync('C:\\Users\\vikur\\Downloads\\GlobalWeblify\\error_log.txt', logContent, 'utf8');
+    fs.appendFileSync(path.join(process.cwd(), 'error_log.txt'), logContent, 'utf8');
     return NextResponse.json({ success: true });
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 });

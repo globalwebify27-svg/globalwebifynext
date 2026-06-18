@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+import { NextResponse, NextRequest } from 'next/server';
 
 export async function POST() {
   const response = NextResponse.json({ success: true, message: 'Logged out successfully' });
@@ -12,8 +12,10 @@ export async function POST() {
   return response;
 }
 
-export async function GET() {
-  const response = NextResponse.redirect(new URL('/admin', process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'));
+export async function GET(req: NextRequest) {
+  const url = req.nextUrl.clone();
+  url.pathname = '/admin';
+  const response = NextResponse.redirect(url);
   
   response.cookies.set('admin_session', '', {
     httpOnly: true,

@@ -84,7 +84,8 @@ export default function Footer() {
             <Link href="/" className="inline-block relative w-[180px] h-[80px] mx-auto lg:mx-0">
               <Image 
                 src="/global_webify_logo.png" 
-                alt="GlobalWebify" 
+                alt="Logo - Global Webify" 
+                title="Logo - Global Webify"
                 fill
                 className="object-contain" 
                 sizes="180px"
@@ -335,23 +336,23 @@ export default function Footer() {
             <div className="flex flex-row flex-nowrap justify-center items-center gap-1.5 sm:gap-2 w-full">
                {/* Bank of Baroda */}
                <div className="w-[54px] h-[38px] sm:w-[76px] sm:h-[50px] relative bg-white border border-gray-100 rounded-lg flex items-center justify-center shadow-sm shrink-0">
-                 <Image src="/BankOfBaroda.avif" alt="Bank of Baroda" fill unoptimized className="object-contain p-0.5" sizes="(max-width: 640px) 54px, 76px" />
+                 <Image src="/BankOfBaroda.avif" alt="Bank of Baroda" title="Bank of Baroda - Global Webify" fill unoptimized className="object-contain p-0.5" sizes="(max-width: 640px) 54px, 76px" />
                </div>
                {/* Indian Overseas Bank */}
                <div className="w-[54px] h-[38px] sm:w-[76px] sm:h-[50px] relative bg-white border border-gray-100 rounded-lg flex items-center justify-center shadow-sm shrink-0">
-                 <Image src="/IndianOverseasBank.avif" alt="Indian Overseas Bank" fill unoptimized className="object-contain p-0.5" sizes="(max-width: 640px) 54px, 76px" />
+                 <Image src="/IndianOverseasBank.avif" alt="Indian Overseas Bank" title="Indian Overseas Bank - Global Webify" fill unoptimized className="object-contain p-0.5" sizes="(max-width: 640px) 54px, 76px" />
                </div>
                {/* PayPal */}
                <div className="w-[54px] h-[38px] sm:w-[76px] sm:h-[50px] relative bg-white border border-gray-100 rounded-lg flex items-center justify-center shadow-sm shrink-0">
-                 <Image src="/PayPal.avif" alt="PayPal" fill unoptimized className="object-contain p-0.5" sizes="(max-width: 640px) 54px, 76px" />
+                 <Image src="/PayPal.avif" alt="PayPal" title="PayPal - Global Webify" fill unoptimized className="object-contain p-0.5" sizes="(max-width: 640px) 54px, 76px" />
                </div>
                {/* Razorpay */}
                <div className="w-[54px] h-[38px] sm:w-[76px] sm:h-[50px] relative bg-white border border-gray-100 rounded-lg flex items-center justify-center shadow-sm shrink-0">
-                 <Image src="/Razorpay.avif" alt="Razorpay" fill unoptimized className="object-contain p-0.5" sizes="(max-width: 640px) 54px, 76px" />
+                 <Image src="/Razorpay.avif" alt="Razorpay" title="Razorpay - Global Webify" fill unoptimized className="object-contain p-0.5" sizes="(max-width: 640px) 54px, 76px" />
                </div>
                {/* PhonePe */}
                <div className="w-[54px] h-[38px] sm:w-[76px] sm:h-[50px] relative bg-white border border-gray-100 rounded-lg flex items-center justify-center shadow-sm shrink-0">
-                 <Image src="/PhonePe.avif" alt="PhonePe" fill unoptimized className="object-contain p-0.5" sizes="(max-width: 640px) 54px, 76px" />
+                 <Image src="/PhonePe.avif" alt="PhonePe" title="PhonePe - Global Webify" fill unoptimized className="object-contain p-0.5" sizes="(max-width: 640px) 54px, 76px" />
                </div>
              </div>
           </div>
@@ -375,6 +376,7 @@ export default function Footer() {
                  <Link 
                    key={link} 
                    href={slugMap[link] || "#"} 
+                   title={`${link} - Global Webify`}
                    className="text-[13px] font-bold text-gray-400 hover:text-[#1a8b4c] transition-colors"
                  >
                    {link}

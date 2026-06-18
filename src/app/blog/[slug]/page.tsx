@@ -39,7 +39,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       return {
         title: title,
         description: description,
-        keywords: dbPost.seoKeywords ? dbPost.seoKeywords.split(',').map(k => k.trim()) : undefined
+        keywords: dbPost.seoKeywords ? dbPost.seoKeywords.split(',').map(k => k.trim()) : undefined,
+        alternates: {
+          canonical: slugWithPrefix
+        }
       };
     }
   } catch (e) {}
@@ -49,6 +52,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     return {
       title: `${staticPost.title} | GlobalWebify`,
       description: staticPost.excerpt,
+      alternates: {
+        canonical: slugWithPrefix
+      }
     };
   }
 

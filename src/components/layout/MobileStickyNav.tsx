@@ -48,7 +48,6 @@ export default function MobileStickyNav() {
   const isCityHome = segments.length === 1 && citySlugs.includes(segments[0].toLowerCase());
   const isHomepage = pathname === '/' || isCityHome;
 
-  if (!isHomepage) return null;
   const [animateCall, setAnimateCall] = useState(false);
   const [animateWhatsApp, setAnimateWhatsApp] = useState(false);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -57,21 +56,21 @@ export default function MobileStickyNav() {
 
   // Periodic Tingle Animation (Runs automatically on all pages, simultaneously)
   useEffect(() => {
+    let timer: NodeJS.Timeout;
     idleInterval.current = setInterval(() => {
       // Wiggle both Call and WhatsApp at the same time
       setAnimateCall(true);
       setAnimateWhatsApp(true);
 
-      const timer = setTimeout(() => {
+      timer = setTimeout(() => {
         setAnimateCall(false);
         setAnimateWhatsApp(false);
       }, 600);
-
-      return () => clearTimeout(timer);
     }, 3000); // 3-second interval loop
 
     return () => {
       if (idleInterval.current) clearInterval(idleInterval.current);
+      if (timer) clearTimeout(timer);
     };
   }, []);
 
@@ -156,6 +155,7 @@ export default function MobileStickyNav() {
   }, []);
 
   if (isInputFocused) return null;
+  if (!isHomepage) return null;
 
   return (
     <>

@@ -49,7 +49,7 @@ const TypingHeadline = ({ phrases = [] }: { phrases?: string[] }) => {
       setLoopNum(0);
       setTypingSpeed(100);
     }
-  }, [JSON.stringify(activePhrases)]);
+  }, [activePhrases.join('|')]);
 
   useEffect(() => {
     if (!mounted || activePhrases.length === 0) return;

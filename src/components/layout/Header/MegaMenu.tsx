@@ -78,6 +78,7 @@ export const MegaMenu = ({ onClose, activeMenu, currentMenuId, currentCity }: Me
           <Image
             src="/nav-promo.png"
             alt="Promo Background - Global Webify"
+            title="Promo Background - Global Webify"
             fill
             className="object-cover"
             priority

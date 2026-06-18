@@ -4,6 +4,7 @@ import { blogPosts as staticBlogPosts } from '@/data/posts';
 import { WEBSITE_SERVICES, CRM_SERVICES, SEO_SERVICES, HOSTING_SERVICES, MARKETING_SERVICES, BRANDING_SERVICES } from '@/constants/navigation';
 import fs from 'fs';
 import path from 'path';
+import { requireAdmin } from '@/lib/auth';
 
 export const dynamic = 'force-dynamic';
 
@@ -304,12 +305,24 @@ async function handleSeed(clean: boolean) {
 }
 
 export async function GET(request: Request) {
+  try {
+    await requireAdmin();
+  } catch (error: any) {
+    return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
+  }
+
   const { searchParams } = new URL(request.url);
   const clean = searchParams.get('clean') === 'true';
   return handleSeed(clean);
 }
 
 export async function POST(request: Request) {
+  try {
+    await requireAdmin();
+  } catch (error: any) {
+    return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
+  }
+
   let clean = false;
   try {
     const body = await request.json();

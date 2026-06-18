@@ -25,7 +25,16 @@ export async function GET(req: NextRequest) {
 
     // Local file (e.g. /uploads/filename.pdf) — used on Hostinger with STORAGE_PROVIDER=local
     if (fileUrl.startsWith('/')) {
-      const filePath = path.join(process.cwd(), 'public', fileUrl);
+      // Prevent path traversal
+      const normalizedUrl = path.normalize(fileUrl).replace(/^(\.\.[\/\\])+/, '');
+      const filePath = path.join(process.cwd(), 'public', normalizedUrl);
+      
+      // Double check that it's actually in the public directory
+      const publicDir = path.join(process.cwd(), 'public');
+      if (!filePath.startsWith(publicDir)) {
+        return NextResponse.json({ error: 'Invalid file path' }, { status: 403 });
+      }
+
       fileBuffer = await readFile(filePath);
       ext = path.extname(filePath).toLowerCase();
     } else {

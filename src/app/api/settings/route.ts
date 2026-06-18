@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { revalidatePath, revalidateTag } from 'next/cache';
+import { requireAdmin } from '@/lib/auth';
 
 export const dynamic = 'force-dynamic';
 
@@ -35,6 +36,11 @@ export async function GET() {
 
 export async function POST(request: Request) {
   try {
+    try {
+      await requireAdmin();
+    } catch (authError) {
+      return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
+    }
     const body = await request.json();
     
     const updatableKeys = [

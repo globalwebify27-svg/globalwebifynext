@@ -1,8 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
+import { requireAdmin } from '@/lib/auth';
 
 export const dynamic = "force-dynamic"; // never cache at Next.js route level — we handle caching ourselves
 
 export async function GET(req: NextRequest) {
+  try {
+    await requireAdmin();
+  } catch (authError) {
+    return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
+  }
+
   const { searchParams } = new URL(req.url);
   const rawUrl = searchParams.get("url");
 

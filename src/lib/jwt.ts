@@ -1,10 +1,15 @@
-const SECRET_KEY = process.env.JWT_SECRET || 'globalwebify-super-secret-admin-token-2026';
+const SECRET_KEY = process.env.JWT_SECRET;
 
 async function getCryptoKey() {
+  const secret = SECRET_KEY || (process.env.NODE_ENV === 'development' ? 'globalwebify-super-secret-admin-token-2026' : null);
+  if (!secret) {
+    throw new Error('JWT_SECRET environment variable is required in production');
+  }
+  
   const enc = new TextEncoder();
   return crypto.subtle.importKey(
     'raw',
-    enc.encode(SECRET_KEY),
+    enc.encode(secret),
     { name: 'HMAC', hash: { name: 'SHA-256' } },
     false,
     ['sign', 'verify']

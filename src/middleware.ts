@@ -17,10 +17,9 @@ export async function middleware(request: NextRequest) {
     !pathname.startsWith('/admin')
   ) {
     try {
-      // Fetch the statically updated redirects JSON file without caching
+      // Fetch the redirects JSON file with a short cache to improve latency
       const res = await fetch(new URL('/redirects.json', request.url), {
-        cache: 'no-store',
-        next: { revalidate: 0 }
+        next: { revalidate: 60 }
       });
       if (res.ok) {
         const redirects = await res.json();

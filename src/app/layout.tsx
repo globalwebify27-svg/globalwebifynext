@@ -29,18 +29,31 @@ const jost = Jost({
 });
 
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://globalwebify.com";
+
 export const metadata: Metadata = {
-  title: "GlobalWeblify | Web Development & Digital Marketing Agency",
+  metadataBase: new URL(siteUrl),
+  title: "Global Webify | Web Development & Digital Marketing Agency",
   description: "Leading Web Development, SEO, and Digital Marketing Agency in India. We build AI-powered solutions for your business growth.",
-  keywords: "Web Development, SEO, Digital Marketing, AI Solutions, GlobalWebify",
+  keywords: "Web Development, SEO, Digital Marketing, AI Solutions, Global Webify",
+  authors: [{ name: "Global Webify" }],
+  publisher: "Global Webify",
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+    },
+  },
   openGraph: {
-    title: "GlobalWeblify | Web Development & Digital Marketing Agency",
+    title: "Global Webify | Web Development & Digital Marketing Agency",
     description: "Leading Web Development, SEO, and Digital Marketing Agency in India. We build AI-powered solutions for your business growth.",
-    url: "https://globalwebify.com",
-    siteName: "GlobalWeblify",
+    url: siteUrl,
+    siteName: "Global Webify",
     images: [
       {
-        url: "https://globalwebify.com/global_webify_logo.png",
+        url: "/global_webify_logo.png",
         width: 1200,
         height: 630,
         alt: "GlobalWebify Logo",
@@ -51,9 +64,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "GlobalWeblify | Web Development & Digital Marketing Agency",
+    title: "Global Webify | Web Development & Digital Marketing Agency",
     description: "Leading Web Development, SEO, and Digital Marketing Agency in India. We build AI-powered solutions for your business growth.",
-    images: ["https://globalwebify.com/global_webify_logo.png"],
+    images: ["/global_webify_logo.png"],
   }
 };
 

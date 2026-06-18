@@ -74,6 +74,7 @@ export default function ServiceHero({
           <img
             src={bgImage}
             alt={title}
+            title={`${title} - Global Webify`}
             className="absolute inset-0 w-full h-full object-cover object-center"
             loading="eager"
           />
@@ -85,6 +86,7 @@ export default function ServiceHero({
           <img
             src="/web-dev-banner-bg.png"
             alt={title}
+            title={`${title} - Global Webify`}
             className="absolute inset-0 w-full h-full object-cover object-center"
             loading="eager"
           />

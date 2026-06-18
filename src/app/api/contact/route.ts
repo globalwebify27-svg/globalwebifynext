@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
+import { requireAdmin } from '@/lib/auth';
 
 async function ensureTableExists() {
   try {
@@ -26,6 +27,11 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ success: false, error: 'Missing required fields' }, { status: 400 });
     }
 
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return NextResponse.json({ success: false, error: 'Invalid email format' }, { status: 400 });
+    }
+
     await ensureTableExists();
 
     await db.$executeRawUnsafe(
@@ -46,6 +52,11 @@ export async function POST(req: NextRequest) {
 
 export async function GET(req: NextRequest) {
   try {
+    try {
+      await requireAdmin();
+    } catch (authError) {
+      return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
+    }
     await ensureTableExists();
     const submissions = await db.$queryRawUnsafe(
       `SELECT * FROM ContactSubmission ORDER BY createdAt DESC`
@@ -59,6 +70,11 @@ export async function GET(req: NextRequest) {
 
 export async function DELETE(req: NextRequest) {
   try {
+    try {
+      await requireAdmin();
+    } catch (authError) {
+      return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
+    }
     const { searchParams } = new URL(req.url);
     const idStr = searchParams.get('id');
     if (!idStr) {

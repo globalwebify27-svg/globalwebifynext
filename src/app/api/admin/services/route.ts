@@ -1,9 +1,15 @@
 import { NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { revalidatePath } from 'next/cache';
+import { requireAdmin } from '@/lib/auth';
 
 export async function POST(request: Request) {
   try {
+    try {
+      await requireAdmin();
+    } catch (authError) {
+      return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
+    }
     const formData = await request.json();
     console.log('API Save Service Request Body:', formData);
     

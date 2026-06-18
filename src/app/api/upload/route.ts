@@ -2,8 +2,9 @@ import { NextRequest, NextResponse } from 'next/server';
 import { v2 as cloudinary } from 'cloudinary';
 import { writeFile, mkdir } from 'fs/promises';
 import path from 'path';
+import { requireAdmin } from '@/lib/auth';
 
-// Configure Cloudinary
+// Configure Cloudinary (Will only be used if env vars exist)
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
@@ -12,89 +13,74 @@ cloudinary.config({
 
 export async function POST(request: NextRequest) {
   try {
+    // 1. Authenticate the request
+    try {
+      await requireAdmin();
+    } catch (authError) {
+      return NextResponse.json({ success: false, message: 'Unauthorized' }, { status: 401 });
+    }
+
     const formData = await request.formData();
     const file = formData.get('file') as File;
 
     if (!file) {
-      return NextResponse.json(
-        { success: false, message: 'No file uploaded' },
-        { status: 400 }
-      );
+      return NextResponse.json({ success: false, message: 'No file uploaded' }, { status: 400 });
     }
 
-    // Read the file data into a buffer
+    // 2. File Validation (10MB limit)
+    const MAX_SIZE = 10 * 1024 * 1024;
+    if (file.size > MAX_SIZE) {
+      return NextResponse.json({ success: false, message: 'File size exceeds 10MB limit' }, { status: 400 });
+    }
+
+    const originalName = file.name;
+    const ext = path.extname(originalName).toLowerCase();
+    const allowedExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.svg', '.pdf', '.doc', '.docx', '.mp4'];
+    
+    if (!allowedExtensions.includes(ext)) {
+      return NextResponse.json({ success: false, message: `File type not allowed.` }, { status: 400 });
+    }
+
     const arrayBuffer = await file.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
 
-    // Check if we should use local storage instead of Cloudinary
+    // HOSTINGER DEPLOYMENT: If we are using local storage
     if (process.env.STORAGE_PROVIDER === 'local') {
-      const filename = `${Date.now()}-${file.name.replace(/\s+/g, '-')}`;
+      const sanitizedOriginalName = originalName.replace(/[^a-zA-Z0-9.-_]/g, '-').replace(/-+/g, '-');
+      const filename = `${Date.now()}-${sanitizedOriginalName}`;
       const uploadDir = path.join(process.cwd(), 'public', 'uploads');
       
-      // Ensure the uploads directory exists
-      try {
-        await mkdir(uploadDir, { recursive: true });
-      } catch (err) {
-        // Ignore if directory already exists
-      }
-
+      try { await mkdir(uploadDir, { recursive: true }); } catch (err) {}
+      
       const filePath = path.join(uploadDir, filename);
       await writeFile(filePath, buffer);
 
-      return NextResponse.json({
-        success: true,
-        url: `/uploads/${filename}`,
-      });
+      return NextResponse.json({ success: true, url: `/uploads/${filename}` });
     }
 
-    // Default: Upload to Cloudinary using a stream
-    // Save a local backup copy in public/uploads first
-    try {
-      const backupFilename = `${Date.now()}-${file.name.replace(/\s+/g, '-')}`;
-      const uploadDir = path.join(process.cwd(), 'public', 'uploads');
-      try {
-        await mkdir(uploadDir, { recursive: true });
-      } catch (e) {}
-      await writeFile(path.join(uploadDir, backupFilename), buffer);
-      console.log(`Local backup saved successfully at: /uploads/${backupFilename}`);
-    } catch (localErr) {
-      console.error('Failed to write local backup copy:', localErr);
-    }
-
+    // VERCEL DEPLOYMENT: Fallback to Cloudinary because Vercel doesn't allow local file saving
     const result: any = await new Promise((resolve, reject) => {
-      // Extract original filename and extension
-      const originalName = file.name.replace(/\s+/g, '-');
-      const ext = originalName.split('.').pop() || '';
-      const baseName = originalName.replace(`.${ext}`, '');
-      
+      const baseName = originalName.replace(`.${ext}`, '').replace(/\s+/g, '-');
       const uploadStream = cloudinary.uploader.upload_stream(
         { 
           folder: 'global-weblify/uploads',
-          resource_type: 'auto', // Important for non-image files like PDF/Word
+          resource_type: 'auto',
           public_id: `${baseName}-${Date.now()}`,
-          format: ext // Ensure the URL ends with the correct extension
+          format: ext.replace('.', '')
         },
         (error, result) => {
           if (error) reject(error);
           else resolve(result);
         }
       );
-      
-      // End the stream with the buffer
       uploadStream.end(buffer);
     });
 
-    // Return the secure URL from Cloudinary
-    return NextResponse.json({
-      success: true,
-      url: result.secure_url,
-    });
+    return NextResponse.json({ success: true, url: result.secure_url });
+
   } catch (error) {
     console.error('Upload Error:', error);
-    return NextResponse.json(
-      { success: false, message: 'Internal server error during upload' },
-      { status: 500 }
-    );
+    return NextResponse.json({ success: false, message: 'Internal server error during upload' }, { status: 500 });
   }
 }
 

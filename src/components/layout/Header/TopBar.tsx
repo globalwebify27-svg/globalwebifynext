@@ -26,7 +26,8 @@ export const TopBar = ({ isOpen, setIsOpen }: TopBarProps) => {
             )}>
               <Image
                 src="/global_webify_logo.png"
-                alt="Global Webify Logo"
+                alt="Logo - Global Webify"
+                title="Logo - Global Webify"
                 fill
                 priority
                 quality={85}
@@ -63,7 +64,7 @@ export const TopBar = ({ isOpen, setIsOpen }: TopBarProps) => {
               )}
               style={!social.bg.startsWith('bg-') ? { background: social.bg } : {}}
             >
-              <img src={social.icon} alt={`${social.name} - Global Webify`} className="w-full h-full object-contain" />
+              <img src={social.icon} alt={`${social.name} - Global Webify`} title={`${social.name} - Global Webify`} className="w-full h-full object-contain" />
             </a>
           ))}
         </div>
@@ -107,7 +108,7 @@ export const TopBar = ({ isOpen, setIsOpen }: TopBarProps) => {
                 )}
                 style={!social.bg.startsWith('bg-') ? { background: social.bg } : {}}
               >
-                <img src={social.icon} alt={`${social.name} - Global Webify`} className="w-full h-full object-contain" />
+                <img src={social.icon} alt={`${social.name} - Global Webify`} title={`${social.name} - Global Webify`} className="w-full h-full object-contain" />
               </a>
             ))}
           </div>
