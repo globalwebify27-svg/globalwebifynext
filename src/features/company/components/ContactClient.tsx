@@ -164,7 +164,7 @@ export default function ContactClient() {
                         value={formData.phone}
                         onChange={(e) => setFormData({...formData, phone: e.target.value})}
                         className="w-full pl-12 pr-4 py-4 bg-gray-50 hover:bg-white focus:bg-white border border-gray-200 rounded-2xl text-[15px] font-medium text-gray-800 focus:outline-none focus:border-[#1a8b4c] focus:ring-4 focus:ring-green-50 transition-all placeholder-gray-400 shadow-sm shadow-gray-100/50"
-                        placeholder="+1 (555) 000-0000"
+                        placeholder="e.g. +91... / +971... / +1..."
                       />
                     </div>
                   </div>

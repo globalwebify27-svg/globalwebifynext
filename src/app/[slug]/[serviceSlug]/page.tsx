@@ -20,8 +20,6 @@ export async function generateStaticParams() {
   return [];
 }
 
-export const revalidate = 3600;
-
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const cityKey = params.slug.toLowerCase();
   const cityInfo = CITIES_MAP[cityKey];

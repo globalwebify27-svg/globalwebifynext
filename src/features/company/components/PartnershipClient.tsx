@@ -377,7 +377,7 @@ export default function PartnershipClient({ settings }: PartnershipClientProps) 
                       value={formData.phone}
                       onChange={(e) => setFormData({...formData, phone: e.target.value})}
                       className="w-full px-4 py-3.5 bg-gray-50/50 hover:bg-gray-50/80 focus:bg-white border border-gray-200 rounded-2xl text-[16px] md:text-xs font-semibold text-gray-800 focus:outline-none focus:border-[#1a8b4c] focus:ring-4 focus:ring-green-100 transition-all placeholder-gray-400"
-                      placeholder="+1 (555) 000-0000"
+                      placeholder="e.g. +91... / +971... / +1..."
                     />
                   </div>
 

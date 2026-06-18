@@ -33,9 +33,6 @@ const jost = Jost({
 
 export async function generateMetadata(): Promise<Metadata> {
   let host = 'globalwebify.com';
-  // TEMPORARILY COMMENTED OUT FOR VERCEL TESTING
-  // WILL BE UNCOMMENTED FOR HOSTINGER
-  /*
   try {
     const headerList = headers();
     const hostHeader = headerList.get('host');
@@ -46,7 +43,6 @@ export async function generateMetadata(): Promise<Metadata> {
     }
     // Ignore other errors during static generation
   }
-  */
   
   const protocol = host.includes('localhost') ? 'http' : 'https';
   const siteUrl = `${protocol}://${host}`;
