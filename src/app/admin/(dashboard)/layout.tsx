@@ -90,6 +90,7 @@ export default async function AdminDashboardLayout({
   const isServices = pathname.includes('/admin/services');
   const isBlogs = pathname.includes('/admin/blogs');
   const isContacts = pathname.includes('/admin/contacts');
+  const isPartnershipSubmissions = pathname.includes('/admin/partnership-submissions');
   const isHomepage = pathname.includes('/admin/homepage');
 
   // Fetch services for sidebar dynamic dropdown (Cached)
@@ -237,7 +238,7 @@ export default async function AdminDashboardLayout({
               </Link>
             )}
             <h1 className="text-sm font-black text-gray-900 font-poppins uppercase tracking-wider">
-              {isOverview ? 'GlobalWebify Console' : isServices ? 'GlobalWebify Services Portal' : isBlogs ? 'GlobalWebify Blogs Portal' : isContacts ? 'GlobalWebify Contacts Portal' : isHomepage ? 'GlobalWebify Homepage Settings' : 'GlobalWebify Console'}
+              {isOverview ? 'GlobalWebify Console' : isServices ? 'GlobalWebify Services Portal' : isBlogs ? 'GlobalWebify Blogs Portal' : isContacts ? 'GlobalWebify Contacts Portal' : isPartnershipSubmissions ? 'Partnership Requests' : isHomepage ? 'GlobalWebify Homepage Settings' : 'GlobalWebify Console'}
             </h1>
           </div>
 

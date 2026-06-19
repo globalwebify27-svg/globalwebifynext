@@ -84,9 +84,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       return {
         title: `Best Web Development & Digital Marketing Services in ${locationName} | GlobalWeblify`,
         description: `Explore GlobalWeblify's professional web development, SEO, digital marketing, and branding services in ${locationName}. Custom solutions tailored to your local market.`,
-        alternates: {
-          canonical: `/${cleanSlug}`
-        }
       };
     }
   }
@@ -163,9 +160,15 @@ export default async function DynamicPage({ params }: Props) {
   // ===== SERVICE PAGE =====
   const slugsToTry = [rawSlug, `/${rawSlug}`];
 
-  let fetchedPage = await db.servicePage.findFirst({
-    where: { slug: { in: slugsToTry }, isActive: true }
-  });
+  let fetchedPage = null;
+  try {
+    fetchedPage = await db.servicePage.findFirst({
+      where: { slug: { in: slugsToTry }, isActive: true }
+    });
+  } catch (error) {
+    console.error("Prisma error in servicePage.findFirst:", error);
+    // Graceful degradation: let it fall through to knownCategories or notFound
+  }
 
   if (!fetchedPage) {
     const knownCategories = ['seo-services', 'ai-seo-services', 'social-media-marketing', 'ppc-services'];
@@ -221,11 +224,16 @@ export default async function DynamicPage({ params }: Props) {
     bgImage:         fetchedPage.bgImage,
   };
 
-  const rawRemainingSubMenus = await db.servicePage.findMany({
-    where: { category: page.category, isActive: true, id: { not: page.id } },
-    select: { title: true, slug: true, seoDescription: true, heroDescription: true, content: true, image: true },
-    orderBy: { createdAt: 'desc' }
-  });
+  let rawRemainingSubMenus: any[] = [];
+  try {
+    rawRemainingSubMenus = await db.servicePage.findMany({
+      where: { category: page.category, isActive: true, id: { not: page.id } },
+      select: { title: true, slug: true, seoDescription: true, heroDescription: true, content: true, image: true },
+      orderBy: { createdAt: 'desc' }
+    });
+  } catch (error) {
+    console.error("Prisma error in servicePage.findMany:", error);
+  }
 
   const currentCleanSlug = page.slug.startsWith('/') ? page.slug.substring(1) : page.slug;
 

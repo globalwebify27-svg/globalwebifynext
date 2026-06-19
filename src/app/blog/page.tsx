@@ -9,6 +9,9 @@ export const revalidate = 0;
 export const metadata: Metadata = {
   title: 'Blog | GlobalWebify',
   description: 'Read the latest insights and strategies for web development and digital marketing.',
+  alternates: {
+    canonical: '/blog'
+  }
 };
 
 interface Props {

@@ -5,6 +5,9 @@ import { MapPin, ArrowRight, CheckCircle2, Phone } from 'lucide-react';
 export const metadata = {
   title: 'Choose Your Location | GlobalWebify',
   description: 'We serve major cities globally with expert custom web development, SEO, and digital marketing services. Select your location to explore local solutions.',
+  alternates: {
+    canonical: '/market-area'
+  }
 };
 
 const REGIONS = [

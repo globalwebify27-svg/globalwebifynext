@@ -5,7 +5,7 @@ import { FileText, Save, CheckCircle2, XCircle } from 'lucide-react';
 import { getPolicyContent, savePolicyContent } from './actions';
 
 export default function PoliciesAdminPage() {
-  const [activeTab, setActiveTab] = useState<'refund'>('refund');
+  const [activeTab, setActiveTab] = useState<'refund' | 'return' | 'delivery'>('refund');
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [loading, setLoading] = useState(true);
@@ -17,7 +17,7 @@ export default function PoliciesAdminPage() {
     setTimeout(() => setToast(null), 3000);
   };
 
-  const loadPolicy = async (tab: 'refund') => {
+  const loadPolicy = async (tab: 'refund' | 'return' | 'delivery') => {
     setLoading(true);
     const key = `policy_${tab}`;
     try {
@@ -55,6 +55,8 @@ export default function PoliciesAdminPage() {
 
   const tabs = [
     { key: 'refund' as const, label: 'Refund Policy' },
+    { key: 'return' as const, label: 'Return Policy' },
+    { key: 'delivery' as const, label: 'Delivery Policy' },
   ];
 
   return (

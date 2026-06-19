@@ -42,7 +42,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         description: replaceLocation(subContent.seoDescription || page.seoDescription || '', loc),
         keywords: page.seoKeywords ? page.seoKeywords.split(',').map(k => replaceLocation(k, loc).trim()) : undefined,
         alternates: {
-          canonical: `/${cityKey}/${raw.startsWith('/') ? raw.slice(1) : raw}`
+          canonical: `/${cityKey}/${raw}`
         }
       };
     }
@@ -54,7 +54,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       description: desc,
       keywords: page.seoKeywords ? page.seoKeywords.split(',').map(k => replaceLocation(k, loc).trim()) : undefined,
       alternates: {
-        canonical: `/${cityKey}/${raw.startsWith('/') ? raw.slice(1) : raw}`
+        canonical: `/${cityKey}/${raw}`
       }
     };
   } catch (error: any) { 
@@ -72,9 +72,14 @@ export default async function CityServicePage({ params }: Props) {
   const raw = params.serviceSlug;
   const slugsToTry = [raw, `/${raw}`];
 
-  let rawPage = await db.servicePage.findFirst({
-    where: { slug: { in: slugsToTry }, isActive: true }
-  });
+  let rawPage = null;
+  try {
+    rawPage = await db.servicePage.findFirst({
+      where: { slug: { in: slugsToTry }, isActive: true }
+    });
+  } catch (error) {
+    console.error("Prisma error in city servicePage.findFirst:", error);
+  }
 
   if (!rawPage) {
     const knownCategories = ['seo-services', 'ai-seo-services', 'social-media-marketing', 'ppc-services'];
@@ -139,11 +144,16 @@ export default async function CityServicePage({ params }: Props) {
     bgImage:         rawPage.bgImage,
   };
 
-  const rawRemainingSubMenus = await db.servicePage.findMany({
-    where: { category: page.category, isActive: true, id: { not: page.id } },
-    select: { title: true, slug: true, seoDescription: true, heroDescription: true, content: true, image: true, id: true },
-    orderBy: { createdAt: 'desc' }
-  });
+  let rawRemainingSubMenus: any[] = [];
+  try {
+    rawRemainingSubMenus = await db.servicePage.findMany({
+      where: { category: page.category, isActive: true, id: { not: page.id } },
+      select: { title: true, slug: true, seoDescription: true, heroDescription: true, content: true, image: true, id: true },
+      orderBy: { createdAt: 'desc' }
+    });
+  } catch (error) {
+    console.error("Prisma error in city servicePage.findMany:", error);
+  }
 
   const currentCleanSlug = page.slug.startsWith('/') ? page.slug.substring(1) : page.slug;
 
@@ -186,9 +196,14 @@ export default async function CityServicePage({ params }: Props) {
     return clean;
   });
 
-  const subMenuOverrides = await db.subdomainContent.findMany({
-    where: { pageType: { in: subMenuSlugs } }
-  });
+  let subMenuOverrides: any[] = [];
+  try {
+    subMenuOverrides = await db.subdomainContent.findMany({
+      where: { pageType: { in: subMenuSlugs } }
+    });
+  } catch (e) {
+    console.error("Failed to load subdomain overrides for submenus:", e);
+  }
 
   const remainingSubMenus = filteredRawSubMenus.map(m => {
     const cleanSlug = m.slug.startsWith('/') ? m.slug.substring(1) : m.slug;

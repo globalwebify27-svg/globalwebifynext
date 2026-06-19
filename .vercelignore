@@ -1,0 +1,13 @@
+# Ignore zip backups and database dumps
+*.zip
+*.sql
+latest_backup*
+create_tables*
+public.zip
+
+# Vercel defaults just in case
+.next
+node_modules
+.env
+.vercel
+.vscode

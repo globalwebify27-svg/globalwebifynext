@@ -346,7 +346,7 @@ export default function PartnershipClient({ settings }: PartnershipClientProps) 
                 {/* Company Name & Website URL */}
                 <div className="grid md:grid-cols-2 gap-6">
                   <div className="flex flex-col gap-2">
-                    <label className="text-[10px] font-black text-gray-500 uppercase tracking-wider">Company Name</label>
+                    <label className="text-[10px] font-black text-gray-500 uppercase tracking-wider">Company Name <span className="text-gray-400 font-semibold lowercase tracking-normal">(optional)</span></label>
                     <input 
                       type="text" 
                       value={formData.companyName}
@@ -357,7 +357,7 @@ export default function PartnershipClient({ settings }: PartnershipClientProps) 
                   </div>
 
                   <div className="flex flex-col gap-2">
-                    <label className="text-[10px] font-black text-gray-500 uppercase tracking-wider">Website URL</label>
+                    <label className="text-[10px] font-black text-gray-500 uppercase tracking-wider">Website URL <span className="text-gray-400 font-semibold lowercase tracking-normal">(optional)</span></label>
                     <input 
                       type="url" 
                       value={formData.websiteUrl}
@@ -371,11 +371,11 @@ export default function PartnershipClient({ settings }: PartnershipClientProps) 
                 {/* Phone & Partnership Type */}
                 <div className="grid md:grid-cols-2 gap-6">
                   <div className="flex flex-col gap-2">
-                    <label className="text-[10px] font-black text-gray-500 uppercase tracking-wider">Phone Number</label>
+                    <label className="text-[10px] font-black text-gray-500 uppercase tracking-wider">Phone Number <span className="text-gray-400 font-semibold lowercase tracking-normal">(optional)</span></label>
                     <input 
                       type="tel" 
                       value={formData.phone}
-                      onChange={(e) => setFormData({...formData, phone: e.target.value})}
+                      onChange={(e) => setFormData({...formData, phone: e.target.value.replace(/[^0-9+\s-]/g, '')})}
                       className="w-full px-4 py-3.5 bg-gray-50/50 hover:bg-gray-50/80 focus:bg-white border border-gray-200 rounded-2xl text-[16px] md:text-xs font-semibold text-gray-800 focus:outline-none focus:border-[#1a8b4c] focus:ring-4 focus:ring-green-100 transition-all placeholder-gray-400"
                       placeholder="e.g. +91... / +971... / +1..."
                     />

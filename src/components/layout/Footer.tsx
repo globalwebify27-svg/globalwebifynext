@@ -364,12 +364,15 @@ export default function Footer() {
              © {new Date().getFullYear()} Global Webify. All rights reserved.
            </p>
            <div className="flex flex-wrap justify-center items-center gap-x-6 gap-y-2 sm:gap-x-8 text-center">
-             {["Privacy Policy", "Terms of Service", "Cookie Policy", "Refund Policy", "Sitemap"].map((link) => {
+             {["Privacy Policy", "Terms of Service", "Cookie Policy", "Refund Policy", "Delivery Policy", "Return Policy", "Booking", "Sitemap"].map((link) => {
                const slugMap: Record<string, string> = {
                  "Privacy Policy": "/privacy-policy",
                  "Terms of Service": "/terms-of-service",
                  "Cookie Policy": "/cookie-policy",
                  "Refund Policy": "/refund-policy",
+                 "Delivery Policy": "/delivery-policy",
+                 "Return Policy": "/return-policy",
+                 "Booking": "/booking",
                  "Sitemap": "/sitemap"
                };
                return (

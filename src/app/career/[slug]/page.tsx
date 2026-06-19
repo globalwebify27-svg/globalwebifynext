@@ -13,9 +13,14 @@ interface Props {
 }
 
 export default async function JobDetailsPage({ params }: Props) {
-  const job = await db.job.findUnique({
-    where: { slug: params.slug },
-  });
+  let job = null;
+  try {
+    job = await db.job.findUnique({
+      where: { slug: params.slug },
+    });
+  } catch (error) {
+    console.error("Prisma error in job.findUnique:", error);
+  }
 
   if (!job || !job.isActive) {
     notFound();

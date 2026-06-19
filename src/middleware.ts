@@ -11,15 +11,21 @@ export async function middleware(request: NextRequest) {
   requestHeaders.set('x-url', request.url);
 
   // Check custom redirects first (excluding assets, api, and admin panel pages)
+  // NOTE: We do NOT fetch /redirects.json from our own URL here because that
+  // triggers middleware recursively (infinite loop → 500 on Vercel/production).
+  // Instead, we fetch the redirects from the DB via an API route that is
+  // excluded from the middleware matcher, or skip if not available.
   if (
     !pathname.startsWith('/_next') &&
     !pathname.startsWith('/api') &&
-    !pathname.startsWith('/admin')
+    !pathname.startsWith('/admin') &&
+    !pathname.endsWith('.json')
   ) {
     try {
-      // Fetch the redirects JSON file with a short cache to improve latency
-      const res = await fetch(new URL('/redirects.json', request.url), {
-        next: { revalidate: 60 }
+      // Use the origin to build an absolute URL for the internal API call
+      const origin = request.nextUrl.origin;
+      const res = await fetch(`${origin}/api/redirects`, {
+        headers: { 'x-middleware-internal': '1' },
       });
       if (res.ok) {
         const redirects = await res.json();
@@ -39,7 +45,7 @@ export async function middleware(request: NextRequest) {
         }
       }
     } catch (err) {
-      console.error('Middleware redirect check error:', err);
+      // Silently ignore – redirects are a nice-to-have, not critical
     }
   }
 

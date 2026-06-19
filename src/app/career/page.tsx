@@ -8,6 +8,14 @@ import JobCardGrid from './JobCardGrid';
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
+export const metadata = {
+  title: 'Careers | GlobalWebify',
+  description: 'Join the GlobalWebify team. Explore open positions and career opportunities.',
+  alternates: {
+    canonical: '/career'
+  }
+};
+
 export default async function CareersPage() {
   let jobs: any[] = [];
   try {

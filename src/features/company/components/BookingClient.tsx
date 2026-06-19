@@ -9,12 +9,12 @@ import {
 } from 'lucide-react';
 import { SOCIAL_LINKS } from '@/constants/navigation';
 
-export default function ContactClient() {
+export default function BookingClient() {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     phone: '',
-    service: '',
+    service: 'Booking',
     message: ''
   });
   const [showToast, setShowToast] = useState(false);
@@ -33,13 +33,13 @@ export default function ContactClient() {
         setTimeout(() => {
           setShowToast(false);
         }, 4000);
-        setFormData({ name: '', email: '', phone: '', service: '', message: '' });
+        setFormData({ name: '', email: '', phone: '', service: 'Booking', message: '' });
       } else {
-        alert('Failed to send message: ' + (data.error || 'Unknown error'));
+        alert('Failed to submit booking: ' + (data.error || 'Unknown error'));
       }
     } catch (err) {
       console.error(err);
-      alert('An error occurred while sending your message. Please try again.');
+      alert('An error occurred while submitting. Please try again.');
     }
   };
 
@@ -63,7 +63,7 @@ export default function ContactClient() {
             </div>
             <div>
               <p className="text-xs font-black uppercase tracking-wider text-green-400">Success</p>
-              <p className="text-xs font-semibold text-gray-300">Message sent! We'll be in touch shortly.</p>
+              <p className="text-xs font-semibold text-gray-300">Booking submitted! We'll confirm your slot shortly.</p>
             </div>
           </m.div>
         )}
@@ -79,7 +79,7 @@ export default function ContactClient() {
             className="inline-flex items-center gap-2 bg-white border border-gray-200 px-4 py-2 rounded-full mb-6 shadow-sm"
           >
             <span className="w-2 h-2 rounded-full bg-[#1a8b4c] animate-pulse" />
-            <span className="text-gray-600 text-xs font-black uppercase tracking-widest">Connect with Experts</span>
+            <span className="text-gray-600 text-xs font-black uppercase tracking-widest">Schedule a Call</span>
           </m.div>
 
           <m.h1 
@@ -87,10 +87,10 @@ export default function ContactClient() {
             animate={{ opacity: 1, y: 0 }}
             className="text-[28px] md:text-[52px] font-black font-heading text-gray-900 leading-tight mb-6"
           >
-            Let's Start Your <span className="text-[#1a8b4c]">Success Story</span>
+            Book Your <span className="text-[#1a8b4c]">Consultation</span>
           </m.h1>
           <p className="text-gray-500 max-w-2xl mx-auto text-[15px] md:text-[17px] font-medium leading-relaxed">
-            Ready to transform your digital presence? Send us a message or visit one of our global offices. We're here to help you scale.
+            Ready to transform your digital presence? Book an appointment with our experts and let's discuss your project.
           </p>
         </div>
 
@@ -109,10 +109,10 @@ export default function ContactClient() {
               <div className="absolute top-0 right-0 w-[300px] h-[300px] bg-gradient-to-br from-green-50 to-transparent blur-[80px] rounded-full pointer-events-none opacity-50 group-hover:opacity-100 transition-opacity duration-700" />
 
               <h2 className="text-[26px] font-black text-gray-900 tracking-tight mb-2 font-heading relative z-10">
-                Send Us a Message
+                Book an Appointment
               </h2>
               <p className="text-gray-500 text-sm font-medium mb-10 relative z-10">
-                Fill out the form below and our team will get back to you within 24 hours.
+                Fill out the booking form below and our team will get back to you with available time slots.
               </p>
 
               <form onSubmit={handleSubmit} className="space-y-6 relative z-10">
@@ -180,7 +180,7 @@ export default function ContactClient() {
                         onChange={(e) => setFormData({...formData, service: e.target.value})}
                         className="w-full pl-12 pr-4 py-4 bg-gray-50 hover:bg-white focus:bg-white border border-gray-200 rounded-2xl text-[15px] font-medium text-gray-800 focus:outline-none focus:border-[#1a8b4c] focus:ring-4 focus:ring-green-50 transition-all cursor-pointer appearance-none shadow-sm shadow-gray-100/50"
                       >
-                        <option value="">Select a service...</option>
+                        <option value="Booking">Consultation Booking</option>
                         <option value="web-dev">Web Development</option>
                         <option value="seo">SEO Services</option>
                         <option value="marketing">Digital Marketing</option>
@@ -194,7 +194,7 @@ export default function ContactClient() {
                 </div>
 
                 <div className="flex flex-col gap-2">
-                  <label className="text-[11px] font-black text-gray-600 uppercase tracking-widest">Your Message *</label>
+                  <label className="text-[11px] font-black text-gray-600 uppercase tracking-widest">Additional Details / Preferred Time *</label>
                   <div className="relative group/input">
                     <div className="absolute top-5 left-4 pointer-events-none text-gray-400 group-focus-within/input:text-[#1a8b4c] transition-colors">
                       <MessageSquare size={16} />
@@ -205,7 +205,7 @@ export default function ContactClient() {
                       value={formData.message}
                       onChange={(e) => setFormData({...formData, message: e.target.value})}
                       className="w-full pl-12 pr-4 py-4 bg-gray-50 hover:bg-white focus:bg-white border border-gray-200 rounded-2xl text-[15px] font-medium text-gray-800 focus:outline-none focus:border-[#1a8b4c] focus:ring-4 focus:ring-green-50 transition-all placeholder-gray-400 resize-none shadow-sm shadow-gray-100/50"
-                      placeholder="Tell us about your project..."
+                      placeholder="Let us know your preferred date/time and project details..."
                     ></textarea>
                   </div>
                 </div>
@@ -216,7 +216,7 @@ export default function ContactClient() {
                   type="submit"
                   className="w-full bg-gray-900 hover:bg-[#1a8b4c] text-white py-4 md:py-5 rounded-2xl font-black text-[13px] uppercase tracking-widest flex items-center justify-center gap-3 transition-all duration-300 shadow-xl shadow-gray-900/20 hover:shadow-green-900/30 group/btn mt-4"
                 >
-                  Send Message
+                  Book Now
                   <Send size={15} className="stroke-[2.5] group-hover/btn:translate-x-1 group-hover/btn:-translate-y-1 transition-transform" />
                 </m.button>
 
@@ -239,7 +239,7 @@ export default function ContactClient() {
               <div className="w-full h-[280px] md:h-[350px] relative shrink-0 overflow-hidden group border-b border-slate-700/50">
                 {/* Permanent Open in Map Button (Top Right) */}
                 <a 
-                  href="https://www.google.com/maps/place/Global+Webify/@23.3495578,85.3086946,17.82z/data=!3m1!5s0x39f4e0528e2c8fa7:0xf0b8c1d5d5dbe41a!4m6!3m5!1s0x39f4e195a816671d:0xa9ebf12893abb828!8m2!3d23.3496601!4d85.3104862!16s%2Fg%2F11wbvkw_tm?entry=ttu&g_ep=EgoyMDI2MDYxMC4wIKXMDSoASAFQAw%3D%3D" 
+                  href="https://www.google.com/maps/place/Global+Webify/@23.3495578,85.3086946,17.82z/data=!3m1!5s0x39f4e0528e2c8fa7:0xf0b8c1d5d5dbe41a!4m6!3m5!1s0x39f4e195a816671d:0xa9ebf12893abb828!8m2!3d23.3496601!4d85.3104862!16s%2Fg%2F11wbvkw_tm" 
                   target="_blank" 
                   rel="noopener noreferrer" 
                   className="absolute top-4 right-4 z-30 bg-white/95 backdrop-blur shadow-md hover:shadow-lg text-gray-800 hover:text-[#1a8b4c] text-[10px] font-black uppercase tracking-widest px-4 py-2 rounded-lg flex items-center gap-2 transition-all duration-300 hover:scale-105"
@@ -251,7 +251,7 @@ export default function ContactClient() {
 
                 {/* Clickable Overlay for entire map */}
                 <a 
-                  href="https://www.google.com/maps/place/Global+Webify/@23.3495578,85.3086946,17.82z/data=!3m1!5s0x39f4e0528e2c8fa7:0xf0b8c1d5d5dbe41a!4m6!3m5!1s0x39f4e195a816671d:0xa9ebf12893abb828!8m2!3d23.3496601!4d85.3104862!16s%2Fg%2F11wbvkw_tm?entry=ttu&g_ep=EgoyMDI2MDYxMC4wIKXMDSoASAFQAw%3D%3D" 
+                  href="https://www.google.com/maps/place/Global+Webify/@23.3495578,85.3086946,17.82z/data=!3m1!5s0x39f4e0528e2c8fa7:0xf0b8c1d5d5dbe41a!4m6!3m5!1s0x39f4e195a816671d:0xa9ebf12893abb828!8m2!3d23.3496601!4d85.3104862!16s%2Fg%2F11wbvkw_tm" 
                   target="_blank" 
                   rel="noopener noreferrer" 
                   className="absolute inset-0 z-20 flex items-center justify-center bg-black/0 hover:bg-black/10 transition-all duration-300 cursor-pointer"

@@ -34,7 +34,7 @@ export default async function RefundPolicyPage() {
   return (
     <main className="min-h-screen bg-[#fafdfc] font-jost text-left">
       {/* Hero Section */}
-      <section className="relative pt-[140px] pb-20 overflow-hidden bg-gradient-to-b from-[#eaf6f0] to-[#fafdfc]">
+      <section className="relative pt-[100px] pb-10 overflow-hidden bg-gradient-to-b from-[#eaf6f0] to-[#fafdfc]">
         {/* Abstract Background Elements */}
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
           <div className="absolute top-[20%] left-[-10%] w-[40%] h-[80%] bg-gradient-to-r from-[#1a8b4c]/5 to-transparent rounded-full blur-3xl transform rotate-12"></div>
@@ -55,9 +55,9 @@ export default async function RefundPolicyPage() {
       </section>
 
       {/* Content Section */}
-      <section className="py-16 md:py-24">
+      <section className="py-10 md:py-16">
         <div className="max-w-[900px] mx-auto px-6 md:px-12">
-          <div className="bg-white rounded-3xl p-8 md:p-12 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100 mb-12">
+          <div className="bg-white rounded-3xl p-6 md:p-10 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100 mb-12">
             <div className="flex items-center gap-4 mb-6">
               <div className="w-12 h-12 rounded-2xl bg-green-50 flex items-center justify-center shrink-0">
                 <FileText className="text-[#1a8b4c]" size={24} />
