@@ -455,7 +455,7 @@ export default function BlogPostForm({ post }: { post?: BlogPost }) {
               Blog Content HTML *
             </label>
             <div className="flex bg-gray-100 p-1 rounded-xl gap-1">
-              <button
+              <button 
                 type="button"
                 onClick={() => setActiveTab('write')}
                 className={`px-3 py-1.5 rounded-lg text-xs font-black uppercase tracking-wider transition-all ${

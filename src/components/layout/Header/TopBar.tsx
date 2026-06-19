@@ -10,9 +10,10 @@ import { cn } from '@/lib/utils';
 interface TopBarProps {
   isOpen: boolean;
   setIsOpen: (open: boolean) => void;
+  onContactClick?: () => void;
 }
 
-export const TopBar = ({ isOpen, setIsOpen }: TopBarProps) => {
+export const TopBar = ({ isOpen, setIsOpen, onContactClick }: TopBarProps) => {
   return (
     <div className="px-2 md:px-6 bg-white relative z-[10001] border-b border-gray-100 h-[70px] md:h-[75px] flex items-center transition-all duration-300">
       <div className="max-w-[1800px] mx-auto px-2 md:px-4 flex items-center justify-between h-full w-full">
@@ -113,9 +114,9 @@ export const TopBar = ({ isOpen, setIsOpen }: TopBarProps) => {
             ))}
           </div>
 
-          <Link href="/contact" title="Contact Us - Global Webify" className="hidden lg:flex items-center justify-center bg-[#22c55e] text-white px-5 py-2 rounded-full text-[12px] xl:text-[12.8px] font-semibold uppercase tracking-widest shadow-lg shadow-green-100 hover:bg-[#16a34a] transition-all active:scale-95 font-sans whitespace-nowrap">
+          <button onClick={onContactClick} title="Contact Us - Global Webify" className="hidden md:flex items-center justify-center bg-[#22c55e] text-white px-5 py-2 rounded-full text-[12px] xl:text-[12.8px] font-semibold uppercase tracking-widest shadow-lg shadow-green-100 hover:bg-[#16a34a] transition-all active:scale-95 font-sans whitespace-nowrap">
             Contact Us
-          </Link>
+          </button>
 
           {/* Hamburger Menu */}
           <button

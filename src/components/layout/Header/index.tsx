@@ -19,6 +19,7 @@ import {
 import { TopBar } from './TopBar';
 import { MegaMenu } from './MegaMenu';
 import { CITIES_MAP } from '@/features/services/constants/cities';
+import ContactModal from '@/components/ui/ContactModal';
 
 const socialIcons: any = {
   Facebook: Facebook,
@@ -57,6 +58,7 @@ export default function Header({ initialSettings }: HeaderProps) {
   const [scrolled, setScrolled] = useState(false);
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState<string | null>(null);
+  const [isContactOpen, setIsContactOpen] = useState(false);
   const [menuForceHidden, setMenuForceHidden] = useState(false);
   const [hostingActive, setHostingActive] = useState(initialSettings?.hostingMenuEnabled ?? true);
   const [brandingActive, setBrandingActive] = useState(initialSettings?.brandingMenuEnabled ?? true);
@@ -185,7 +187,7 @@ export default function Header({ initialSettings }: HeaderProps) {
       </div>
 
       {/* Top Bar Component */}
-      <TopBar isOpen={isOpen} setIsOpen={handleSetIsOpen} />
+      <TopBar isOpen={isOpen} setIsOpen={handleSetIsOpen} onContactClick={() => setIsContactOpen(true)} />
 
       {/* Main Nav Bar */}
       <nav
@@ -369,6 +371,8 @@ export default function Header({ initialSettings }: HeaderProps) {
           </m.div>
         )}
       </AnimatePresence>
+
+      <ContactModal isOpen={isContactOpen} onClose={() => setIsContactOpen(false)} />
     </header>
   );
 }
