@@ -7,3 +7,5 @@ node_modules
 latest_backup.sql
 .vercel
 .vscode
+*.zip
+public.zip
