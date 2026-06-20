@@ -1,11 +1,45 @@
+# dependencies
 node_modules
-# Keep environment variables out of version control
+/.pnp
+.pnp.js
+
+# testing
+/coverage
+
+# next.js
+/.next/
+/out/
+build
+
+# Prisma
+/src/generated/prisma
+
+# misc
+.DS_Store
+*.pem
+.vscode
+
+# debug logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+error_log.txt
+*.log
+
+# env files
+.env*.local
 .env
 
-/src/generated/prisma
-.next
-latest_backup.sql
+# vercel
 .vercel
-.vscode
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+
+# database backups and large archives
+*.sql
 *.zip
-public.zip
+*.tar
+*.gz
+*.bak
