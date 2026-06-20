@@ -27,7 +27,8 @@ export default async function BlogPage({ searchParams }: Props) {
       },
       orderBy: {
         createdAt: 'desc'
-      }
+      },
+      take: 1000
     });
   } catch (error) {
     console.error("Could not fetch blog posts from database:", error);

@@ -54,7 +54,8 @@ export default async function HomeView({ city, cityKey, location, subdomainConte
         select: { slug: true, heroDescription: true }
       }),
       db.review.findMany({
-        orderBy: { createdAt: 'desc' }
+        orderBy: { createdAt: 'desc' },
+        take: 50
       }),
       db.subdomainContent.findMany({})
     ]);

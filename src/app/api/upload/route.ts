@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { v2 as cloudinary } from 'cloudinary';
 import { writeFile, mkdir } from 'fs/promises';
 import path from 'path';
+import sharp from 'sharp';
 import { requireAdmin } from '@/lib/auth';
 
 // Configure Cloudinary (Will only be used if env vars exist)
@@ -42,12 +43,29 @@ export async function POST(request: NextRequest) {
     }
 
     const arrayBuffer = await file.arrayBuffer();
-    const buffer = Buffer.from(arrayBuffer);
+    let buffer = Buffer.from(arrayBuffer);
+    
+    let finalExt = ext;
+    const sanitizedOriginalName = originalName.replace(/[^a-zA-Z0-9.-_]/g, '-').replace(/-+/g, '-');
+    let baseFilename = sanitizedOriginalName.substring(0, sanitizedOriginalName.lastIndexOf('.')) || sanitizedOriginalName;
+
+    // Automatic Image Compression & Conversion to WebP
+    const imageExtensions = ['.jpg', '.jpeg', '.png', '.webp'];
+    if (imageExtensions.includes(ext)) {
+      try {
+        buffer = await sharp(buffer)
+          .resize({ width: 1920, withoutEnlargement: true }) // Prevent massive dimensions
+          .webp({ quality: 80 }) // 80% quality retains excellent visuals but drastically reduces size
+          .toBuffer();
+        finalExt = '.webp';
+      } catch (err) {
+        console.error('Image compression failed, falling back to original:', err);
+      }
+    }
 
     // HOSTINGER DEPLOYMENT: If we are using local storage
     if (process.env.STORAGE_PROVIDER === 'local') {
-      const sanitizedOriginalName = originalName.replace(/[^a-zA-Z0-9.-_]/g, '-').replace(/-+/g, '-');
-      const filename = `${Date.now()}-${sanitizedOriginalName}`;
+      const filename = `${Date.now()}-${baseFilename}${finalExt}`;
       const uploadDir = path.join(process.cwd(), 'public', 'uploads');
       
       try { await mkdir(uploadDir, { recursive: true }); } catch (err) {}

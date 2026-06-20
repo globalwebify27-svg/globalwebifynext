@@ -59,6 +59,6 @@ export async function POST(request: Request) {
     return NextResponse.json({ success: true, id: savedRecord.id, slug: savedRecord.slug });
   } catch (error: any) {
     console.error('API Save Service Error:', error);
-    return NextResponse.json({ error: error.message || 'Failed to save service page' }, { status: 500 });
+    return NextResponse.json({ error: 'Failed to save service page. Please try again.' }, { status: 500 });
   }
 }

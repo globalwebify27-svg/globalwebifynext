@@ -22,6 +22,8 @@ interface ContactsListClientProps {
 
 export default function ContactsListClient({ initialSubmissions }: ContactsListClientProps) {
   const [submissions, setSubmissions] = useState<Submission[]>(initialSubmissions);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
   const [searchTerm, setSearchTerm] = useState('');
   const [serviceFilter, setServiceFilter] = useState('all');
   const [selectedSub, setSelectedSub] = useState<Submission | null>(null);
@@ -85,6 +87,12 @@ export default function ContactsListClient({ initialSubmissions }: ContactsListC
     return matchesSearch && matchesService;
   });
 
+  const totalPages = Math.ceil(filteredSubmissions.length / itemsPerPage);
+  const paginatedSubmissions = filteredSubmissions.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+
   // Calculate statistics
   const totalCount = submissions.length;
   const webDevCount = submissions.filter(s => s.service === 'web-dev' || (s.service && s.service.toLowerCase().includes('web'))).length;
@@ -139,7 +147,10 @@ export default function ContactsListClient({ initialSubmissions }: ContactsListC
             type="text"
             placeholder="Search submissions by name, email, keyword..."
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            onChange={(e) => {
+              setSearchTerm(e.target.value);
+              setCurrentPage(1);
+            }}
             className="w-full pl-10 pr-4 py-2 bg-gray-50/50 hover:bg-gray-50 border border-gray-200 rounded-xl text-xs font-semibold focus:outline-none focus:border-[#1a8b4c] focus:bg-white transition-all text-gray-800"
           />
         </div>
@@ -149,7 +160,10 @@ export default function ContactsListClient({ initialSubmissions }: ContactsListC
           <label className="text-[10px] font-black text-gray-400 uppercase tracking-wider whitespace-nowrap">Filter Service:</label>
           <select
             value={serviceFilter}
-            onChange={(e) => setServiceFilter(e.target.value)}
+            onChange={(e) => {
+              setServiceFilter(e.target.value);
+              setCurrentPage(1);
+            }}
             className="px-4 py-2 bg-gray-50/50 hover:bg-gray-50 border border-gray-200 rounded-xl text-xs font-semibold focus:outline-none focus:border-[#1a8b4c] cursor-pointer text-gray-800"
           >
             <option value="all">All Services</option>
@@ -185,7 +199,7 @@ export default function ContactsListClient({ initialSubmissions }: ContactsListC
                   </td>
                 </tr>
               ) : (
-                filteredSubmissions.map((sub) => {
+                paginatedSubmissions.map((sub) => {
                   // New badge logic (within last 24 hours)
                   const isNew = new Date().getTime() - new Date(sub.createdAt).getTime() < 24 * 60 * 60 * 1000;
 
@@ -277,6 +291,32 @@ export default function ContactsListClient({ initialSubmissions }: ContactsListC
           </table>
         </div>
       </div>
+
+      {/* Pagination Controls */}
+      {totalPages > 1 && (
+        <div className="flex items-center justify-between bg-white p-4 rounded-2xl border border-gray-200/80 shadow-[0_4px_20px_rgba(0,0,0,0.01)]">
+          <span className="text-xs font-semibold text-gray-500">
+            Showing {((currentPage - 1) * itemsPerPage) + 1} to {Math.min(currentPage * itemsPerPage, filteredSubmissions.length)} of {filteredSubmissions.length} entries
+          </span>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+              disabled={currentPage === 1}
+              className="px-3 py-1.5 border border-gray-200 rounded-lg text-xs font-bold text-gray-600 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 transition-colors"
+            >
+              Previous
+            </button>
+            <span className="text-xs font-bold text-gray-900 px-2">Page {currentPage} of {totalPages}</span>
+            <button
+              onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+              disabled={currentPage === totalPages}
+              className="px-3 py-1.5 border border-gray-200 rounded-lg text-xs font-bold text-gray-600 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 transition-colors"
+            >
+              Next
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Floating Detailed Message View Modal */}
       {selectedSub && (

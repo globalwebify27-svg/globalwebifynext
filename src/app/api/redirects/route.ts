@@ -12,6 +12,7 @@ export async function GET() {
   try {
     const redirects = await db.redirect.findMany({
       select: { source: true, destination: true },
+      take: 1000
     });
     return NextResponse.json(redirects, {
       headers: {

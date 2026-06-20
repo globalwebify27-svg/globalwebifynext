@@ -11,6 +11,23 @@ import { CITIES_MAP } from '@/features/services/constants/cities';
 import { getSubdomainLocation } from '@/lib/subdomain';
 import { getSubdomainContent } from '@/app/admin/(dashboard)/subdomains/actions';
 import PartnershipClient from '@/features/company/components/PartnershipClient';
+import { cache } from 'react';
+
+// Request-level caching to prevent duplicate DB queries between generateMetadata and the Page component
+const getCachedSiteSettings = cache(async () => {
+  return await db.siteSetting.findMany();
+});
+
+const getCachedServicePage = cache(async (rawSlug: string) => {
+  const slugsToTry = [rawSlug, `/${rawSlug}`];
+  return await db.servicePage.findFirst({
+    where: { slug: { in: slugsToTry }, isActive: true }
+  });
+});
+
+const getCachedSubdomainContent = cache(async (key: string) => {
+  return await getSubdomainContent(key);
+});
 
 
 
@@ -30,7 +47,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   
   // Dynamic Partnership Metadata check
   try {
-    const allSettings = await db.siteSetting.findMany();
+    const allSettings = await getCachedSiteSettings();
     const settingsMap = allSettings.reduce((acc, curr) => {
       acc[curr.key] = curr.value;
       return acc;
@@ -69,7 +86,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       `SEO Friendly Website Development in ${locationName}`
     ].join(', ');
 
-    const subContent = await getSubdomainContent('homepage');
+    const subContent = await getCachedSubdomainContent('homepage');
     if (subContent) {
       const customKeywords = subContent.seoKeywords
         ? subContent.seoKeywords.split(',').map(k => replaceLocation(k, locationName).trim())
@@ -110,10 +127,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   // Service page metadata (Fallback for non-city pages)
   try {
-    const slugsToTry = [rawSlug, `/${rawSlug}`];
-    const page = await db.servicePage.findFirst({
-      where: { slug: { in: slugsToTry }, isActive: true }
-    });
+    const page = await getCachedServicePage(rawSlug);
     if (!page) return {};
 
     const locationName = "";
@@ -142,7 +156,7 @@ export default async function DynamicPage({ params }: Props) {
   let partnershipSlug = 'partnership';
   let partnershipSettings: Record<string, string> = {};
   try {
-    const allSettings = await db.siteSetting.findMany();
+    const allSettings = await getCachedSiteSettings();
     partnershipSettings = allSettings.reduce((acc, curr) => {
       acc[curr.key] = curr.value;
       return acc;
@@ -174,7 +188,7 @@ export default async function DynamicPage({ params }: Props) {
   // ===== CITY LANDING PAGE =====
   const cityInfo = rawSlug ? CITIES_MAP[rawSlug.toLowerCase()] : null;
   if (cityInfo) {
-    const subContent = await getSubdomainContent('homepage');
+    const subContent = await getCachedSubdomainContent('homepage');
     return <CityLandingView cityKey={rawSlug.toLowerCase()} cityInfo={cityInfo} subdomainContent={subContent || undefined} />;
   }
 
@@ -183,9 +197,7 @@ export default async function DynamicPage({ params }: Props) {
 
   let fetchedPage = null;
   try {
-    fetchedPage = await db.servicePage.findFirst({
-      where: { slug: { in: slugsToTry }, isActive: true }
-    });
+    fetchedPage = await getCachedServicePage(rawSlug);
   } catch (error) {
     console.error("Prisma error in servicePage.findFirst:", error);
     // Graceful degradation: let it fall through to knownCategories or notFound

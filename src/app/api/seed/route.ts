@@ -298,7 +298,7 @@ async function handleSeed(clean: boolean) {
   } catch (error: any) {
     console.error('Seeding Error:', error);
     return NextResponse.json(
-      { success: false, message: 'Seeding failed.', error: error.message },
+      { success: false, message: 'Seeding failed.', error: 'Internal server error. Check server logs.' },
       { status: 500 }
     );
   }

@@ -35,7 +35,22 @@ model ContactSubmission {
   createdAt DateTime @default(now())
 
   @@index([createdAt(sort: Desc)])
-  @@map("contactsubmission")
+  @@map("ContactSubmission")
+}
+
+model PartnershipSubmission {
+  id              Int      @id @default(autoincrement())
+  name            String
+  email           String
+  phone           String?
+  companyName     String?
+  websiteUrl      String?
+  partnershipType String?
+  message         String   @db.Text
+  createdAt       DateTime @default(now())
+
+  @@index([createdAt(sort: Desc)])
+  @@map("PartnershipSubmission")
 }
 
 model ServicePage {

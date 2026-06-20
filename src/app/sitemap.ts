@@ -29,7 +29,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   try {
     const services = await db.servicePage.findMany({
       where: { isActive: true },
-      select: { slug: true, updatedAt: true }
+      select: { slug: true, updatedAt: true },
+      take: 10000
     });
     serviceSitemap = services.map(s => {
       const cleanSlug = s.slug.startsWith('/') ? s.slug.slice(1) : s.slug;
@@ -58,7 +59,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   try {
     const blogs = await db.blogPost.findMany({
       where: { isActive: true },
-      select: { slug: true, updatedAt: true }
+      select: { slug: true, updatedAt: true },
+      take: 10000
     });
     blogSitemap = blogs.map(b => {
       const cleanSlug = b.slug.startsWith('/') ? b.slug.slice(1) : b.slug;

@@ -10,10 +10,11 @@ export function parseFaqs(content: string, locationName: string = ""): { faqs: F
   let cleanedContent = content ?? '';
 
   if (cleanedContent) {
-    const match = cleanedContent.match(/<!-- FAQ_DATA: (.*?) -->/);
-    if (match) {
+    const matches = [...cleanedContent.matchAll(/<!-- FAQ_DATA: (.*?) -->/g)];
+    if (matches && matches.length > 0) {
+      const lastMatch = matches[matches.length - 1];
       try {
-        const rawFaqs = JSON.parse(match[1]);
+        const rawFaqs = JSON.parse(lastMatch[1]);
         if (Array.isArray(rawFaqs)) {
           faqs = rawFaqs
             .map((f: any) => ({
@@ -22,11 +23,11 @@ export function parseFaqs(content: string, locationName: string = ""): { faqs: F
             }))
             .filter((f) => f.question.trim() !== '' && f.answer.trim() !== '');
         }
-        cleanedContent = cleanedContent.replace(match[0], '');
       } catch (e) {
         console.error("Failed to parse FAQ data", e);
       }
     }
+    cleanedContent = cleanedContent.replace(/<!-- FAQ_DATA: (.*?) -->/g, '');
   }
 
   return { faqs, cleanedContent };

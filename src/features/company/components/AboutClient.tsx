@@ -288,7 +288,7 @@ export default function AboutClient() {
                   muted
                   loop
                   playsInline
-                  preload="auto"
+                  preload="metadata"
                   controls
                   className="w-full h-auto object-cover rounded-3xl"
                 />

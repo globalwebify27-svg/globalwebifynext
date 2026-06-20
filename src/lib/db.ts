@@ -5,7 +5,8 @@ const globalForPrisma = global as unknown as { prisma: PrismaClient };
 // Automatically increase connection limit for Vercel/Serverless environments
 let dbUrl = process.env.DATABASE_URL || '';
 if (dbUrl && !dbUrl.includes('connection_limit')) {
-  dbUrl += dbUrl.includes('?') ? '&connection_limit=20&pool_timeout=60' : '?connection_limit=20&pool_timeout=60';
+  const limit = process.env.DB_CONNECTION_LIMIT || '5';
+  dbUrl += dbUrl.includes('?') ? `&connection_limit=${limit}&pool_timeout=60` : `?connection_limit=${limit}&pool_timeout=60`;
   process.env.DATABASE_URL = dbUrl;
 }
 

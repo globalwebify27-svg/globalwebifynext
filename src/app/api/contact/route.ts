@@ -2,35 +2,47 @@ import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { requireAdmin } from '@/lib/auth';
 
-async function ensureTableExists() {
-  try {
-    await db.$executeRawUnsafe(`
-      CREATE TABLE IF NOT EXISTS ContactSubmission (
-        id INT AUTO_INCREMENT PRIMARY KEY,
-        name VARCHAR(255) NOT NULL,
-        email VARCHAR(255) NOT NULL,
-        phone VARCHAR(255) NULL,
-        service VARCHAR(255) NULL,
-        message TEXT NOT NULL,
-        createdAt DATETIME(3) DEFAULT CURRENT_TIMESTAMP(3)
-      ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-    `);
-  } catch (e) {
-    console.error('Failed to ensure ContactSubmission table exists:', e);
-  }
-}
+
 
 // In-memory rate limiting map (works perfectly on persistent Node.js servers like Hostinger VPS)
 const ipRateLimit = new Map<string, { count: number, resetTime: number }>();
+const RATE_LIMIT_WINDOW_MS = 3600000; // 1 hour
+const RATE_LIMIT_MAX = 5;             // Max 5 submissions per hour per IP
+const MAX_MAP_SIZE = 10000;           // Safety cap — prevents unbounded growth under extreme traffic
+let lastCleanup = Date.now();
+const CLEANUP_INTERVAL_MS = 10 * 60 * 1000; // Purge expired entries every 10 minutes
+
+/**
+ * Purge expired entries from the rate limit map.
+ * Runs inline (no setInterval) so it works in both long-running servers
+ * and serverless environments without leaking timers.
+ */
+function cleanupExpiredEntries() {
+  const now = Date.now();
+  if (now - lastCleanup < CLEANUP_INTERVAL_MS) return;
+  lastCleanup = now;
+  for (const [ip, entry] of ipRateLimit) {
+    if (entry.resetTime < now) {
+      ipRateLimit.delete(ip);
+    }
+  }
+}
 
 function checkRateLimit(ip: string): boolean {
+  // Periodically purge stale entries so the Map doesn't grow forever
+  cleanupExpiredEntries();
+
   const now = Date.now();
   const entry = ipRateLimit.get(ip);
   if (!entry || entry.resetTime < now) {
-    ipRateLimit.set(ip, { count: 1, resetTime: now + 3600000 }); // 1 hour reset
+    // Safety cap: if Map is already at max size, reject instead of growing further
+    if (ipRateLimit.size >= MAX_MAP_SIZE && !entry) {
+      return true;
+    }
+    ipRateLimit.set(ip, { count: 1, resetTime: now + RATE_LIMIT_WINDOW_MS });
     return false;
   }
-  if (entry.count >= 5) { // Max 5 submissions per hour per IP
+  if (entry.count >= RATE_LIMIT_MAX) {
     return true;
   }
   entry.count++;
@@ -64,29 +76,28 @@ export async function POST(req: NextRequest) {
     }
 
     // Spam Protection: Rate limit by email in DB (Max 3 per day)
-    await ensureTableExists();
-    const existingSubmissions = await db.$queryRawUnsafe<any[]>(
-      `SELECT COUNT(*) as count FROM ContactSubmission WHERE email = ? AND createdAt > DATE_SUB(NOW(), INTERVAL 1 DAY)`,
-      email
-    );
-    const count = Number(existingSubmissions[0].count || 0);
+    const yesterday = new Date(Date.now() - 24 * 60 * 60 * 1000);
+    const count = await db.contactSubmission.count({
+      where: { email, createdAt: { gt: yesterday } }
+    });
     if (count >= 3) {
       return NextResponse.json({ success: false, error: 'You have submitted too many requests today. Please try again tomorrow.' }, { status: 429 });
     }
 
-    await db.$executeRawUnsafe(
-      `INSERT INTO ContactSubmission (name, email, phone, service, message) VALUES (?, ?, ?, ?, ?)`,
-      name,
-      email,
-      phone || null,
-      service || null,
-      message
-    );
+    await db.contactSubmission.create({
+      data: {
+        name,
+        email,
+        phone: phone || null,
+        service: service || null,
+        message
+      }
+    });
 
     return NextResponse.json({ success: true });
   } catch (error: any) {
     console.error('Contact submission POST error:', error);
-    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+    return NextResponse.json({ success: false, error: 'Internal server error. Please try again.' }, { status: 500 });
   }
 }
 
@@ -97,14 +108,14 @@ export async function GET(req: NextRequest) {
     } catch (authError) {
       return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
     }
-    await ensureTableExists();
-    const submissions = await db.$queryRawUnsafe(
-      `SELECT * FROM ContactSubmission ORDER BY createdAt DESC`
-    );
+    const submissions = await db.contactSubmission.findMany({
+      orderBy: { createdAt: 'desc' },
+      take: 1000
+    });
     return NextResponse.json({ success: true, submissions });
   } catch (error: any) {
     console.error('Contact submission GET error:', error);
-    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+    return NextResponse.json({ success: false, error: 'Internal server error. Please try again.' }, { status: 500 });
   }
 }
 
@@ -125,12 +136,11 @@ export async function DELETE(req: NextRequest) {
       return NextResponse.json({ success: false, error: 'Invalid id parameter' }, { status: 400 });
     }
 
-    await ensureTableExists();
-    await db.$executeRawUnsafe(`DELETE FROM ContactSubmission WHERE id = ?`, id);
+    await db.contactSubmission.delete({ where: { id } });
 
     return NextResponse.json({ success: true });
   } catch (error: any) {
     console.error('Contact submission DELETE error:', error);
-    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+    return NextResponse.json({ success: false, error: 'Internal server error. Please try again.' }, { status: 500 });
   }
 }

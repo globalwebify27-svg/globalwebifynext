@@ -2,6 +2,57 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { verifyJWT } from './lib/jwt';
 
+// ─── In-memory redirect cache with 5-minute TTL ───
+// Instead of hitting /api/redirects (→ DB query) on every single page load,
+// we cache the result and reuse it. The cache auto-refreshes every 5 minutes
+// so admin-added redirects still take effect within a short window.
+let cachedRedirects: { source: string; destination: string }[] | null = null;
+let cacheTimestamp = 0;
+const CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes
+let fetchInProgress: Promise<{ source: string; destination: string }[]> | null = null;
+
+async function getRedirects(origin: string): Promise<{ source: string; destination: string }[]> {
+  const now = Date.now();
+
+  // Return cached data if still fresh
+  if (cachedRedirects && now - cacheTimestamp < CACHE_TTL_MS) {
+    return cachedRedirects;
+  }
+
+  // If a fetch is already in flight, wait for it (prevents duplicate requests
+  // when multiple concurrent visitors trigger a cache refresh at the same time)
+  if (fetchInProgress) {
+    return fetchInProgress;
+  }
+
+  // Fetch fresh data from the API
+  fetchInProgress = (async () => {
+    try {
+      const res = await fetch(`${origin}/api/redirects`, {
+        headers: { 'x-middleware-internal': '1' },
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (Array.isArray(data)) {
+          cachedRedirects = data;
+          cacheTimestamp = Date.now();
+          return data;
+        }
+      }
+    } catch {
+      // Silently ignore – redirects are a nice-to-have, not critical
+    }
+    // On failure, return stale cache if available, otherwise empty array
+    return cachedRedirects ?? [];
+  })();
+
+  try {
+    return await fetchInProgress;
+  } finally {
+    fetchInProgress = null;
+  }
+}
+
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
@@ -21,31 +72,20 @@ export async function middleware(request: NextRequest) {
     !pathname.startsWith('/admin') &&
     !pathname.endsWith('.json')
   ) {
-    try {
-      // Use the origin to build an absolute URL for the internal API call
-      const origin = request.nextUrl.origin;
-      const res = await fetch(`${origin}/api/redirects`, {
-        headers: { 'x-middleware-internal': '1' },
-      });
-      if (res.ok) {
-        const redirects = await res.json();
-        if (Array.isArray(redirects)) {
-          const match = redirects.find(
-            (r: any) =>
-              r.source === pathname ||
-              r.source === pathname + '/' ||
-              pathname === r.source + '/'
-          );
-          if (match && match.destination) {
-            const destUrl = match.destination.startsWith('http')
-              ? match.destination
-              : new URL(match.destination, request.url).toString();
-            return NextResponse.redirect(destUrl, 301);
-          }
-        }
-      }
-    } catch (err) {
-      // Silently ignore – redirects are a nice-to-have, not critical
+    const origin = request.nextUrl.origin;
+    const redirects = await getRedirects(origin);
+
+    const match = redirects.find(
+      (r) =>
+        r.source === pathname ||
+        r.source === pathname + '/' ||
+        pathname === r.source + '/'
+    );
+    if (match && match.destination) {
+      const destUrl = match.destination.startsWith('http')
+        ? match.destination
+        : new URL(match.destination, request.url).toString();
+      return NextResponse.redirect(destUrl, 301);
     }
   }
 

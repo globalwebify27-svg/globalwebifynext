@@ -52,15 +52,16 @@ export default function ServiceForm({ service }: { service?: Service }) {
   let initialContent = service?.content || '';
 
   if (initialContent) {
-    const match = initialContent.match(/<!-- FAQ_DATA: (.*?) -->/);
-    if (match) {
+    const matches = [...initialContent.matchAll(/<!-- FAQ_DATA: (.*?) -->/g)];
+    if (matches && matches.length > 0) {
+      const lastMatch = matches[matches.length - 1];
       try {
-        initialFaqs = JSON.parse(match[1]);
-        initialContent = initialContent.replace(match[0], '');
+        initialFaqs = JSON.parse(lastMatch[1]);
       } catch (e) {
         console.error("Failed to parse FAQ data", e);
       }
     }
+    initialContent = initialContent.replace(/<!-- FAQ_DATA: (.*?) -->/g, '');
   }
 
   if (!service?.id && initialFaqs.length === 0) {
@@ -755,6 +756,7 @@ export default function ServiceForm({ service }: { service?: Service }) {
                 type="text"
                 value={seoTitle}
                 onChange={(e) => setSeoTitle(e.target.value)}
+                maxLength={255}
                 placeholder="SEO Friendly Page Title"
                 className="w-full bg-gray-50/50 border border-gray-200/80 rounded-xl px-4 py-2.5 text-xs font-semibold text-gray-800 focus:outline-none focus:border-[#1a8b4c] focus:bg-white transition-all"
               />
@@ -777,12 +779,13 @@ export default function ServiceForm({ service }: { service?: Service }) {
                 rows={2}
                 value={seoDescription}
                 onChange={(e) => setSeoDescription(e.target.value)}
+                maxLength={500}
                 placeholder="A compelling summary of the page for search result listings..."
                 className="w-full bg-gray-50/50 border border-gray-200/80 rounded-xl px-4 py-2.5 text-xs font-semibold text-gray-800 focus:outline-none focus:border-[#1a8b4c] focus:bg-white transition-all resize-none"
               />
               <div className="flex justify-end items-center w-full mt-0.5 px-1">
                 <span className="text-[10px] font-bold text-gray-400">
-                  {seoDescription.length} characters
+                  {seoDescription.length} / 500 characters
                 </span>
               </div>
             </div>

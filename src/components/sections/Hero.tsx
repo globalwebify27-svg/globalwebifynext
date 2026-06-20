@@ -9,8 +9,8 @@ import dynamic from "next/dynamic";
 // Lazy load AuditModal — not needed until user clicks
 const AuditModal = dynamic(() => import("../ui/AuditModal"), { ssr: false });
 
-// Lazy load AuditCardDesktop — heavy framer-motion 3D card, only on desktop, loaded after page paint
-const AuditCardDesktop = dynamic(() => import("../sections/AuditCardDesktop"), { ssr: false, loading: () => <div className="w-full max-w-[580px] mx-auto h-[400px] rounded-[20px] bg-slate-100 animate-pulse" /> });
+// Allow SSR for AuditCardDesktop so HTML paints instantly (no white box), but JS animations load lazily.
+const AuditCardDesktop = dynamic(() => import("../sections/AuditCardDesktop"));
 
 // --- Colorful Google SVG Logo ---
 const GoogleLogo = () => (

@@ -40,6 +40,6 @@ export async function POST(request: Request) {
     return NextResponse.json({ success: true, id: updated.id });
   } catch (error: any) {
     console.error('API Save Background Error:', error);
-    return NextResponse.json({ error: error.message || 'Failed to save background settings' }, { status: 500 });
+    return NextResponse.json({ error: 'Failed to save background settings. Please try again.' }, { status: 500 });
   }
 }
