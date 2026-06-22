@@ -58,7 +58,7 @@ export async function POST(req: NextRequest) {
     }
 
     const { name, email, phone, service, message } = await req.json();
-    if (!name || !email || !message) {
+    if (!name || !email || !phone) {
       return NextResponse.json({ success: false, error: 'Missing required fields' }, { status: 400 });
     }
 
@@ -66,7 +66,8 @@ export async function POST(req: NextRequest) {
     if (name.length > 100 || email.length > 100 || (phone && phone.length > 20)) {
       return NextResponse.json({ success: false, error: 'Input exceeds maximum allowed length' }, { status: 400 });
     }
-    if (message.length > 1500) {
+    const msg = message || "";
+    if (msg.length > 1500) {
       return NextResponse.json({ success: false, error: 'Message is too long (maximum 1500 characters)' }, { status: 400 });
     }
 
@@ -90,7 +91,7 @@ export async function POST(req: NextRequest) {
         email,
         phone: phone || null,
         service: service || null,
-        message
+        message: msg
       }
     });
 
@@ -130,6 +131,10 @@ export async function DELETE(req: NextRequest) {
     const idStr = searchParams.get('id');
     if (!idStr) {
       return NextResponse.json({ success: false, error: 'Missing id parameter' }, { status: 400 });
+    }
+    if (idStr === 'all') {
+      await db.contactSubmission.deleteMany({});
+      return NextResponse.json({ success: true });
     }
     const id = parseInt(idStr, 10);
     if (isNaN(id)) {

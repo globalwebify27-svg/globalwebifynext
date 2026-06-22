@@ -41,6 +41,11 @@ const nextConfig = {
         permanent: true,
       },
       {
+        source: '/booking',
+        destination: '/bookings',
+        permanent: true,
+      },
+      {
         source: '/uk/:path*',
         destination: '/united-kingdom/:path*',
         permanent: true,

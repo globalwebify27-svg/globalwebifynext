@@ -29,15 +29,17 @@ export default function ContactsListClient({ initialSubmissions }: ContactsListC
   const [selectedSub, setSelectedSub] = useState<Submission | null>(null);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [copiedId, setCopiedId] = useState<number | null>(null);
+  const [deleteConfirmId, setDeleteConfirmId] = useState<number | null>(null);
+  const [deleteAllConfirmOpen, setDeleteAllConfirmOpen] = useState(false);
+  const [confirmText, setConfirmText] = useState('');
+  const [confirmError, setConfirmError] = useState<string | null>(null);
 
   const triggerToast = (msg: string) => {
     setToastMessage(msg);
     setTimeout(() => setToastMessage(null), 3000);
   };
 
-  const handleDelete = async (id: number) => {
-    if (!confirm('Are you sure you want to delete this contact submission?')) return;
-
+  const executeDelete = async (id: number) => {
     try {
       const response = await fetch(`/api/contact?id=${id}`, {
         method: 'DELETE',
@@ -50,11 +52,30 @@ export default function ContactsListClient({ initialSubmissions }: ContactsListC
           setSelectedSub(null);
         }
       } else {
-        alert('Failed to delete: ' + (data.error || 'Unknown error'));
+        triggerToast(data.error || 'Failed to delete submission');
       }
     } catch (e) {
       console.error(e);
-      alert('An error occurred while deleting the submission.');
+      triggerToast('An error occurred while deleting.');
+    }
+  };
+
+  const executeDeleteAll = async () => {
+    try {
+      const response = await fetch('/api/contact?id=all', {
+        method: 'DELETE',
+      });
+      const data = await response.json();
+      if (data.success) {
+        setSubmissions([]);
+        setSelectedSub(null);
+        triggerToast('All submissions deleted successfully');
+      } else {
+        triggerToast(data.error || 'Failed to delete all submissions');
+      }
+    } catch (e) {
+      console.error(e);
+      triggerToast('An error occurred while deleting all.');
     }
   };
 
@@ -105,7 +126,7 @@ export default function ContactsListClient({ initialSubmissions }: ContactsListC
       
       {/* Toast popup */}
       {toastMessage && (
-        <div className="fixed bottom-6 right-6 z-[9999] bg-gray-900 text-white px-5 py-3 rounded-xl shadow-2xl border border-gray-800 flex items-center gap-2.5 text-xs font-semibold animate-in fade-in slide-in-from-bottom-4 duration-300">
+        <div className="fixed top-24 md:top-36 right-4 left-4 md:left-auto md:right-8 md:w-auto max-w-sm mx-auto md:mx-0 z-[9999] bg-gray-900 text-white px-5 py-3.5 rounded-xl shadow-2xl border border-gray-800 flex items-center gap-2.5 text-xs font-semibold animate-in fade-in slide-in-from-top-4 duration-300">
           <div className="w-2 h-2 rounded-full bg-[#1a8b4c] animate-pulse" />
           <span>{toastMessage}</span>
         </div>
@@ -155,23 +176,35 @@ export default function ContactsListClient({ initialSubmissions }: ContactsListC
           />
         </div>
 
-        {/* Filter Dropdown */}
-        <div className="flex items-center gap-3">
-          <label className="text-[10px] font-black text-gray-400 uppercase tracking-wider whitespace-nowrap">Filter Service:</label>
-          <select
-            value={serviceFilter}
-            onChange={(e) => {
-              setServiceFilter(e.target.value);
-              setCurrentPage(1);
-            }}
-            className="px-4 py-2 bg-gray-50/50 hover:bg-gray-50 border border-gray-200 rounded-xl text-xs font-semibold focus:outline-none focus:border-[#1a8b4c] cursor-pointer text-gray-800"
-          >
-            <option value="all">All Services</option>
-            <option value="web-dev">Web Development</option>
-            <option value="seo">SEO Services</option>
-            <option value="marketing">Digital Marketing</option>
-            <option value="other">Other / General</option>
-          </select>
+        {/* Filter Dropdown & Delete All Button */}
+        <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3">
+            <label className="text-[10px] font-black text-gray-400 uppercase tracking-wider whitespace-nowrap">Filter Service:</label>
+            <select
+              value={serviceFilter}
+              onChange={(e) => {
+                setServiceFilter(e.target.value);
+                setCurrentPage(1);
+              }}
+              className="px-4 py-2 bg-gray-50/50 hover:bg-gray-50 border border-gray-200 rounded-xl text-xs font-semibold focus:outline-none focus:border-[#1a8b4c] cursor-pointer text-gray-800"
+            >
+              <option value="all">All Services</option>
+              <option value="web-dev">Web Development</option>
+              <option value="seo">SEO Services</option>
+              <option value="marketing">Digital Marketing</option>
+              <option value="other">Other / General</option>
+            </select>
+          </div>
+          
+          {submissions.length > 0 && (
+            <button
+              onClick={() => setDeleteAllConfirmOpen(true)}
+              className="px-4 py-2 bg-red-50 text-red-600 hover:bg-red-100 hover:text-red-700 border border-red-200 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5"
+            >
+              <Trash2 size={13} />
+              Delete All
+            </button>
+          )}
         </div>
 
       </div>
@@ -200,10 +233,7 @@ export default function ContactsListClient({ initialSubmissions }: ContactsListC
                 </tr>
               ) : (
                 paginatedSubmissions.map((sub) => {
-                  // New badge logic (within last 24 hours)
                   const isNew = new Date().getTime() - new Date(sub.createdAt).getTime() < 24 * 60 * 60 * 1000;
-
-                  // Service label styling
                   const displayService = getDisplayService(sub.service);
                   const serviceLower = displayService.toLowerCase();
                   let badgeStyle = 'bg-gray-50 text-gray-600 border-gray-200';
@@ -213,7 +243,6 @@ export default function ContactsListClient({ initialSubmissions }: ContactsListC
 
                   return (
                     <tr key={sub.id} className="hover:bg-gray-50/60 transition-colors">
-                      {/* Sender Column */}
                       <td className="py-4 px-6 min-w-[200px]">
                         <div className="flex items-center gap-3">
                           <div className="w-9 h-9 rounded-full bg-[#dcfce7] text-[#1a8b4c] flex items-center justify-center font-bold text-xs">
@@ -235,17 +264,11 @@ export default function ContactsListClient({ initialSubmissions }: ContactsListC
                           </div>
                         </div>
                       </td>
-
-                      {/* Service Column */}
                       <td className="py-4 px-6 whitespace-nowrap">
                         <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full tracking-wider border lowercase ${badgeStyle}`}>
                           {displayService}
                         </span>
                       </td>
-
-
-
-                      {/* Submitted Date Column */}
                       <td className="py-4 px-6 whitespace-nowrap text-xs text-gray-500 font-semibold">
                         <div className="flex items-center gap-1.5">
                           <Calendar size={12} className="text-gray-400" />
@@ -264,8 +287,6 @@ export default function ContactsListClient({ initialSubmissions }: ContactsListC
                           </span>
                         </div>
                       </td>
-
-                      {/* Actions Column */}
                       <td className="py-4 px-6 whitespace-nowrap text-right text-xs">
                         <div className="flex items-center justify-end gap-2">
                           <button
@@ -275,7 +296,7 @@ export default function ContactsListClient({ initialSubmissions }: ContactsListC
                             Read Message
                           </button>
                           <button
-                            onClick={() => handleDelete(sub.id)}
+                            onClick={() => setDeleteConfirmId(sub.id)}
                             className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all"
                             title="Delete submission"
                           >
@@ -318,12 +339,10 @@ export default function ContactsListClient({ initialSubmissions }: ContactsListC
         </div>
       )}
 
-      {/* Floating Detailed Message View Modal */}
+      {/* Detailed Message View Modal */}
       {selectedSub && (
         <div className="fixed inset-0 z-[9999] bg-gray-900/60 backdrop-blur-sm flex items-center justify-center p-4">
           <div className="bg-white rounded-3xl w-full max-w-xl shadow-2xl overflow-hidden border border-gray-100 animate-in zoom-in-95 duration-200">
-            
-            {/* Modal Header */}
             <div className="p-6 border-b border-gray-100 flex items-center justify-between bg-gray-50/50">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-green-50 flex items-center justify-center text-[#1a8b4c]">
@@ -345,11 +364,7 @@ export default function ContactsListClient({ initialSubmissions }: ContactsListC
                 <X size={18} />
               </button>
             </div>
-
-            {/* Modal Body */}
             <div className="p-6 space-y-6">
-              
-              {/* Contact Card */}
               <div className="bg-gray-50/50 p-4 rounded-2xl border border-gray-100 flex flex-col gap-3">
                 <div className="flex justify-between items-start">
                   <div>
@@ -381,8 +396,6 @@ export default function ContactsListClient({ initialSubmissions }: ContactsListC
                   </div>
                 </div>
               </div>
-
-              {/* Message Content */}
               <div>
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-[9px] font-black text-gray-400 uppercase tracking-wider">Message Content</span>
@@ -398,13 +411,10 @@ export default function ContactsListClient({ initialSubmissions }: ContactsListC
                   {selectedSub.message}
                 </div>
               </div>
-
             </div>
-
-            {/* Modal Footer */}
             <div className="p-4 bg-gray-50 border-t border-gray-100 flex justify-between gap-2.5">
               <button
-                onClick={() => handleDelete(selectedSub.id)}
+                onClick={() => setDeleteConfirmId(selectedSub.id)}
                 className="px-4 py-2 text-xs font-bold text-red-600 hover:bg-red-50 rounded-xl transition-all"
               >
                 Delete Message
@@ -424,7 +434,69 @@ export default function ContactsListClient({ initialSubmissions }: ContactsListC
                 </button>
               </div>
             </div>
+          </div>
+        </div>
+      )}
 
+      {/* Custom Confirmation Modal for Single Delete */}
+      {deleteConfirmId !== null && (
+        <div className="fixed inset-0 z-[10000] bg-gray-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl w-full max-w-sm shadow-2xl p-6 border border-gray-150 animate-in zoom-in-95 duration-200 text-center">
+            <div className="w-12 h-12 rounded-full bg-red-50 text-red-600 flex items-center justify-center mx-auto mb-4">
+              <Trash2 size={20} />
+            </div>
+            <h3 className="text-sm font-black text-gray-900 uppercase tracking-wider mb-2">Delete Submission</h3>
+            <p className="text-xs text-gray-500 font-semibold mb-6">Are you sure you want to delete this contact submission?</p>
+            <div className="flex gap-3 justify-center">
+              <button
+                onClick={() => {
+                  const id = deleteConfirmId;
+                  setDeleteConfirmId(null);
+                  executeDelete(id);
+                }}
+                className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-xl text-xs font-bold transition-all shadow-md shadow-red-900/10"
+              >
+                Yes, Delete
+              </button>
+              <button
+                onClick={() => setDeleteConfirmId(null)}
+                className="px-4 py-2 bg-white text-gray-700 border border-gray-200 hover:bg-gray-50 rounded-xl text-xs font-bold transition-all"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Custom Confirmation Modal for Delete All */}
+      {deleteAllConfirmOpen && (
+        <div className="fixed inset-0 z-[10000] bg-gray-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl w-full max-w-sm shadow-2xl p-6 border border-gray-150 animate-in zoom-in-95 duration-200 text-center">
+            <div className="w-12 h-12 rounded-full bg-red-100 text-red-600 flex items-center justify-center mx-auto mb-4">
+              <ShieldAlert size={20} />
+            </div>
+            <h3 className="text-sm font-black text-gray-900 uppercase tracking-wider mb-2 text-red-600">Delete All Submissions</h3>
+            <p className="text-xs text-gray-500 font-semibold mb-6 leading-relaxed">
+              WARNING: This will permanently delete ALL contact submissions. This action is irreversible. Are you sure you want to proceed?
+            </p>
+            <div className="flex gap-3 justify-center">
+              <button
+                onClick={() => {
+                  setDeleteAllConfirmOpen(false);
+                  executeDeleteAll();
+                }}
+                className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-xl text-xs font-bold transition-all shadow-md shadow-red-900/10"
+              >
+                Yes, Delete All
+              </button>
+              <button
+                onClick={() => setDeleteAllConfirmOpen(false)}
+                className="px-4 py-2 bg-white text-gray-700 border border-gray-200 hover:bg-gray-50 rounded-xl text-xs font-bold transition-all"
+              >
+                Cancel
+              </button>
+            </div>
           </div>
         </div>
       )}

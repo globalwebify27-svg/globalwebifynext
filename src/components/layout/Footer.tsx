@@ -372,7 +372,7 @@ export default function Footer() {
                  "Refund Policy": "/refund-policy",
                  "Delivery Policy": "/delivery-policy",
                  "Return Policy": "/return-policy",
-                 "Booking": "/booking",
+                 "Booking": "/bookings",
                  "Sitemap": "/sitemap"
                };
                return (

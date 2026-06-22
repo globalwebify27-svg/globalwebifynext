@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { m, AnimatePresence } from 'framer-motion';
 import { 
   Mail, Phone, MapPin, Send, CheckCircle2, Building2, 
-  Handshake, Globe2, Sparkles, Award, Users2, LineChart, ShieldCheck
+  Handshake, Globe2, Sparkles, Award, Users2, LineChart, ShieldCheck, ShieldAlert
 } from 'lucide-react';
 
 interface PartnershipClientProps {
@@ -21,6 +21,165 @@ interface PartnershipClientProps {
     partnershipExpandParagraph?: string;
   };
 }
+const COUNTRIES = [
+  { name: "India", code: "+91", iso: "IN", length: 10, placeholder: "98765 43210" },
+  { name: "UAE", code: "+971", iso: "AE", length: 9, placeholder: "50 123 4567" },
+  { name: "Saudi Arabia", code: "+966", iso: "SA", length: 9, placeholder: "50 123 4567" },
+  { name: "Qatar", code: "+974", iso: "QA", length: 8, placeholder: "5555 5555" },
+  { name: "Oman", code: "+968", iso: "OM", length: 8, placeholder: "9123 4567" },
+  { name: "Kuwait", code: "+965", iso: "KW", length: 8, placeholder: "5123 4567" },
+  { name: "Bahrain", code: "+973", iso: "BH", length: 8, placeholder: "3123 4567" },
+  { name: "USA", code: "+1", iso: "US", length: 10, placeholder: "201 555 0123" },
+  { name: "Canada", code: "+1", iso: "CA", length: 10, placeholder: "201 555 0123" },
+  { name: "United Kingdom", code: "+44", iso: "GB", length: 10, placeholder: "7911 123456" },
+  { name: "Singapore", code: "+65", iso: "SG", length: 8, placeholder: "8123 4567" },
+  { name: "Sri Lanka", code: "+94", iso: "LK", length: 9, placeholder: "77 123 4567" }
+];
+
+const FlagIcon = ({ iso }: { iso: string }) => {
+  switch (iso) {
+    case 'IN':
+      return (
+        <svg className="w-5 h-3.5 rounded-sm shadow-sm shrink-0" viewBox="0 0 9 6">
+          <path fill="#FF9933" d="M0 0h9v2H0z"/>
+          <path fill="#FFF" d="M0 2h9v2H0z"/>
+          <path fill="#128807" d="M0 4h9v2H0z"/>
+          <circle cx="4.5" cy="3" r=".4" fill="none" stroke="#000080" strokeWidth=".08"/>
+        </svg>
+      );
+    case 'AE':
+      return (
+        <svg className="w-5 h-3.5 rounded-sm shadow-sm shrink-0" viewBox="0 0 6 3">
+          <path fill="#00732F" d="M0 0h6v1H0z"/>
+          <path fill="#FFF" d="M0 1h6v1H0z"/>
+          <path fill="#000" d="M0 2h6v1H0z"/>
+          <path fill="#FF0000" d="M0 0h1.5v3H0z"/>
+        </svg>
+      );
+    case 'SA':
+      return (
+        <svg className="w-5 h-3.5 rounded-sm shadow-sm shrink-0" viewBox="0 0 3 2">
+          <path fill="#006C35" d="M0 0h3v2H0z"/>
+          <path fill="#FFF" d="M0.6 1.3h1.8v.1H0.6zm.5-.5h.8v.2h-.8z"/>
+        </svg>
+      );
+    case 'QA':
+      return (
+        <svg className="w-5 h-3.5 rounded-sm shadow-sm shrink-0" viewBox="0 0 28 11">
+          <path fill="#8D1B3D" d="M0 0h28v11H0z"/>
+          <path fill="#FFF" d="M0 0h6.5l2 1.2-2 1-2 1.2 2 1.2-2 1.2 2 1.2-2 1.2 2 1.2-2 1.2v.6H0z"/>
+        </svg>
+      );
+    case 'OM':
+      return (
+        <svg className="w-5 h-3.5 rounded-sm shadow-sm shrink-0" viewBox="0 0 2 1">
+          <path fill="#FFF" d="M0 0h2v.33H0z"/>
+          <path fill="#D21034" d="M0 .33h2v.34H0z"/>
+          <path fill="#00843D" d="M0 .67h2v.33H0z"/>
+          <path fill="#D21034" d="M0 0h.5v1H0z"/>
+        </svg>
+      );
+    case 'KW':
+      return (
+        <svg className="w-5 h-3.5 rounded-sm shadow-sm shrink-0" viewBox="0 0 2 1">
+          <path fill="#007A3D" d="M0 0h2v.33H0z"/>
+          <path fill="#FFF" d="M0 .33h2v.34H0z"/>
+          <path fill="#CE1126" d="M0 .67h2v.33H0z"/>
+          <path fill="#000" d="M0 0l.5.33v.34L0 1z"/>
+        </svg>
+      );
+    case 'BH':
+      return (
+        <svg className="w-5 h-3.5 rounded-sm shadow-sm shrink-0" viewBox="0 0 5 3">
+          <path fill="#CE1126" d="M0 0h5v3H0z"/>
+          <path fill="#FFF" d="M0 0h1.25l.5.3-.5.3.5.3-.5.3.5.3-.5.3.5.3-.5.3.5.3V3H0z"/>
+        </svg>
+      );
+    case 'US':
+      return (
+        <svg className="w-5 h-3.5 rounded-sm shadow-sm shrink-0" viewBox="0 0 7410 3900">
+          <rect width="7410" height="3900" fill="#B22234"/>
+          <path fill="#FFF" d="M0 300h7410v300H0zm0 600h7410v300H0zm0 600h7410v300H0zm0 600h7410v300H0zm0 600h7410v300H0zm0 600h7410v300H0z"/>
+          <rect width="2964" height="2100" fill="#3C3B6E"/>
+        </svg>
+      );
+    case 'CA':
+      return (
+        <svg className="w-5 h-3.5 rounded-sm shadow-sm shrink-0" viewBox="0 0 2 1">
+          <path fill="#FF0000" d="M0 0h2v1H0z"/>
+          <path fill="#FFF" d="M.5 0h1v1h-1z"/>
+          <path fill="#FF0000" d="M.9.3l.1-.2.1.2.2-.1v.2l.2.1-.2.1v.2l-.2-.1-.1.2-.1-.2-.2.1v-.2l-.2-.1.2-.1z"/>
+        </svg>
+      );
+    case 'GB':
+      return (
+        <svg className="w-5 h-3.5 rounded-sm shadow-sm shrink-0" viewBox="0 0 60 30">
+          <path fill="#00247D" d="M0 0h60v30H0z"/>
+          <path fill="#FFF" d="M0 0l60 30M60 0L0 30M0 12h60v6H0zm27-12v30h6V0z" stroke="#FFF" strokeWidth="3"/>
+          <path fill="#CF142B" d="M0 13h60v4H0zm28-13v30h4V0z"/>
+        </svg>
+      );
+    case 'SG':
+      return (
+        <svg className="w-5 h-3.5 rounded-sm shadow-sm shrink-0" viewBox="0 0 3 2">
+          <path fill="#ED2E38" d="M0 0h3v1H0z"/>
+          <path fill="#FFF" d="M0 1h3v1H0z"/>
+          <circle cx="0.5" cy="0.4" r="0.2" fill="#FFF"/>
+        </svg>
+      );
+    case 'LK':
+      return (
+        <svg className="w-5 h-3.5 rounded-sm shadow-sm shrink-0" viewBox="0 0 2 1">
+          <path fill="#FFBE29" d="M0 0h2v1H0z"/>
+          <path fill="#1E5C46" d="M.1.15h.2v.7h-.2z"/>
+          <path fill="#EB7A23" d="M.4.15h.2v.7h-.2z"/>
+          <path fill="#8D153B" d="M.7.15h1.1v.7H.7z"/>
+        </svg>
+      );
+    default:
+      return null;
+  }
+};
+
+const isValidEmail = (email: string): boolean => {
+  const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,5}$/;
+  if (!emailRegex.test(email)) return false;
+
+  const lower = email.toLowerCase().trim();
+  const parts = lower.split('@');
+  if (parts.length !== 2) return false;
+  
+  const domain = parts[1];
+  
+  const invalidDomains = [
+    'gamil.com', 'gmal.com', 'gmeil.com', 'gmail.con', 'gmail.coom',
+    'gmail.comm', 'gmail.commm', 'gmail.co.im', 'gmail.om',
+    'yaho.com', 'yhoo.com', 'yaho.co.in', 'yhoo.co.in'
+  ];
+  if (invalidDomains.includes(domain)) return false;
+
+  if (domain.includes('gamil') || domain.includes('gmeil') || domain.includes('gmal') || domain.includes('yaho')) {
+    return false;
+  }
+
+  const domainParts = domain.split('.');
+  if (domainParts.length < 2) return false;
+  
+  const tld = domainParts[domainParts.length - 1];
+  
+  if (/m{2,}/.test(tld) || /o{2,}/.test(tld) || /c{2,}/.test(tld)) {
+    return false;
+  }
+
+  if (domain.includes('gmail')) {
+    const allowedGmailSuffixes = ['gmail.com', 'gmail.co.in', 'gmail.co'];
+    if (!allowedGmailSuffixes.some(suffix => domain === suffix)) {
+      return false;
+    }
+  }
+
+  return true;
+};
 
 export default function PartnershipClient({ settings }: PartnershipClientProps) {
   const heroTitle = settings?.partnershipHeroTitle || "Become a GlobalWeblify Partner";
@@ -40,13 +199,53 @@ export default function PartnershipClient({ settings }: PartnershipClientProps) 
     partnershipType: '',
     message: ''
   });
-  const [showToast, setShowToast] = useState(false);
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [selectedCountryIndex, setSelectedCountryIndex] = useState(0);
+  const [phoneDigits, setPhoneDigits] = useState('');
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [toast, setToast] = useState<{ show: boolean; message: string; type: 'success' | 'error' }>({
+    show: false,
+    message: '',
+    type: 'success'
+  });
   const [submitting, setSubmitting] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
   const expandableRef = useRef<HTMLDivElement>(null);
+  const selectedCountry = COUNTRIES[selectedCountryIndex];
+
+  const triggerToast = (message: string, type: 'success' | 'error' = 'success') => {
+    setToast({ show: true, message, type });
+    setTimeout(() => {
+      setToast(prev => ({ ...prev, show: false }));
+    }, 4000);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setErrors({});
+    
+    let hasError = false;
+    const newErrors: Record<string, string> = {};
+
+    if (!isValidEmail(formData.email)) {
+      newErrors.email = "Please enter a valid email address. Check for typos like '.comm' or 'gamil'.";
+      hasError = true;
+    }
+
+    if (!phoneDigits) {
+      newErrors.phone = "Mobile number is required.";
+      hasError = true;
+    } else if (phoneDigits.length !== selectedCountry.length) {
+      newErrors.phone = `Phone number must be exactly ${selectedCountry.length} digits for ${selectedCountry.name}.`;
+      hasError = true;
+    }
+
+    if (hasError) {
+      setErrors(newErrors);
+      triggerToast('Please fix the validation errors in the form.', 'error');
+      return;
+    }
+
     setSubmitting(true);
     try {
       const response = await fetch('/api/partnership', {
@@ -56,11 +255,7 @@ export default function PartnershipClient({ settings }: PartnershipClientProps) 
       });
       const data = await response.json();
       if (data.success) {
-        setShowToast(true);
-        setTimeout(() => {
-          setShowToast(false);
-        }, 4000);
-        // Reset form
+        triggerToast('Thank you! Our Partnership Team will contact you shortly.', 'success');
         setFormData({
           name: '',
           email: '',
@@ -70,12 +265,17 @@ export default function PartnershipClient({ settings }: PartnershipClientProps) 
           partnershipType: '',
           message: ''
         });
+        setPhoneDigits('');
+        setSelectedCountryIndex(0);
+        setErrors({});
       } else {
-        alert('Failed to send inquiry: ' + (data.error || 'Unknown error'));
+        setErrors({ submit: data.error || 'Failed to send inquiry. Please try again.' });
+        triggerToast(data.error || 'Failed to send inquiry. Please try again.', 'error');
       }
     } catch (err) {
       console.error(err);
-      alert('An error occurred. Please try again.');
+      setErrors({ submit: 'An error occurred. Please try again.' });
+      triggerToast('An error occurred. Please try again.', 'error');
     } finally {
       setSubmitting(false);
     }
@@ -120,19 +320,25 @@ export default function PartnershipClient({ settings }: PartnershipClientProps) 
 
       {/* Custom Toast Notification */}
       <AnimatePresence>
-        {showToast && (
+        {toast.show && (
           <m.div
-            initial={{ opacity: 0, y: 50, scale: 0.9 }}
+            initial={{ opacity: 0, y: -20, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 20, scale: 0.9 }}
-            className="fixed bottom-8 right-8 z-[9999] bg-gray-900 text-white px-6 py-4 rounded-2xl shadow-2xl flex items-center gap-3 border border-gray-800"
+            exit={{ opacity: 0, y: -10, scale: 0.95 }}
+            className={`fixed top-24 md:top-36 right-4 left-4 md:left-auto md:right-8 md:w-auto max-w-sm mx-auto md:mx-0 z-[9999] px-6 py-4 rounded-2xl shadow-xl flex items-center gap-3 border font-semibold text-xs text-white ${
+              toast.type === 'success' 
+                ? 'bg-emerald-600 border-emerald-500 shadow-emerald-900/20' 
+                : 'bg-red-600 border-red-500 shadow-red-900/20'
+            }`}
           >
-            <div className="w-8 h-8 rounded-full bg-[#1a8b4c] flex items-center justify-center text-white shrink-0">
-              <CheckCircle2 size={18} />
+            <div className={`w-6 h-6 rounded-full flex items-center justify-center shrink-0 bg-white/20`}>
+              {toast.type === 'success' ? <CheckCircle2 size={14} /> : <ShieldAlert size={14} />}
             </div>
             <div>
-              <p className="text-xs font-black uppercase tracking-wider text-green-400">Application Received</p>
-              <p className="text-xs font-semibold text-gray-300">Thank you! Our Partnership Team will contact you shortly.</p>
+              <p className="font-black uppercase tracking-wider text-[10px] text-white/80">
+                {toast.type === 'success' ? 'Success' : 'Failed'}
+              </p>
+              <p className="text-white mt-0.5">{toast.message}</p>
             </div>
           </m.div>
         )}
@@ -330,16 +536,17 @@ export default function PartnershipClient({ settings }: PartnershipClientProps) 
                     />
                   </div>
 
-                  <div className="flex flex-col gap-2">
+                   <div className="flex flex-col gap-2">
                     <label className="text-[10px] font-black text-gray-500 uppercase tracking-wider">Business Email *</label>
                     <input 
                       type="email" 
                       required
                       value={formData.email}
                       onChange={(e) => setFormData({...formData, email: e.target.value})}
-                      className="w-full px-4 py-3.5 bg-gray-50/50 hover:bg-gray-50/80 focus:bg-white border border-gray-200 rounded-2xl text-[16px] md:text-xs font-semibold text-gray-800 focus:outline-none focus:border-[#1a8b4c] focus:ring-4 focus:ring-green-100 transition-all placeholder-gray-400"
+                      className={`w-full px-4 py-3.5 bg-gray-50/50 hover:bg-gray-50/80 focus:bg-white border rounded-2xl text-[16px] md:text-xs font-semibold text-gray-800 focus:outline-none focus:ring-4 transition-all placeholder-gray-400 ${errors.email ? 'border-red-500 focus:border-red-500 focus:ring-red-100' : 'border-gray-200 focus:border-[#1a8b4c] focus:ring-green-100'}`}
                       placeholder="jane@company.com"
                     />
+                    {errors.email && <span className="text-red-500 text-xs font-semibold mt-1">{errors.email}</span>}
                   </div>
                 </div>
 
@@ -368,17 +575,74 @@ export default function PartnershipClient({ settings }: PartnershipClientProps) 
                   </div>
                 </div>
 
-                {/* Phone & Partnership Type */}
                 <div className="grid md:grid-cols-2 gap-6">
                   <div className="flex flex-col gap-2">
-                    <label className="text-[10px] font-black text-gray-500 uppercase tracking-wider">Phone Number <span className="text-gray-400 font-semibold lowercase tracking-normal">(optional)</span></label>
-                    <input 
-                      type="tel" 
-                      value={formData.phone}
-                      onChange={(e) => setFormData({...formData, phone: e.target.value.replace(/[^0-9+\s-]/g, '')})}
-                      className="w-full px-4 py-3.5 bg-gray-50/50 hover:bg-gray-50/80 focus:bg-white border border-gray-200 rounded-2xl text-[16px] md:text-xs font-semibold text-gray-800 focus:outline-none focus:border-[#1a8b4c] focus:ring-4 focus:ring-green-100 transition-all placeholder-gray-400"
-                      placeholder="e.g. +91... / +971... / +1..."
-                    />
+                    <label className="text-[10px] font-black text-gray-500 uppercase tracking-wider">Mobile Number *</label>
+                    <div className="flex gap-2">
+                      {/* Premium Country Code Select */}
+                      <div className="relative w-32 shrink-0">
+                        <button
+                          type="button"
+                          onClick={() => setDropdownOpen(!dropdownOpen)}
+                          className="w-full flex items-center justify-between pl-3 pr-2.5 py-3.5 bg-gray-50/50 hover:bg-gray-50/80 focus:bg-white border border-gray-200 rounded-2xl text-[13px] font-bold text-gray-800 focus:outline-none focus:border-[#1a8b4c] focus:ring-4 focus:ring-green-100 transition-all shadow-sm"
+                        >
+                          <span className="flex items-center gap-2">
+                            <FlagIcon iso={selectedCountry.iso} />
+                            {selectedCountry.code}
+                          </span>
+                          <svg className={`w-3.5 h-3.5 transition-transform duration-200 ${dropdownOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M19 9l-7 7-7-7"></path>
+                          </svg>
+                        </button>
+
+                        {dropdownOpen && (
+                          <>
+                            {/* Backdrop overlay to close when clicking outside */}
+                            <div className="fixed inset-0 z-40" onClick={() => setDropdownOpen(false)} />
+                            
+                            {/* Dropdown Menu Options */}
+                            <div className="absolute left-0 mt-1.5 w-64 max-h-60 overflow-y-auto bg-white border border-gray-100 rounded-xl shadow-xl z-50 py-1.5 scrollbar-thin scrollbar-thumb-gray-200">
+                              {COUNTRIES.map((c, i) => (
+                                <button
+                                  key={i}
+                                  type="button"
+                                  onClick={() => {
+                                    setSelectedCountryIndex(i);
+                                    setDropdownOpen(false);
+                                    const truncatedDigits = phoneDigits.slice(0, c.length);
+                                    setPhoneDigits(truncatedDigits);
+                                    setFormData(prev => ({ ...prev, phone: truncatedDigits ? `${c.code} ${truncatedDigits}` : '' }));
+                                  }}
+                                  className={`w-full flex items-center gap-3 px-3 py-2 text-left text-xs font-semibold text-gray-700 hover:bg-gray-50 hover:text-gray-900 transition-colors ${i === selectedCountryIndex ? 'bg-green-50/50 text-[#1a8b4c]' : ''}`}
+                                >
+                                  <FlagIcon iso={c.iso} />
+                                  <span className="shrink-0">{c.code}</span>
+                                  <span className="text-gray-400 font-medium truncate">{c.name}</span>
+                                </button>
+                              ))}
+                            </div>
+                          </>
+                        )}
+                      </div>
+
+                      {/* Phone Input Box */}
+                      <div className="relative flex-grow">
+                        <input 
+                          type="tel" 
+                          required
+                          value={phoneDigits}
+                          maxLength={selectedCountry.length}
+                          onChange={(e) => {
+                            const val = e.target.value.replace(/\D/g, '').slice(0, selectedCountry.length);
+                            setPhoneDigits(val);
+                            setFormData(prev => ({ ...prev, phone: val ? `${selectedCountry.code} ${val}` : '' }));
+                          }}
+                          placeholder={selectedCountry.placeholder}
+                          className={`w-full px-4 py-3.5 bg-gray-50/50 hover:bg-gray-50/80 focus:bg-white border rounded-2xl text-[16px] md:text-xs font-semibold text-gray-800 focus:outline-none focus:ring-4 transition-all placeholder-gray-400 ${errors.phone ? 'border-red-500 focus:border-red-500 focus:ring-red-100' : 'border-gray-200 focus:border-[#1a8b4c] focus:ring-green-100'}`}
+                        />
+                      </div>
+                    </div>
+                    {errors.phone && <span className="text-red-500 text-xs font-semibold mt-1">{errors.phone}</span>}
                   </div>
 
                   <div className="flex flex-col gap-2">
@@ -405,9 +669,8 @@ export default function PartnershipClient({ settings }: PartnershipClientProps) 
 
                 {/* Message / Proposal Details */}
                 <div className="flex flex-col gap-2">
-                  <label className="text-[10px] font-black text-gray-500 uppercase tracking-wider">How can we work together? *</label>
+                  <label className="text-[10px] font-black text-gray-500 uppercase tracking-wider">How can we work together? <span className="text-gray-400 font-semibold lowercase tracking-normal">(optional)</span></label>
                   <textarea 
-                    required
                     rows={5}
                     value={formData.message}
                     onChange={(e) => setFormData({...formData, message: e.target.value})}
@@ -415,6 +678,12 @@ export default function PartnershipClient({ settings }: PartnershipClientProps) 
                     placeholder="Briefly describe your objectives, target audience, and how you see GlobalWeblify helping..."
                   ></textarea>
                 </div>
+
+                {errors.submit && (
+                  <div className="p-4 bg-red-50 border border-red-200 rounded-2xl">
+                    <span className="text-red-600 text-xs font-semibold block">{errors.submit}</span>
+                  </div>
+                )}
 
                 {/* Submit Button */}
                 <m.button 

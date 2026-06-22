@@ -26,6 +26,10 @@ export default function PartnershipSubmissionsClient({ initialSubmissions }: Par
   const [submissions, setSubmissions] = useState<PartnershipSubmission[]>(initialSubmissions);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedSub, setSelectedSub] = useState<PartnershipSubmission | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+  const [deleteConfirmId, setDeleteConfirmId] = useState<number | null>(null);
+  const [deleteAllConfirmOpen, setDeleteAllConfirmOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [copiedId, setCopiedId] = useState<number | null>(null);
 
@@ -34,9 +38,7 @@ export default function PartnershipSubmissionsClient({ initialSubmissions }: Par
     setTimeout(() => setToastMessage(null), 3000);
   };
 
-  const handleDelete = async (id: number) => {
-    if (!confirm('Are you sure you want to delete this partnership submission?')) return;
-
+  const executeDelete = async (id: number) => {
     try {
       const response = await fetch(`/api/partnership?id=${id}`, {
         method: 'DELETE',
@@ -49,11 +51,30 @@ export default function PartnershipSubmissionsClient({ initialSubmissions }: Par
           setSelectedSub(null);
         }
       } else {
-        alert('Failed to delete: ' + (data.error || 'Unknown error'));
+        triggerToast(data.error || 'Failed to delete submission');
       }
     } catch (e) {
       console.error(e);
-      alert('An error occurred while deleting the submission.');
+      triggerToast('An error occurred while deleting the submission.');
+    }
+  };
+
+  const executeDeleteAll = async () => {
+    try {
+      const response = await fetch('/api/partnership?id=all', {
+        method: 'DELETE',
+      });
+      const data = await response.json();
+      if (data.success) {
+        setSubmissions([]);
+        setSelectedSub(null);
+        triggerToast('All submissions deleted successfully');
+      } else {
+        triggerToast(data.error || 'Failed to delete all submissions');
+      }
+    } catch (e) {
+      console.error(e);
+      triggerToast('An error occurred while deleting all submissions.');
     }
   };
 
@@ -79,6 +100,12 @@ export default function PartnershipSubmissionsClient({ initialSubmissions }: Par
     );
   });
 
+  const totalPages = Math.ceil(filteredSubmissions.length / itemsPerPage);
+  const paginatedSubmissions = filteredSubmissions.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+
   // Calculate statistics
   const totalCount = submissions.length;
   const affiliateCount = submissions.filter(s => s.partnershipType && s.partnershipType.toLowerCase().includes('affiliate')).length;
@@ -90,7 +117,7 @@ export default function PartnershipSubmissionsClient({ initialSubmissions }: Par
       
       {/* Toast popup */}
       {toastMessage && (
-        <div className="fixed bottom-6 right-6 z-[9999] bg-gray-900 text-white px-5 py-3 rounded-xl shadow-2xl border border-gray-800 flex items-center gap-2.5 text-xs font-semibold animate-in fade-in slide-in-from-bottom-4 duration-300">
+        <div className="fixed top-24 md:top-36 right-4 left-4 md:left-auto md:right-8 md:w-auto max-w-sm mx-auto md:mx-0 z-[9999] bg-gray-900 text-white px-5 py-3.5 rounded-xl shadow-2xl border border-gray-800 flex items-center gap-2.5 text-xs font-semibold animate-in fade-in slide-in-from-top-4 duration-300">
           <div className="w-2 h-2 rounded-full bg-[#1a8b4c] animate-pulse" />
           <span>{toastMessage}</span>
         </div>
@@ -116,7 +143,7 @@ export default function PartnershipSubmissionsClient({ initialSubmissions }: Par
         </div>
       </div>
 
-      {/* Control Bar: Search */}
+      {/* Control Bar: Search & Delete All */}
       <div className="bg-white p-4 rounded-2xl border border-gray-200/80 shadow-[0_4px_20px_rgba(0,0,0,0.01)] flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="relative flex-1 max-w-md">
           <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
@@ -126,10 +153,23 @@ export default function PartnershipSubmissionsClient({ initialSubmissions }: Par
             type="text"
             placeholder="Search partnerships by name, company, email..."
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            onChange={(e) => {
+              setSearchTerm(e.target.value);
+              setCurrentPage(1);
+            }}
             className="w-full pl-10 pr-4 py-2 bg-gray-50/50 hover:bg-gray-50 border border-gray-200 rounded-xl text-xs font-semibold focus:outline-none focus:border-[#1a8b4c] focus:bg-white transition-all text-gray-800"
           />
         </div>
+
+        {submissions.length > 0 && (
+          <button
+            onClick={() => setDeleteAllConfirmOpen(true)}
+            className="px-4 py-2 bg-red-50 text-red-600 hover:bg-red-100 hover:text-red-700 border border-red-200 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 self-start md:self-auto"
+          >
+            <Trash2 size={13} />
+            Delete All
+          </button>
+        )}
       </div>
 
       {/* Submissions Datatable */}
@@ -155,7 +195,7 @@ export default function PartnershipSubmissionsClient({ initialSubmissions }: Par
                   </td>
                 </tr>
               ) : (
-                filteredSubmissions.map((sub) => {
+                paginatedSubmissions.map((sub) => {
                   const isNew = new Date().getTime() - new Date(sub.createdAt).getTime() < 24 * 60 * 60 * 1000;
                   const displayType = getDisplayType(sub.partnershipType);
                   const typeLower = displayType.toLowerCase();
@@ -231,12 +271,12 @@ export default function PartnershipSubmissionsClient({ initialSubmissions }: Par
                             Read Proposal
                           </button>
                           <button
-                            onClick={() => handleDelete(sub.id)}
-                            className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all"
-                            title="Delete submission"
-                          >
-                            <Trash2 size={14} />
-                          </button>
+                             onClick={() => setDeleteConfirmId(sub.id)}
+                             className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all"
+                             title="Delete submission"
+                           >
+                             <Trash2 size={14} />
+                           </button>
                         </div>
                       </td>
                     </tr>
@@ -342,7 +382,7 @@ export default function PartnershipSubmissionsClient({ initialSubmissions }: Par
             {/* Modal Footer */}
             <div className="p-4 bg-gray-50 border-t border-gray-100 flex justify-between gap-2.5">
               <button
-                onClick={() => handleDelete(selectedSub.id)}
+                onClick={() => setDeleteConfirmId(selectedSub.id)}
                 className="px-4 py-2 text-xs font-bold text-red-600 hover:bg-red-50 rounded-xl transition-all"
               >
                 Delete Proposal
